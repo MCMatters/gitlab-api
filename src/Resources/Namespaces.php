@@ -4,21 +4,51 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
+use McMatters\GitlabApi\Exceptions\RequestException;
+use McMatters\GitlabApi\Exceptions\ResponseException;
+use const null;
+use function array_merge;
+
+/**
+ * Class Namespaces
+ *
+ * @package McMatters\GitlabApi\Resources
+ */
 class Namespaces extends AbstractResource
 {
-    public function list(int $page = 1, int $perPage = 20)
+    /**
+     * @param array $pagination
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function list(array $pagination = []): array
+    {
+        return $this->requestGet($this->getUrl(), $pagination);
+    }
+
+    /**
+     * @param string|null $search
+     * @param array $pagination
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function search(string $search = null, array $pagination = []): array
     {
         return $this->requestGet(
-            'namespaces',
-            ['page' => $page, 'per_page' => $perPage]
+            $this->getUrl(),
+            array_merge($pagination, ['search' => $search])
         );
     }
 
-    public function search(string $search = null, int $page = 1, int $perPage = 20)
+    /**
+     * @return string
+     */
+    protected function getUrl(): string
     {
-        return $this->requestGet(
-            'namespaces',
-            ['search' => $search, 'page' => $page, 'per_page' => $perPage]
-        );
+        return 'namespaces';
     }
 }

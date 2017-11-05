@@ -10,11 +10,11 @@ use const null;
 use function array_filter;
 
 /**
- * Class Environment
+ * Class PipelineTrigger
  *
  * @package McMatters\GitlabApi\Resources
  */
-class Environment extends AbstractResource
+class PipelineTrigger extends AbstractResource
 {
     /**
      * @param int|string $id
@@ -30,26 +30,37 @@ class Environment extends AbstractResource
 
     /**
      * @param int|string $id
-     * @param string $name
-     * @param string|null $externalUrl
+     * @param int $triggerId
      *
      * @return array
      * @throws RequestException
      * @throws ResponseException
      */
-    public function create($id, string $name, string $externalUrl = null): array
+    public function get($id, int $triggerId): array
+    {
+        return $this->requestGet($this->getUrl($id, $triggerId));
+    }
+
+    /**
+     * @param int|string $id
+     * @param string $description
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function create($id, string $description): array
     {
         return $this->requestPost(
             $this->getUrl($id),
-            array_filter(['name' => $name, 'external_url' => $externalUrl])
+            ['description' => $description]
         );
     }
 
     /**
      * @param int|string $id
-     * @param int $environmentId
-     * @param string|null $name
-     * @param string|null $externalUrl
+     * @param int $triggerId
+     * @param string|null $description
      *
      * @return array
      * @throws RequestException
@@ -57,51 +68,50 @@ class Environment extends AbstractResource
      */
     public function update(
         $id,
-        int $environmentId,
-        string $name = null,
-        string $externalUrl = null
+        int $triggerId,
+        string $description = null
     ): array {
         return $this->requestPut(
-            $this->getUrl($id, $environmentId),
-            array_filter(['name' => $name, 'external_url' => $externalUrl])
+            $this->getUrl($id, $triggerId),
+            array_filter(['description' => $description])
         );
     }
 
     /**
      * @param int|string $id
-     * @param int $environmentId
+     * @param int $triggerId
      *
      * @return int
      * @throws RequestException
      */
-    public function delete($id, int $environmentId): int
+    public function delete($id, int $triggerId): int
     {
-        return $this->requestDelete($this->getUrl($id, $environmentId));
+        return $this->requestDelete($this->getUrl($id, $triggerId));
     }
 
     /**
      * @param int|string $id
-     * @param int $environmentId
+     * @param int $triggerId
      *
      * @return array
      * @throws RequestException
      * @throws ResponseException
      */
-    public function stop($id, int $environmentId): array
+    public function takeOwnership($id, int $triggerId): array
     {
-        return $this->requestPost("{$this->getUrl($id, $environmentId)}/stop");
+        return $this->requestPost("{$this->getUrl($id, $triggerId)}/take_ownership");
     }
 
     /**
      * @param int|string $id
-     * @param int|null $environmentId
+     * @param int|null $triggerId
      *
      * @return string
      */
-    protected function getUrl($id, int $environmentId = null): string
+    protected function getUrl($id, int $triggerId = null): string
     {
-        $url = "projects/{$this->encode($id)}/environments";
+        $url = "projects/{$this->encode($id)}/triggers";
 
-        return null !== $environmentId ? "{$url}/{$environmentId}" : $url;
+        return null !== $triggerId ? "{$url}/{$triggerId}" : $url;
     }
 }

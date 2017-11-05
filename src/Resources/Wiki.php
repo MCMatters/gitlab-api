@@ -6,45 +6,86 @@ namespace McMatters\GitlabApi\Resources;
 
 use InvalidArgumentException;
 use const false, null, true;
-use function array_filter;
+use function array_filter, implode, in_array;
 
+/**
+ * Class Wiki
+ *
+ * @package McMatters\GitlabApi\Resources
+ */
 class Wiki extends AbstractResource
 {
-    public function list($id, bool $withContent = false)
+    /**
+     * @param int|string $id
+     * @param bool $withContent
+     *
+     * @return array
+     * @throws \McMatters\GitlabApi\Exceptions\ResponseException
+     * @throws \McMatters\GitlabApi\Exceptions\RequestException
+     */
+    public function list($id, bool $withContent = false): array
     {
-        $id = $this->encode($id);
-
         return $this->requestGet(
-            "projects/{$id}/wikis",
+            $this->getUrl($id),
             ['with_content' => (int) $withContent]
         );
     }
 
-    public function get($id, string $slug)
+    /**
+     * @param int|string $id
+     * @param string $slug
+     *
+     * @return array
+     * @throws \McMatters\GitlabApi\Exceptions\ResponseException
+     * @throws \McMatters\GitlabApi\Exceptions\RequestException
+     */
+    public function get($id, string $slug): array
     {
-        $id = $this->encode($id);
-
-        return $this->requestGet("projects/{$id}/wikis/{$slug}");
+        return $this->requestGet($this->getUrl($id, $slug));
     }
 
-    public function create($id, string $title, string $content, string $format = 'markdown')
-    {
+    /**
+     * @param int|string $id
+     * @param string $title
+     * @param string $content
+     * @param string $format
+     *
+     * @return array
+     * @throws InvalidArgumentException
+     * @throws \McMatters\GitlabApi\Exceptions\ResponseException
+     * @throws \McMatters\GitlabApi\Exceptions\RequestException
+     */
+    public function create(
+        $id,
+        string $title,
+        string $content,
+        string $format = 'markdown'
+    ): array {
         $this->checkFormat($format);
 
-        $id = $this->encode($id);
-
         return $this->requestPost(
-            "projects/{$id}/wikis",
+            $this->getUrl($id),
             ['title' => $title, 'content' => $content, 'format' => $format]
         );
     }
 
+    /**
+     * @param int|string $id
+     * @param string $slug
+     * @param array $data
+     * @param string $format
+     *
+     * @return array
+     * @throws InvalidArgumentException
+     * @throws \McMatters\GitlabApi\Exceptions\ResponseException
+     * @throws \McMatters\GitlabApi\Exceptions\RequestException
+     */
     public function update(
         $id,
         string $slug,
         array $data = ['title' => null, 'content' => null],
         string $format = 'markdown'
-    ) {
+    ): array {
         $this->checkFormat($format);
 
         $data = array_filter($data);
@@ -55,16 +96,19 @@ class Wiki extends AbstractResource
 
         $data['format'] = $format;
 
-        $id = $this->encode($id);
-
-        return $this->requestPut("projects/{$id}/wikis/{$slug}", $data);
+        return $this->requestPut($this->getUrl($id, $slug), $data);
     }
 
-    public function delete($id, string $slug)
+    /**
+     * @param int|string $id
+     * @param string $slug
+     *
+     * @return int
+     * @throws \McMatters\GitlabApi\Exceptions\RequestException
+     */
+    public function delete($id, string $slug): int
     {
-        $id = $this->encode($id);
-
-        return $this->requestDelete("projects/{$id}/wikis/{$slug}");
+        return $this->requestDelete($this->getUrl($id, $slug));
     }
 
     /**
@@ -76,10 +120,23 @@ class Wiki extends AbstractResource
     {
         $formats = ['markdown', 'rdoc', 'asciidoc'];
 
-        if (!\in_array($format, $formats, true)) {
+        if (!in_array($format, $formats, true)) {
             throw new InvalidArgumentException(
                 'Supported formats are '.implode(', ', $formats)
             );
         }
+    }
+
+    /**
+     * @param int|string $id
+     * @param string|null $slug
+     *
+     * @return string
+     */
+    protected function getUrl($id, string $slug = null): string
+    {
+        $url = "projects/{$this->encode($id)}/wikis";
+
+        return null !== $slug ? "{$url}/{$this->encode($slug)}" : $url;
     }
 }

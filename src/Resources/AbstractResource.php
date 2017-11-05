@@ -37,7 +37,7 @@ abstract class AbstractResource
         $url = rtrim($url, '/').'/api/v4';
 
         $this->httpClient = new Client([
-            'base_uri' => "$url",
+            'base_uri' => $url,
             'headers'  => [
                 'PRIVATE-TOKEN' => $token,
             ],

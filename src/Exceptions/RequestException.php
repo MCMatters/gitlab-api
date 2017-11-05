@@ -6,6 +6,7 @@ namespace McMatters\GitlabApi\Exceptions;
 
 use Exception;
 use Throwable;
+use const null;
 
 /**
  * Class RequestException

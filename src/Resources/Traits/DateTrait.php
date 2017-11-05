@@ -17,7 +17,7 @@ use function is_string;
 trait DateTrait
 {
     /**
-     * @param $date
+     * @param DateTime|string $date
      *
      * @return string
      * @throws InvalidDateException
@@ -36,7 +36,7 @@ trait DateTrait
     }
 
     /**
-     * @param $date
+     * @param DateTime|string|null $date
      *
      * @return null|string
      * @throws InvalidDateException

@@ -7,11 +7,11 @@ namespace McMatters\GitlabApi\Resources;
 use McMatters\GitlabApi\Resources\Traits\MilestoneApiTrait;
 
 /**
- * Class ProjectMilestone
+ * Class GroupMilestone
  *
  * @package McMatters\GitlabApi\Resources
  */
-class ProjectMilestone extends AbstractResource
+class GroupMilestone extends AbstractResource
 {
     use MilestoneApiTrait;
 }

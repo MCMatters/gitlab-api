@@ -5,7 +5,8 @@ declare(strict_types = 1);
 namespace McMatters\GitlabApi;
 
 use McMatters\GitlabApi\Exceptions\BadResourceException;
-use function strtolower, ucfirst;
+use McMatters\GitlabApi\Helpers\StringHelper;
+use function strtolower;
 
 /**
  * Class GitlabClient
@@ -53,7 +54,7 @@ class GitlabClient
             return $this->resources[$lowerCaseName];
         }
 
-        $name = ucfirst($name);
+        $name = StringHelper::pascal($name);
 
         $class = __NAMESPACE__."\\Resources\\{$name}";
 

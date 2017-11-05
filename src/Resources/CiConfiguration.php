@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
+use McMatters\GitlabApi\Exceptions\RequestException;
+use McMatters\GitlabApi\Exceptions\ResponseException;
 use const true;
 use function array_key_exists;
 
@@ -18,8 +20,8 @@ class CiConfiguration extends AbstractResource
      * @param string $content
      *
      * @return array|bool Return TRUE if $content is valid otherwise return array with errors.
-     * @throws \McMatters\GitlabApi\Exceptions\ResponseException
-     * @throws \McMatters\GitlabApi\Exceptions\RequestException
+     * @throws RequestException
+     * @throws ResponseException
      */
     public function validate(string $content)
     {

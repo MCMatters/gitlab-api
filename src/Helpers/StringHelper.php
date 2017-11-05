@@ -40,7 +40,7 @@ class StringHelper
 
     /**
      * @param string $value
-     * @param mixed $needle
+     * @param string|array $needle
      *
      * @return bool
      */

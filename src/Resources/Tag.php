@@ -4,35 +4,62 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
+use McMatters\GitlabApi\Exceptions\RequestException;
+use McMatters\GitlabApi\Exceptions\ResponseException;
 use const null;
 
+/**
+ * Class Tag
+ *
+ * @package McMatters\GitlabApi\Resources
+ */
 class Tag extends AbstractResource
 {
-    public function list($id)
+    /**
+     * @param int|string $id
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function list($id): array
     {
-        $id = $this->encode($id);
-
-        return $this->requestGet("projects/{$id}/repository/tags");
+        return $this->requestGet($this->encode($id));
     }
 
-    public function get($id, string $name)
+    /**
+     * @param int|string $id
+     * @param string $name
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function get($id, string $name): array
     {
-        $id = $this->encode($id);
-
-        return $this->requestGet("projects/{$id}/repository/tags/{$name}");
+        return $this->requestGet($this->getUrl($id, $name));
     }
 
+    /**
+     * @param int|string $id
+     * @param string $name
+     * @param string $ref
+     * @param string|null $message
+     * @param string|null $description
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
     public function create(
         $id,
         string $name,
         string $ref,
         string $message = null,
         string $description = null
-    ) {
-        $id = $this->encode($id);
-
+    ): array {
         return $this->requestPost(
-            "projects/{$id}/repository/tags",
+            $this->getUrl($id),
             [
                 'name'        => $name,
                 'ref'         => $ref,
@@ -42,30 +69,62 @@ class Tag extends AbstractResource
         );
     }
 
-    public function delete($id, string $name)
+    /**
+     * @param int|string $id
+     * @param string $name
+     *
+     * @return int
+     * @throws RequestException
+     */
+    public function delete($id, string $name): int
     {
-        $id = $this->encode($id);
-
-        return $this->requestDelete("projects/{$id}/repository/tags/{$name}");
+        return $this->requestDelete($this->getUrl($id, $name));
     }
 
-    public function createRelease($id, string $name, string $description)
+    /**
+     * @param int|string $id
+     * @param string $name
+     * @param string $description
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function createRelease($id, string $name, string $description): array
     {
-        $id = $this->encode($id);
-
         return $this->requestPost(
-            "projects/{$id}/repository/tags/{$name}/release",
+            "{$this->getUrl($id, $name)}/release",
             ['description' => $description]
         );
     }
 
-    public function updateRelease($id, string $name, string $description)
+    /**
+     * @param int|string $id
+     * @param string $name
+     * @param string $description
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function updateRelease($id, string $name, string $description): array
     {
-        $id = $this->encode($id);
-
         return $this->requestPut(
-            "projects/{$id}/repository/tags/{$name}/release",
+            "{$this->getUrl($id, $name)}/release",
             ['description' => $description]
         );
+    }
+
+    /**
+     * @param int|string $id
+     * @param string|null $name
+     *
+     * @return string
+     */
+    protected function getUrl($id, string $name = null): string
+    {
+        $url = "projects/{$this->encode($id)}/repository/tags";
+
+        return null !== $name ? "{$url}/{$this->encode($name)}" : $url;
     }
 }

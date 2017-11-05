@@ -4,19 +4,52 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
+use McMatters\GitlabApi\Exceptions\RequestException;
+use McMatters\GitlabApi\Exceptions\ResponseException;
+use const null;
+
+/**
+ * Class Deployment
+ *
+ * @package McMatters\GitlabApi\Resources
+ */
 class Deployment extends AbstractResource
 {
-    public function list($id)
+    /**
+     * @param int|string $id
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function list($id): array
     {
-        $id = $this->encode($id);
-
-        return $this->requestGet("projects/{$id}/deployments");
+        return $this->requestGet($this->getUrl($id));
     }
 
-    public function get($id, int $deploymentId)
+    /**
+     * @param int|string $id
+     * @param int $deploymentId
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function get($id, int $deploymentId): array
     {
-        $id = $this->encode($id);
+        return $this->requestGet($this->getUrl($id, $deploymentId));
+    }
 
-        return $this->requestGet("projects/{$id}/deployments/{$deploymentId}");
+    /**
+     * @param int|string $id
+     * @param int|null $deploymentId
+     *
+     * @return string
+     */
+    protected function getUrl($id, int $deploymentId = null): string
+    {
+        $url = "projects/{$this->encode($id)}/deployments";
+
+        return $deploymentId ? "{$url}/{$deploymentId}" : $url;
     }
 }

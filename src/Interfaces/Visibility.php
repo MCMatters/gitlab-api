@@ -11,7 +11,7 @@ namespace McMatters\GitlabApi\Interfaces;
  */
 interface Visibility
 {
-    const VISIBILITY_PUBLIC = 'public';
-    const VISIBILITY_INTERNAL = 'internal';
-    const VISIBILITY_PRIVATE = 'private';
+    const PUBLIC = 'public';
+    const INTERNAL = 'internal';
+    const PRIVATE = 'private';
 }

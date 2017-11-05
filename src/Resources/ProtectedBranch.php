@@ -4,50 +4,92 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
+use McMatters\GitlabApi\Exceptions\RequestException;
+use McMatters\GitlabApi\Exceptions\ResponseException;
+use McMatters\GitlabApi\Interfaces\AccessLevel;
+use const null;
+
+/**
+ * Class ProtectedBranch
+ *
+ * @package McMatters\GitlabApi\Resources
+ */
 class ProtectedBranch extends AbstractResource
 {
-    const ACCESS_NONE = 0;
-    const ACCESS_DEVELOPER = 30;
-    const ACCESS_MASTER = 40;
-
-    public function list($id)
+    /**
+     * @param int|string $id
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function list($id): array
     {
-        $id = $this->encode($id);
-
-        return $this->requestGet("projects/{$id}/protected_branches");
+        return $this->requestGet($this->getUrl($id));
     }
 
-    public function get($id, string $name)
+    /**
+     * @param int|string $id
+     * @param string $name
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function get($id, string $name): array
     {
-        $id = $this->encode($id);
-
-        return $this->requestGet("projects/{$id}/protected_branches/{$name}");
+        return $this->requestGet($this->getUrl($id, $name));
     }
 
+    /**
+     * @param int|string $id
+     * @param string $name
+     * @param array $accessLevels
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
     public function protect(
         $id,
         string $name,
         array $accessLevels = [
-            'push'  => self::ACCESS_MASTER,
-            'merge' => self::ACCESS_MASTER,
+            'push'  => AccessLevel::MASTER,
+            'merge' => AccessLevel::MASTER,
         ]
-    ) {
-        $id = $this->encode($id);
-
+    ): array {
         return $this->requestPost(
-            "projects/{$id}/protected_branches",
+            $this->getUrl($id),
             [
                 'name'               => $name,
-                'push_access_level'  => $accessLevels['push'] ?? self::ACCESS_MASTER,
-                'merge_access_level' => $accessLevels['merge'] ?? self::ACCESS_MASTER,
+                'push_access_level'  => $accessLevels['push'] ?? AccessLevel::MASTER,
+                'merge_access_level' => $accessLevels['merge'] ?? AccessLevel::MASTER,
             ]
         );
     }
 
-    public function unprotect($id, string $name)
+    /**
+     * @param int|string $id
+     * @param string $name
+     *
+     * @return int
+     * @throws RequestException
+     */
+    public function unprotect($id, string $name): int
     {
-        $id = $this->encode($id);
+        return $this->requestDelete($this->getUrl($id, $name));
+    }
 
-        return $this->requestDelete("projects/{$id}/protected_branches/{$name}");
+    /**
+     * @param int|string $id
+     * @param string|null $name
+     *
+     * @return string
+     */
+    protected function getUrl($id, string $name = null): string
+    {
+        $url = "projects/{$this->encode($id)}/protected_branches";
+
+        return null !== $name ? "{$url}/{$this->encode($name)}" : $url;
     }
 }

@@ -4,57 +4,98 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use const false;
+use McMatters\GitlabApi\Exceptions\RequestException;
+use McMatters\GitlabApi\Exceptions\ResponseException;
+use const false, null;
 
+/**
+ * Class Branch
+ *
+ * @package McMatters\GitlabApi\Resources
+ */
 class Branch extends AbstractResource
 {
-    public function list($id)
+    /**
+     * @param int|string $id
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function list($id): array
     {
-        $id = $this->encode($id);
-
-        return $this->requestGet("projects/{$id}/repository/branches");
+        return $this->requestGet($this->getUrl($id));
     }
 
-    public function get($id, string $branch)
+    /**
+     * @param int|string $id
+     * @param string $branch
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function get($id, string $branch): array
     {
-        list($id, $branch) = $this->encode([$id, $branch]);
-
-        return $this->requestGet("projects/{$id}/repository/branches/{$branch}");
+        return $this->requestGet($this->getUrl($id, $branch));
     }
 
-    public function create($id, string $branch, string $ref)
+    /**
+     * @param int|string $id
+     * @param string $branch
+     * @param string $ref
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function create($id, string $branch, string $ref): array
     {
-        $id = $this->encode($id);
-
         return $this->requestPost(
-            "projects/{$id}/repository/branches",
+            $this->getUrl($id),
             ['branch' => $branch, 'ref' => $ref]
         );
     }
 
-    public function delete($id, string $branch)
+    /**
+     * @param int|string $id
+     * @param string $branch
+     *
+     * @return int
+     * @throws RequestException
+     */
+    public function delete($id, string $branch): int
     {
-        list($id, $branch) = $this->encode([$id, $branch]);
-
-        return $this->requestDelete("projects/{$id}/repository/branches/{$branch}");
+        return $this->requestDelete($this->getUrl($id, $branch));
     }
 
-    public function deleteMerged($id)
+    /**
+     * @param int|string $id
+     *
+     * @return int
+     * @throws RequestException
+     */
+    public function deleteMerged($id): int
     {
-        $id = $this->encode($id);
-
-        return $this->requestDelete("projects/{$id}/repository/merged_branches");
+        return $this->requestDelete($this->getUrl($id, null, 'merged'));
     }
 
+    /**
+     * @param int|string $id
+     * @param string $branch
+     * @param array $developersCan
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
     public function protect(
         $id,
         string $branch,
         array $developersCan = ['push' => false, 'merge' => false]
-    ) {
-        list($id, $branch) = $this->encode([$id, $branch]);
-
+    ): array {
         return $this->requestPut(
-            "projects/{$id}/repository/branches/{$branch}/protect",
+            "{$this->getUrl($id, $branch)}/protect",
             [
                 'developers_can_push'  => $developersCan['push'] ?? false,
                 'developers_can_merge' => $developersCan['merge'] ?? false,
@@ -62,10 +103,36 @@ class Branch extends AbstractResource
         );
     }
 
-    public function unprotect($id, string $branch)
+    /**
+     * @param int|string $id
+     * @param string $branch
+     *
+     * @return int
+     * @throws RequestException
+     */
+    public function unprotect($id, string $branch): int
     {
         list($id, $branch) = $this->encode([$id, $branch]);
 
         return $this->requestDelete("projects/{$id}/protected_branches/{$branch}");
+    }
+
+    /**
+     * @param int|string $id
+     * @param string|null $branch
+     * @param string|null $type
+     *
+     * @return string
+     */
+    protected function getUrl(
+        $id,
+        string $branch = null,
+        string $type = null
+    ): string {
+        $branchesType = null !== $type ? "{$type}_branches" : 'branches';
+
+        $url = "projects/{$this->encode($id)}/{$branchesType}";
+
+        return null !== $branch ? "{$url}/{$this->encode($branch)}" : $url;
     }
 }

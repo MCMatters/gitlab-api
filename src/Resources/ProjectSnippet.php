@@ -4,36 +4,65 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
+use McMatters\GitlabApi\Exceptions\RequestException;
+use McMatters\GitlabApi\Exceptions\ResponseException;
 use McMatters\GitlabApi\Interfaces\Visibility;
+use const null;
 
-class ProjectSnippet extends AbstractResource implements Visibility
+/**
+ * Class ProjectSnippet
+ *
+ * @package McMatters\GitlabApi\Resources
+ */
+class ProjectSnippet extends AbstractResource
 {
-    public function list($id)
+    /**
+     * @param int|string $id
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function list($id): array
     {
-        $id = $this->encode($id);
-
-        return $this->requestGet("projects/{$id}/snippets");
+        return $this->requestGet($this->getUrl($id));
     }
 
-    public function get($id, int $snippetId)
+    /**
+     * @param int|string $id
+     * @param int $snippetId
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function get($id, int $snippetId): array
     {
-        $id = $this->encode($id);
-
-        return $this->requestGet("projects/{$id}/snippets/{$snippetId}");
+        return $this->requestGet($this->getUrl($id, $snippetId));
     }
 
+    /**
+     * @param int|string $id
+     * @param string $title
+     * @param string $code
+     * @param string $fileName
+     * @param string $visibility
+     * @param string|null $description
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
     public function create(
         $id,
         string $title,
         string $code,
         string $fileName,
-        string $visibility = self::VISIBILITY_PUBLIC,
+        string $visibility = Visibility::PUBLIC,
         string $description = null
-    ) {
-        $id = $this->encode($id);
-
+    ): array {
         return $this->requestPost(
-            "projects/{$id}/snippets",
+            $this->getUrl($id),
             [
                 'title'       => $title,
                 'code'        => $code,
@@ -44,31 +73,68 @@ class ProjectSnippet extends AbstractResource implements Visibility
         );
     }
 
-    public function update($id, int $snippetId, array $data = [])
+    /**
+     * @param int|string $id
+     * @param int $snippetId
+     * @param array $data
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function update($id, int $snippetId, array $data = []): array
     {
-        $id = $this->encode($id);
-
-        return $this->requestPut("projects/{$id}/snippets/{$snippetId}", $data);
+        return $this->requestPut($this->getUrl($id, $snippetId), $data);
     }
 
-    public function delete($id, int $snippetId)
+    /**
+     * @param int|string $id
+     * @param int $snippetId
+     *
+     * @return int
+     * @throws RequestException
+     */
+    public function delete($id, int $snippetId): int
     {
-        $id = $this->encode($id);
-
-        return $this->requestDelete("projects/{$id}/snippets/{$snippetId}");
+        return $this->requestDelete($this->getUrl($id, $snippetId));
     }
 
-    public function rawContent($id, int $snippetId)
+    /**
+     * @param int|string $id
+     * @param int $snippetId
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function rawContent($id, int $snippetId): array
     {
-        $id = $this->encode($id);
-
-        return $this->requestGet("projects/{$id}/snippets/{$snippetId}/raw");
+        return $this->requestGet("{$this->getUrl($id, $snippetId)}/raw");
     }
 
-    public function userAgentDetails($id, int $snippetId)
+    /**
+     * @param int|string $id
+     * @param int $snippetId
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function userAgentDetails($id, int $snippetId): array
     {
-        $id = $this->encode($id);
+        return $this->requestGet("{$this->getUrl($id, $snippetId)}/user_agent_detail");
+    }
 
-        return $this->requestGet("projects/{$id}/snippets/{$snippetId}/user_agent_detail");
+    /**
+     * @param int|string $id
+     * @param int|null $snippetId
+     *
+     * @return string
+     */
+    protected function getUrl($id, int $snippetId = null): string
+    {
+        $url = "projects/{$this->encode($id)}/snippets";
+
+        return null !== $snippetId ? "{$url}/{$snippetId}" : $url;
     }
 }

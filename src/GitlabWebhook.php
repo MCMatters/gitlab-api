@@ -20,7 +20,7 @@ use function class_exists, gettype, is_a, is_array, is_string, json_encode;
 class GitlabWebhook
 {
     /**
-     * @param $payload
+     * @param mixed $payload
      *
      * @return AbstractWebhook
      * @throws UnsupportedWebhook

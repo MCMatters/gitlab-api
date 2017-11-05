@@ -4,52 +4,105 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
+use McMatters\GitlabApi\Exceptions\RequestException;
+use McMatters\GitlabApi\Exceptions\ResponseException;
+
+/**
+ * Class Repository
+ *
+ * @package McMatters\GitlabApi\Resources
+ */
 class Repository extends AbstractResource
 {
-    public function listTree($id, array $filters = [])
+    /**
+     * @param int|string $id
+     * @param array $filters
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function listTree($id, array $filters = []): array
     {
-        $id = $this->encode($id);
-
-        return $this->requestGet("projects/{$id}/repository/tree", $filters);
+        return $this->requestGet("{$this->getUrl($id)}/tree", $filters);
     }
 
-    public function blob($id, string $sha)
+    /**
+     * @param int|string $id
+     * @param string $sha
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function blob($id, string $sha): array
     {
-        $id = $this->encode($id);
-
         // todo: https://gitlab.com/gitlab-org/gitlab-ce/issues/26561
-        return $this->requestGet("projects/{$id}/repository/blobs/{$sha}");
+        return $this->requestGet("{$this->getUrl($id)}/blobs/{$sha}");
     }
 
-    public function rawBlob($id, string $sha)
+    /**
+     * @param int|string $id
+     * @param string $sha
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function rawBlob($id, string $sha): array
     {
-        $id = $this->encode($id);
-
         // todo: https://gitlab.com/gitlab-org/gitlab-ce/issues/26561
-        return $this->requestGet("projects/{$id}/repository/blobs/{$sha}/raw");
+        return $this->requestGet("{$this->getUrl($id)}/blobs/{$sha}/raw");
     }
 
-    public function archive($id)
+    /**
+     * @param int|string $id
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function archive($id): array
     {
-        $id = $this->encode($id);
-
-        return $this->requestGet("projects/{$id}/repository/archive");
+        return $this->requestGet("{$this->getUrl($id)}/archive");
     }
 
-    public function compare($id, string $from, string $to)
+    /**
+     * @param int|string $id
+     * @param string $from
+     * @param string $to
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function compare($id, string $from, string $to): array
     {
-        $id = $this->encode($id);
-
         return $this->requestGet(
-            "projects/{$id}/repository/compare",
+            "{$this->getUrl($id)}/compare",
             ['from' => $from, 'to' => $to]
         );
     }
 
-    public function contributors($id)
+    /**
+     * @param int|string $id
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function contributors($id): array
     {
-        $id = $this->encode($id);
+        return $this->requestGet("{$this->getUrl($id)}/contributors");
+    }
 
-        return $this->requestGet("projects/{$id}/repository/contributors");
+    /**
+     * @param int|string $id
+     *
+     * @return string
+     */
+    protected function getUrl($id): string
+    {
+        return "projects/{$this->encode($id)}/repository";
     }
 }
