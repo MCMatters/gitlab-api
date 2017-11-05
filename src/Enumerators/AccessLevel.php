@@ -2,12 +2,12 @@
 
 declare(strict_types = 1);
 
-namespace McMatters\GitlabApi\Interfaces;
+namespace McMatters\GitlabApi\Enumerators;
 
 /**
  * Interface AccessLevel
  *
- * @package McMatters\GitlabApi\Interfaces
+ * @package McMatters\GitlabApi\Enumerators
  */
 interface AccessLevel
 {

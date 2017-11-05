@@ -6,7 +6,7 @@ namespace McMatters\GitlabApi\Resources;
 
 use McMatters\GitlabApi\Exceptions\RequestException;
 use McMatters\GitlabApi\Exceptions\ResponseException;
-use McMatters\GitlabApi\Interfaces\AccessLevel;
+use McMatters\GitlabApi\Enumerators\AccessLevel;
 use const null;
 
 /**

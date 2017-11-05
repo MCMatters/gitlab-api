@@ -18,12 +18,15 @@ trait DateTrait
 {
     /**
      * @param DateTime|string $date
+     * @param string $format
      *
      * @return string
      * @throws InvalidDateException
      */
-    protected function transformDate($date): string
-    {
+    protected function transformDate(
+        $date,
+        string $format = DateTime::ATOM
+    ): string {
         if (is_string($date)) {
             $date = new DateTime($date);
         }
@@ -32,7 +35,7 @@ trait DateTrait
             throw new InvalidDateException();
         }
 
-        return $date->format(DateTime::ATOM);
+        return $date->format($format);
     }
 
     /**
