@@ -6,7 +6,8 @@ namespace McMatters\GitlabApi\Resources;
 
 use McMatters\GitlabApi\Exceptions\RequestException;
 use McMatters\GitlabApi\Exceptions\ResponseException;
-use function array_merge;
+use const false, null;
+use function array_key_exists, array_merge, base64_decode;
 
 /**
  * Class RepositoryFile
@@ -44,6 +45,28 @@ class RepositoryFile extends AbstractResource
             "{$this->getUrl($id, $file)}/raw",
             ['ref' => $ref]
         );
+    }
+
+    /**
+     * @param int|string $id
+     * @param string $file
+     * @param string $ref
+     *
+     * @return string|null
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function getContent($id, string $file, string $ref)
+    {
+        $info = $this->get($id, $file, $ref);
+
+        if (!array_key_exists('content', $info)) {
+            return null;
+        }
+
+        $content = base64_decode($info['content']);
+
+        return false === $content ? null : $content;
     }
 
     /**
