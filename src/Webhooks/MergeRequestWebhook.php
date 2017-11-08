@@ -30,4 +30,13 @@ class MergeRequestWebhook extends AbstractWebhook
     {
         return (int) $this->getObjectAttributeValue('target_project_id');
     }
+
+    /**
+     * @return string
+     * @throws InvalidArgumentException
+     */
+    public function getUserName(): string
+    {
+        return $this->getObjectValue('user.username');
+    }
 }

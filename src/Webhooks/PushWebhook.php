@@ -33,6 +33,15 @@ class PushWebhook extends AbstractWebhook
     }
 
     /**
+     * @return string
+     * @throws InvalidArgumentException
+     */
+    public function getUserName(): string
+    {
+        return $this->getObjectValue('user_username');
+    }
+
+    /**
      * @return array
      */
     public function getAttributes(): array

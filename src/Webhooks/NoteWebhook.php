@@ -51,4 +51,13 @@ class NoteWebhook extends AbstractWebhook
     {
         return (int) $this->getObjectValue('project_id');
     }
+
+    /**
+     * @return string
+     * @throws InvalidArgumentException
+     */
+    public function getUserName(): string
+    {
+        return $this->getObjectValue('user.username');
+    }
 }
