@@ -4,8 +4,11 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Webhooks;
 
+use BadMethodCallException;
 use InvalidArgumentException;
 use McMatters\GitlabApi\Helpers\ArrayHelper;
+use McMatters\GitlabApi\Helpers\StringHelper;
+use function substr;
 
 /**
  * Class WebhookHelper
@@ -87,5 +90,24 @@ abstract class AbstractWebhook
                 "{$key} is not passed. Check your payload."
             );
         });
+    }
+
+    /**
+     * @param string $name
+     * @param array $arguments
+     *
+     * @return mixed
+     * @throws InvalidArgumentException
+     * @throws BadMethodCallException
+     */
+    public function __call(string $name, array $arguments)
+    {
+        if (StringHelper::startsWith($name, 'get')) {
+            $key = StringHelper::snake(substr($name, 3));
+
+            return $this->getObjectAttributeValue($key);
+        }
+
+        throw new BadMethodCallException("Method {$name} does not exist.");
     }
 }

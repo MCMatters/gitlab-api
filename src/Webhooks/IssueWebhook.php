@@ -6,6 +6,11 @@ namespace McMatters\GitlabApi\Webhooks;
 
 use InvalidArgumentException;
 
+/**
+ * Class IssueWebhook
+ *
+ * @package McMatters\GitlabApi\Webhooks
+ */
 class IssueWebhook extends AbstractWebhook
 {
     /**

@@ -13,6 +13,11 @@ use InvalidArgumentException;
  */
 class MergeRequestWebhook extends AbstractWebhook
 {
+    const ACTION_OPEN = 'open';
+    const ACTION_UPDATE = 'update';
+    const ACTION_MERGE = 'merge';
+    const ACTION_CLOSE = 'close';
+
     /**
      * @return int
      * @throws InvalidArgumentException
@@ -38,5 +43,14 @@ class MergeRequestWebhook extends AbstractWebhook
     public function getUserName(): string
     {
         return $this->getObjectValue('user.username');
+    }
+
+    /**
+     * @return string
+     * @throws InvalidArgumentException
+     */
+    public function getAction(): string
+    {
+        return $this->getObjectAttributeValue('action');
     }
 }

@@ -11,4 +11,5 @@ namespace McMatters\GitlabApi\Webhooks;
  */
 class TagPushWebhook extends PushWebhook
 {
+    //
 }
