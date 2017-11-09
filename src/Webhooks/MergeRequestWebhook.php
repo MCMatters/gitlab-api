@@ -53,4 +53,22 @@ class MergeRequestWebhook extends AbstractWebhook
     {
         return $this->getObjectAttributeValue('action');
     }
+
+    /**
+     * @return string
+     * @throws InvalidArgumentException
+     */
+    public function getSourceBranch(): string
+    {
+        return $this->getObjectAttributeValue('source_branch');
+    }
+
+    /**
+     * @return string
+     * @throws InvalidArgumentException
+     */
+    public function getTargetBranch(): string
+    {
+        return $this->getObjectAttributeValue('target_branch');
+    }
 }
