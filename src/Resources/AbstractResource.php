@@ -34,7 +34,7 @@ abstract class AbstractResource
      */
     public function __construct(string $url, string $token)
     {
-        $url = rtrim($url, '/').'/api/v4';
+        $url = rtrim($url, '/').'/api/v4/';
 
         $this->httpClient = new Client([
             'base_uri' => $url,
