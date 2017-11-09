@@ -131,7 +131,7 @@ class Branch extends AbstractResource
     ): string {
         $branchesType = null !== $type ? "{$type}_branches" : 'branches';
 
-        $url = "projects/{$this->encode($id)}/{$branchesType}";
+        $url = "projects/{$this->encode($id)}/repository/{$branchesType}";
 
         return null !== $branch ? "{$url}/{$this->encode($branch)}" : $url;
     }
