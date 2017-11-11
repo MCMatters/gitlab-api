@@ -71,4 +71,22 @@ class MergeRequestWebhook extends AbstractWebhook
     {
         return $this->getObjectAttributeValue('target_branch');
     }
+
+    /**
+     * @return array
+     * @throws InvalidArgumentException
+     */
+    public function getLastCommit(): array
+    {
+        return $this->getObjectAttributeValue('last_commit');
+    }
+
+    /**
+     * @return string
+     * @throws InvalidArgumentException
+     */
+    public function getLastCommitHash(): string
+    {
+        return $this->getObjectAttributeValue('last_commit.id');
+    }
 }
