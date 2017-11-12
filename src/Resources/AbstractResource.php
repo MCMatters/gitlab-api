@@ -61,11 +61,15 @@ abstract class AbstractResource
             );
 
             $content = $response->getBody()->getContents();
-
-            return $this->parseJson($content);
         } catch (Throwable $e) {
-            $this->throwRequestException($e);
+            throw new RequestException(
+                $this->getErrorMessage($e),
+                $this->getErrorCode($e),
+                $e
+            );
         }
+
+        return $this->parseJson($content);
     }
 
     /**
@@ -82,11 +86,15 @@ abstract class AbstractResource
             $response = $this->httpClient->post($uri, ['json' => $body]);
 
             $content = $response->getBody()->getContents();
-
-            return $this->parseJson($content);
         } catch (Throwable $e) {
-            $this->throwRequestException($e);
+            throw new RequestException(
+                $this->getErrorMessage($e),
+                $this->getErrorCode($e),
+                $e
+            );
         }
+
+        return $this->parseJson($content);
     }
 
     /**
@@ -103,11 +111,15 @@ abstract class AbstractResource
             $response = $this->httpClient->put($uri, ['json' => $body]);
 
             $content = $response->getBody()->getContents();
-
-            return $this->parseJson($content);
         } catch (Throwable $e) {
-            $this->throwRequestException($e);
+            throw new RequestException(
+                $this->getErrorMessage($e),
+                $this->getErrorCode($e),
+                $e
+            );
         }
+
+        return $this->parseJson($content);
     }
 
     /**
@@ -124,7 +136,11 @@ abstract class AbstractResource
 
             return $response->getStatusCode();
         } catch (Throwable $e) {
-            $this->throwRequestException($e);
+            throw new RequestException(
+                $this->getErrorMessage($e),
+                $this->getErrorCode($e),
+                $e
+            );
         }
     }
 
@@ -149,20 +165,6 @@ abstract class AbstractResource
         }
 
         return $content;
-    }
-
-    /**
-     * @param Throwable $e
-     *
-     * @throws RequestException
-     */
-    protected function throwRequestException(Throwable $e)
-    {
-        throw new RequestException(
-            $this->getErrorMessage($e),
-            $this->getErrorCode($e),
-            $e
-        );
     }
 
     /**
