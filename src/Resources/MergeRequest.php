@@ -102,6 +102,38 @@ class MergeRequest extends AbstractResource
      * @param int|string $id
      * @param int $iid
      *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function close($id, int $iid): array
+    {
+        return $this->requestPut(
+            $this->getUrl($id, $iid),
+            ['state_event' => 'close']
+        );
+    }
+
+    /**
+     * @param int|string $id
+     * @param int $iid
+     *
+     * @return array
+     * @throws RequestException
+     * @throws ResponseException
+     */
+    public function reopen($id, int $iid): array
+    {
+        return $this->requestPut(
+            $this->getUrl($id, $iid),
+            ['state_event' => 'reopen']
+        );
+    }
+
+    /**
+     * @param int|string $id
+     * @param int $iid
+     *
      * @return int
      * @throws RequestException
      */
