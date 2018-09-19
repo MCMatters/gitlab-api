@@ -20,6 +20,6 @@ class UnsupportedWebhook extends Exception
      */
     public function __construct(string $type)
     {
-        parent::__construct("Unsupported webhook {$type}.");
+        parent::__construct("Unsupported webhook {$type}");
     }
 }

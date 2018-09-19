@@ -4,9 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-
 /**
  * Class Key
  *
@@ -18,11 +15,13 @@ class Key extends AbstractResource
      * @param int $id
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function get(int $id): array
     {
-        return $this->requestGet("keys/{$id}");
+        return $this->httpClient->get("keys/{$id}")->json();
     }
 }

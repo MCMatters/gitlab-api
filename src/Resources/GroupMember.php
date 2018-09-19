@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Resources\Traits\MemberApiTrait;
+use McMatters\GitlabApi\Resources\Traits\Api\MemberTrait;
 
 /**
  * Class GroupMember
@@ -13,5 +13,10 @@ use McMatters\GitlabApi\Resources\Traits\MemberApiTrait;
  */
 class GroupMember extends AbstractResource
 {
-    use MemberApiTrait;
+    use MemberTrait;
+
+    /**
+     * @var string
+     */
+    protected $type = 'groups';
 }

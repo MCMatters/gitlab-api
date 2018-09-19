@@ -4,9 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-
 /**
  * Class Repository
  *
@@ -16,15 +13,22 @@ class Repository extends AbstractResource
 {
     /**
      * @param int|string $id
-     * @param array $filters
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function listTree($id, array $filters = []): array
+    public function listTree($id, array $query = []): array
     {
-        return $this->requestGet("{$this->getUrl($id)}/tree", $filters);
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('projects/{id}/repository/tree', $id),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
@@ -32,13 +36,19 @@ class Repository extends AbstractResource
      * @param string $sha
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function blob($id, string $sha): array
     {
-        // todo: https://gitlab.com/gitlab-org/gitlab-ce/issues/26561
-        return $this->requestGet("{$this->getUrl($id)}/blobs/{$sha}");
+        return $this->httpClient
+            ->get($this->encodeUrl(
+                'projects/{id}/repository/blobs/{sha}',
+                [$id, $sha]
+            ))
+            ->json();
     }
 
     /**
@@ -46,63 +56,80 @@ class Repository extends AbstractResource
      * @param string $sha
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function rawBlob($id, string $sha): array
     {
-        // todo: https://gitlab.com/gitlab-org/gitlab-ce/issues/26561
-        return $this->requestGet("{$this->getUrl($id)}/blobs/{$sha}/raw");
+        return $this->httpClient
+            ->get($this->encodeUrl(
+                'projects/{id}/repository/blobs/{sha}/raw',
+                [$id, $sha]
+            ))
+            ->json();
     }
 
     /**
      * @param int|string $id
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function archive($id): array
+    public function getArchive($id): array
     {
-        return $this->requestGet("{$this->getUrl($id)}/archive");
+        return $this->httpClient
+            ->get($this->encodeUrl('projects/{id}/repository/archive', $id))
+            ->json();
     }
 
     /**
      * @param int|string $id
      * @param string $from
      * @param string $to
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function compare($id, string $from, string $to): array
-    {
-        return $this->requestGet(
-            "{$this->getUrl($id)}/compare",
-            ['from' => $from, 'to' => $to]
-        );
+    public function compare(
+        $id,
+        string $from,
+        string $to,
+        array $query = []
+    ): array {
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('projects/{id}/repository/compare', $id),
+                ['query' => ['from' => $from, 'to' => $to] + $query]
+            )
+            ->json();
     }
 
     /**
      * @param int|string $id
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
-     */
-    public function contributors($id): array
-    {
-        return $this->requestGet("{$this->getUrl($id)}/contributors");
-    }
-
-    /**
-     * @param int|string $id
      *
-     * @return string
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    protected function getUrl($id): string
+    public function contributors($id, array $query = []): array
     {
-        return "projects/{$this->encode($id)}/repository";
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('projects/{id}/repository/contributors', $id),
+                ['query' => $query]
+            )
+            ->json();
     }
 }

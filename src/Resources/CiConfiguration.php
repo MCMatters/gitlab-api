@@ -4,8 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
 use const true;
 use function array_key_exists;
 
@@ -19,13 +17,17 @@ class CiConfiguration extends AbstractResource
     /**
      * @param string $content
      *
-     * @return array|bool Return TRUE if $content is valid otherwise return array with errors.
-     * @throws RequestException
-     * @throws ResponseException
+     * @return array|bool Return true if $content is valid otherwise return an array with errors.
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function validate(string $content)
     {
-        $response = $this->requestPost('lint', ['content' => $content]);
+        $response = $this->httpClient
+            ->post('lint', ['json' => ['content' => $content]])
+            ->json();
 
         if (!empty($response['status']) && $response['status'] === 'valid') {
             return true;

@@ -4,9 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-
 /**
  * Class Version
  *
@@ -16,11 +13,13 @@ class Version extends AbstractResource
 {
     /**
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function get(): array
     {
-        return $this->requestGet('version');
+        return $this->httpClient->get('version')->json();
     }
 }

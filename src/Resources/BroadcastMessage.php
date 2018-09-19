@@ -4,11 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-use const null;
-use function array_filter;
-
 /**
  * Class BroadcastMessage
  *
@@ -17,55 +12,55 @@ use function array_filter;
 class BroadcastMessage extends AbstractResource
 {
     /**
+     * @param array $query
+     *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list(): array
+    public function list(array $query = []): array
     {
-        return $this->requestGet($this->getUrl());
+        return $this->httpClient
+            ->get('broadcast_messages', ['query' => $query])
+            ->json();
     }
 
     /**
      * @param int $id
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function get(int $id): array
     {
-        return $this->requestGet($this->getUrl($id));
+        return $this->httpClient
+            ->get($this->encodeUrl('broadcast_messages/{id}', $id))
+            ->json();
     }
 
     /**
      * @param string $message
-     * @param mixed $startsAt
-     * @param mixed $endsAt
-     * @param string|null $color
-     * @param string|null $font
+     * @param array $data
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function create(
-        string $message,
-        $startsAt = null,
-        $endsAt = null,
-        string $color = null,
-        string $font = null
-    ): array {
-        return $this->requestPost(
-            $this->getUrl(),
-            array_filter([
-                'message'   => $message,
-                'starts_at' => $startsAt,
-                'ends_at'   => $endsAt,
-                'color'     => $color,
-                'font'      => $font,
-            ])
-        );
+    public function create(string $message, array $data = []): array
+    {
+        return $this->httpClient
+            ->post(
+                'broadcast_messages',
+                ['json' => ['message' => $message] + $data]
+            )
+            ->json();
     }
 
     /**
@@ -73,34 +68,33 @@ class BroadcastMessage extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function update(int $id, array $data = []): array
     {
-        return $this->requestPut($this->getUrl($id), $data);
+        return $this->httpClient
+            ->put(
+                $this->encodeUrl('broadcast_messages/{id}', $id),
+                ['json' => $data]
+            )
+            ->json();
     }
 
     /**
      * @param int $id
      *
      * @return int
-     * @throws RequestException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
      */
     public function delete(int $id): int
     {
-        return $this->requestDelete($this->getUrl($id));
-    }
-
-    /**
-     * @param int|null $id
-     *
-     * @return string
-     */
-    protected function getUrl(int $id = null): string
-    {
-        $url = 'broadcast_messages';
-
-        return null !== $id ? "{$url}/{$id}" : $url;
+        return $this->httpClient
+            ->delete($this->encodeUrl('broadcast_messages/{id}', $id))
+            ->getStatusCode();
     }
 }

@@ -4,10 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-use const null;
-
 /**
  * Class Deployment
  *
@@ -17,14 +13,22 @@ class Deployment extends AbstractResource
 {
     /**
      * @param int|string $id
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list($id): array
+    public function list($id, array $query = []): array
     {
-        return $this->requestGet($this->getUrl($id));
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('projects/{id}/deployments', $id),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
@@ -32,24 +36,18 @@ class Deployment extends AbstractResource
      * @param int $deploymentId
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function get($id, int $deploymentId): array
     {
-        return $this->requestGet($this->getUrl($id, $deploymentId));
-    }
-
-    /**
-     * @param int|string $id
-     * @param int|null $deploymentId
-     *
-     * @return string
-     */
-    protected function getUrl($id, int $deploymentId = null): string
-    {
-        $url = "projects/{$this->encode($id)}/deployments";
-
-        return $deploymentId ? "{$url}/{$deploymentId}" : $url;
+        return $this->httpClient
+            ->get($this->encodeUrl(
+                'projects/{id}/deployments/{deploymentId}',
+                [$id, $deploymentId]
+            ))
+            ->json();
     }
 }

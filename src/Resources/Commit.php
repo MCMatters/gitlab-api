@@ -4,12 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\{
-    InvalidDateException, RequestException, ResponseException
-};
-use const null;
-use function array_key_exists;
-
 /**
  * Class Commit
  *
@@ -19,42 +13,22 @@ class Commit extends AbstractResource
 {
     /**
      * @param int|string $id
-     * @param string $ref
-     * @param null $since
-     * @param null $until
+     * @param array $query
      *
      * @return array
-     * @throws InvalidDateException
-     * @throws RequestException
-     * @throws ResponseException
-     */
-    public function list(
-        $id,
-        string $ref = '',
-        $since = null,
-        $until = null
-    ): array {
-        return $this->requestGet(
-            $this->getUrl($id),
-            [
-                'ref'   => $ref,
-                'since' => $this->transformNullableDate($since),
-                'until' => $this->transformNullableDate($until),
-            ]
-        );
-    }
-
-    /**
-     * @param int|string $id
-     * @param string $sha
      *
-     * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function get($id, string $sha): array
+    public function list($id, array $query = []): array
     {
-        return $this->requestGet($this->getUrl($id, $sha));
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('projects/{id}/repository/commits', $id),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
@@ -62,32 +36,81 @@ class Commit extends AbstractResource
      * @param string $branch
      * @param string $message
      * @param array $actions
-     * @param string|null $startBranch
-     * @param array $author
+     * @param array $data
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function create(
         $id,
         string $branch,
         string $message,
         array $actions,
-        string $startBranch = null,
-        array $author = []
+        array $data = []
     ): array {
-        return $this->requestPost(
-            $this->getUrl($id),
-            [
-                'branch'         => $branch,
-                'commit_message' => $message,
-                'start_branch'   => $startBranch,
-                'actions'        => $actions,
-                'author_email'   => $author['email'] ?? null,
-                'author_name'    => $author['name'] ?? null,
-            ]
-        );
+        return $this->httpClient
+            ->post(
+                $this->encodeUrl('projects/{id}/repository/commits', $id),
+                [
+                    'json' => [
+                            'branch' => $branch,
+                            'commit_message' => $message,
+                            'actions' => $actions,
+                        ] + $data,
+                ]
+            )
+            ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param string $sha
+     * @param array $query
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
+     */
+    public function get($id, string $sha, array $query = []): array
+    {
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl(
+                    'projects/{id}/repository/commits/{sha}',
+                    [$id, $sha]
+                ),
+                ['query' => $query]
+            )
+            ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param string $sha
+     * @param array $query
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
+     */
+    public function references($id, string $sha, array $query = []): array
+    {
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl(
+                    'projects/{id}/repository/commits/{sha}/refs',
+                    [$id, $sha]
+                ),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
@@ -96,15 +119,22 @@ class Commit extends AbstractResource
      * @param string $branch
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function cherryPick($id, string $sha, string $branch): array
     {
-        return $this->requestPost(
-            "{$this->getUrl($id, $sha)}/cherry_pick",
-            ['branch' => $branch]
-        );
+        return $this->httpClient
+            ->post(
+                $this->encodeUrl(
+                    'projects/{id}/repository/commits/{sha}/cherry_pick',
+                    [$id, $sha]
+                ),
+                ['json' => ['branch' => $branch]]
+            )
+            ->json();
     }
 
     /**
@@ -112,25 +142,43 @@ class Commit extends AbstractResource
      * @param string $sha
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function diff($id, string $sha): array
     {
-        return $this->requestGet("{$this->getUrl($id, $sha)}/diff");
+        return $this->httpClient
+            ->get($this->encodeUrl(
+                'projects/{id}/repository/commits/{sha}/diff',
+                [$id, $sha]
+            ))
+            ->json();
     }
 
     /**
      * @param int|string $id
      * @param string $sha
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function comments($id, string $sha): array
+    public function comments($id, string $sha, array $query = []): array
     {
-        return $this->requestGet("{$this->getUrl($id, $sha)}/comments");
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl(
+                    'projects/{id}/repository/commits/{sha}/comments',
+                    [$id, $sha]
+                ),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
@@ -140,41 +188,50 @@ class Commit extends AbstractResource
      * @param array $file
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function createComment(
         $id,
         string $sha,
         string $comment,
-        array $file = ['path' => null, 'line' => null, 'line_type' => 'new']
+        array $file = []
     ): array {
-        return $this->requestPost(
-            "{$this->getUrl($id, $sha)}/comments",
-            [
-                'note'      => $comment,
-                'path'      => $file['path'] ?? null,
-                'line'      => $file['line'] ?? null,
-                'line_type' => $file['line_type'] ?? 'new',
-            ]
-        );
+        return $this->httpClient
+            ->post(
+                $this->encodeUrl(
+                    'projects/{id}/repository/commits/{sha}/comments',
+                    [$id, $sha]
+                ),
+                ['json' => ['note' => $comment] + $file]
+            )
+            ->json();
     }
 
     /**
      * @param int|string $id
      * @param string $sha
-     * @param array $filters
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function status($id, string $sha, array $filters = []): array
+    public function statuses($id, string $sha, array $query = []): array
     {
-        return $this->requestGet(
-            "{$this->getUrl($id, $sha)}/statuses",
-            $filters
-        );
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl(
+                    'projects/{id}/repository/commits/{sha}/statuses',
+                    [$id, $sha]
+                ),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
@@ -184,39 +241,49 @@ class Commit extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function postBuildStatus(
         $id,
         string $sha,
         string $state,
-        array $data
+        array $data = []
     ): array {
-        $nameKey = array_key_exists('context', $data) ? 'context' : 'name';
-
-        return $this->requestPost(
-            "projects/{$this->encode($id)}/statuses/{$sha}",
-            [
-                'state'       => $state,
-                $nameKey      => $data[$nameKey] ?? null,
-                'target_url'  => $data['target_url'] ?? null,
-                'description' => $data['description'] ?? null,
-                'coverage'    => $data['coverage'] ?? null,
-            ]
-        );
+        return $this->httpClient
+            ->post(
+                $this->encodeUrl(
+                    'projects/{id}/statuses/{sha}',
+                    [$id, $sha]
+                ),
+                ['json' => ['state' => $state] + $data]
+            )
+            ->json();
     }
 
     /**
      * @param int|string $id
-     * @param string|null $sha
+     * @param string $sha
+     * @param array $query
      *
-     * @return string
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    protected function getUrl($id, string $sha = null): string
+    public function mergeRequests($id, string $sha, array $query = []): array
     {
-        $url = "projects/{$this->encode($id)}/repository/commits";
-
-        return null !== $sha ? "{$url}/{$sha}" : $url;
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl(
+                    'projects/{id}/repository/commits/{sha}/merge_requests',
+                    [$id, $sha]
+                ),
+                ['query' => $query]
+            )
+            ->json();
     }
 }

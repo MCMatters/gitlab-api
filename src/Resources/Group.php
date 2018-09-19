@@ -4,11 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-use const null;
-use function array_merge;
-
 /**
  * Class Group
  *
@@ -17,35 +12,74 @@ use function array_merge;
 class Group extends AbstractResource
 {
     /**
-     * @param array $filters
-     * @param array $sorting
-     * @param array $pagination
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list(
-        array $filters = [],
-        array $sorting = [],
-        array $pagination = []
-    ): array {
-        return $this->requestGet(
-            $this->getUrl(),
-            array_merge($filters, $sorting, $pagination)
-        );
+    public function list(array $query = []): array
+    {
+        return $this->httpClient->get('groups', ['query' => $query])->json();
     }
 
     /**
      * @param int|string $id
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function get($id): array
+    public function subGroups($id, array $query = []): array
     {
-        return $this->requestGet($this->getUrl($id));
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('groups/{id}/subgroups', $id),
+                ['query' => $query]
+            )
+            ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param array $query
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
+     */
+    public function projects($id, array $query = []): array
+    {
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('groups/{id}/projects', $id),
+                ['query' => $query]
+            )
+            ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param array $query
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
+     */
+    public function get($id, array $query = []): array
+    {
+        return $this->httpClient
+            ->get($this->encodeUrl('groups/{id}', $id), ['query' => $query])
+            ->json();
     }
 
     /**
@@ -54,82 +88,19 @@ class Group extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function create(string $name, string $path, array $data = []): array
     {
-        return $this->requestPost(
-            $this->getUrl(),
-            array_merge($data, ['name' => $name, 'path' => $path])
-        );
-    }
-
-    /**
-     * @param int|string $id
-     * @param array $data
-     *
-     * @return array
-     * @throws RequestException
-     * @throws ResponseException
-     */
-    public function update($id, array $data = []): array
-    {
-        return $this->requestPut($this->getUrl($id), $data);
-    }
-
-    /**
-     * @param int|string $id
-     *
-     * @return int
-     * @throws RequestException
-     */
-    public function delete($id): int
-    {
-        return $this->requestDelete($this->getUrl($id));
-    }
-
-    /**
-     * @param string $keyword
-     * @param array $filters
-     * @param array $sorting
-     * @param array $pagination
-     *
-     * @return array
-     * @throws RequestException
-     * @throws ResponseException
-     */
-    public function search(
-        string $keyword,
-        array $filters = [],
-        array $sorting = [],
-        array $pagination = []
-    ): array {
-        $filters['search'] = $keyword;
-
-        return $this->list($filters, $sorting, $pagination);
-    }
-
-    /**
-     * @param int|string $id
-     * @param array $filters
-     * @param array $sorting
-     * @param array $pagination
-     *
-     * @return array
-     * @throws RequestException
-     * @throws ResponseException
-     */
-    public function projects(
-        $id,
-        array $filters = [],
-        array $sorting = [],
-        array $pagination = []
-    ): array {
-        return $this->requestGet(
-            "{$this->getUrl($id)}/projects",
-            array_merge($filters, $sorting, $pagination)
-        );
+        return $this->httpClient
+            ->post(
+                'groups',
+                ['json' => ['name' => $name, 'path' => $path] + $data]
+            )
+            ->json();
     }
 
     /**
@@ -137,23 +108,67 @@ class Group extends AbstractResource
      * @param int|string $projectId
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function transferProject($id, $projectId): array
     {
-        return $this->requestPost(
-            "{$this->getUrl($id)}/projects/{$this->encode($projectId)}"
-        );
+        return $this->httpClient
+            ->post($this->encodeUrl(
+                'groups/{id}/projects/{projectId}',
+                [$id, $projectId]
+            ))
+            ->json();
     }
 
     /**
-     * @param int|string|null $id
+     * @param int|string $id
+     * @param array $data
      *
-     * @return string
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    protected function getUrl($id = null): string
+    public function update($id, array $data): array
     {
-        return null !== $id ? "groups/{$this->encode($id)}" : 'groups';
+        return $this->httpClient
+            ->put($this->encodeUrl('groups/{id}', $id), ['json' => $data])
+            ->json();
+    }
+
+    /**
+     * @param int|string $id
+     *
+     * @return int
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     */
+    public function delete($id): int
+    {
+        return $this->httpClient
+            ->delete($this->encodeUrl('groups/{id}', $id))
+            ->getStatusCode();
+    }
+
+    /**
+     * @param string $keyword
+     * @param array $query
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
+     */
+    public function search(string $keyword, array $query = []): array
+    {
+        $query['search'] = $keyword;
+
+        return $this->list($query);
     }
 }

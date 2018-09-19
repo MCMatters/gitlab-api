@@ -4,10 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-use const null, true;
-
 /**
  * Class PipelineSchedule
  *
@@ -17,14 +13,22 @@ class PipelineSchedule extends AbstractResource
 {
     /**
      * @param int|string $id
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list($id): array
+    public function list($id, array $query = []): array
     {
-        return $this->requestGet($this->getUrl($id));
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('projects/{id}/pipeline_schedules', $id),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
@@ -32,12 +36,19 @@ class PipelineSchedule extends AbstractResource
      * @param int $scheduleId
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function get($id, int $scheduleId): array
     {
-        return $this->requestGet($this->getUrl($id, $scheduleId));
+        return $this->httpClient
+            ->get($this->encodeUrl(
+                'projects/{id}/pipeline_schedules/{scheduleId}',
+                [$id, $scheduleId]
+            ))
+            ->json();
     }
 
     /**
@@ -45,31 +56,33 @@ class PipelineSchedule extends AbstractResource
      * @param string $description
      * @param string $ref
      * @param string $cron
-     * @param string $cronTimezone
-     * @param bool $active
+     * @param array $data
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function create(
         $id,
         string $description,
         string $ref,
         string $cron,
-        string $cronTimezone = 'UTC',
-        bool $active = true
+        array $data = []
     ): array {
-        return $this->requestPost(
-            $this->getUrl($id),
-            [
-                'description'   => $description,
-                'ref'           => $ref,
-                'cron'          => $cron,
-                'cron_timezone' => $cronTimezone,
-                'active'        => $active,
-            ]
-        );
+        return $this->httpClient
+            ->post(
+                $this->encodeUrl('projects/{id}/pipeline_schedules', $id),
+                [
+                    'json' => [
+                        'description' => $description,
+                        'ref' => $ref,
+                        'cron' => $cron,
+                    ] + $data,
+                ]
+            )
+            ->json();
     }
 
     /**
@@ -78,24 +91,22 @@ class PipelineSchedule extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
-     */
-    public function update($id, int $scheduleId, array $data = []): array
-    {
-        return $this->requestPut($this->getUrl($id, $scheduleId), $data);
-    }
-
-    /**
-     * @param int|string $id
-     * @param int $scheduleId
      *
-     * @return int
-     * @throws RequestException
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function delete($id, int $scheduleId): int
+    public function update($id, int $scheduleId, array $data): array
     {
-        return $this->requestDelete($this->getUrl($id, $scheduleId));
+        return $this->httpClient
+            ->put(
+                $this->encodeUrl(
+                    'projects/{id}/pipeline_schedules/{scheduleId}',
+                    [$id, $scheduleId]
+                ),
+                ['json' => $data]
+            )
+            ->json();
     }
 
     /**
@@ -103,14 +114,38 @@ class PipelineSchedule extends AbstractResource
      * @param int $scheduleId
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function takeOwnership($id, int $scheduleId): array
     {
-        return $this->requestPost(
-            "{$this->getUrl($id, $scheduleId)}/take_ownership"
-        );
+        return $this->httpClient
+            ->post($this->encodeUrl(
+                'projects/{id}/pipeline_schedules/{scheduleId}/take_ownership',
+                [$id, $scheduleId]
+            ))
+            ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param int $scheduleId
+     *
+     * @return int
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     */
+    public function delete($id, int $scheduleId): int
+    {
+        return $this->httpClient
+            ->delete($this->encodeUrl(
+                'projects/{id}/pipeline_schedules/{scheduleId}',
+                [$id, $scheduleId]
+            ))
+            ->getStatusCode();
     }
 
     /**
@@ -120,8 +155,10 @@ class PipelineSchedule extends AbstractResource
      * @param string $value
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function createVariable(
         $id,
@@ -129,10 +166,15 @@ class PipelineSchedule extends AbstractResource
         string $key,
         string $value
     ): array {
-        return $this->requestPost(
-            "{$this->getUrl($id, $scheduleId)}/variables",
-            ['key' => $key, 'value' => $value]
-        );
+        return $this->httpClient
+            ->post(
+                $this->encodeUrl(
+                    'projects/{id}/pipeline_schedules/{scheduleId}/variables',
+                    [$id, $scheduleId]
+                ),
+                ['json' => ['key' => $key, 'value' => $value]]
+            )
+            ->json();
     }
 
     /**
@@ -142,8 +184,10 @@ class PipelineSchedule extends AbstractResource
      * @param string $value
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function updateVariable(
         $id,
@@ -151,10 +195,15 @@ class PipelineSchedule extends AbstractResource
         string $key,
         string $value
     ): array {
-        return $this->requestPut(
-            "{$this->getUrl($id, $scheduleId)}/variables",
-            ['key' => $key, 'value' => $value]
-        );
+        return $this->httpClient
+            ->put(
+                $this->encodeUrl(
+                    'projects/{id}/pipeline_schedules/{scheduleId}/variables/{key}',
+                    [$id, $scheduleId, $key]
+                ),
+                ['json' => ['value' => $value]]
+            )
+            ->json();
     }
 
     /**
@@ -163,25 +212,17 @@ class PipelineSchedule extends AbstractResource
      * @param string $key
      *
      * @return int
-     * @throws RequestException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
      */
     public function deleteVariable($id, int $scheduleId, string $key): int
     {
-        return $this->requestDelete(
-            "{$this->getUrl($id, $scheduleId)}/variables/{$key}"
-        );
-    }
-
-    /**
-     * @param int|string $id
-     * @param int|null $scheduleId
-     *
-     * @return string
-     */
-    protected function getUrl($id, int $scheduleId = null): string
-    {
-        $url = "projects/{$this->encode($id)}/pipeline_schedules";
-
-        return null !== $scheduleId ? "{$url}/{$scheduleId}" : $url;
+        return $this->httpClient
+            ->delete($this->encodeUrl(
+                'projects/{id}/pipeline_schedules/{scheduleId}/variables/{key}',
+                [$id, $scheduleId, $key]
+            ))
+            ->getStatusCode();
     }
 }

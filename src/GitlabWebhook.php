@@ -55,7 +55,7 @@ class GitlabWebhook
             $type = gettype($payload);
 
             throw new InvalidArgumentException(
-                "\$payload must be array, string or stdClass. {$type} given."
+                "Payload must be array, string or stdClass. {$type} given."
             );
         }
 

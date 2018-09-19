@@ -4,11 +4,7 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use InvalidArgumentException;
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-use const null, true;
-use function array_filter, in_array, is_bool, is_numeric, is_string;
+use const null;
 
 /**
  * Class FeatureFlag
@@ -18,76 +14,65 @@ use function array_filter, in_array, is_bool, is_numeric, is_string;
 class FeatureFlag extends AbstractResource
 {
     /**
+     * @param array $query
+     *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list(): array
+    public function list(array $query = []): array
     {
-        return $this->requestGet($this->getUrl());
+        return $this->httpClient
+            ->get('features', ['query' => $query])
+            ->json();
     }
 
     /**
      * @param string $name
-     * @param bool|string|int $value
+     * @param $value
      * @param string|null $group
      * @param string|null $user
      *
      * @return array
-     * @throws InvalidArgumentException
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function updateOrCreate(
+    public function set(
         string $name,
         $value,
         string $group = null,
         string $user = null
     ): array {
-        $value = $this->transformValue($value);
-
-        return $this->requestPost(
-            $this->getUrl($name),
-            array_filter([
-                'value' => $value,
-                'group' => $group,
-                'user'  => $user,
-            ])
-        );
+        return $this->httpClient
+            ->post(
+                $this->encodeUrl('features/{name}', $name),
+                [
+                    'json' => [
+                        'value' => $value,
+                        'feature_group' => $group,
+                        'user' => $user,
+                    ],
+                ]
+            )
+            ->json();
     }
 
     /**
-     * @param bool|string|int $value
+     * @param string $name
      *
-     * @return string|int
-     * @throws InvalidArgumentException
-     */
-    protected function transformValue($value)
-    {
-        if (is_bool($value)) {
-            return $value ? 'true' : 'false';
-        }
-
-        if (is_numeric($value)) {
-            return (int) $value;
-        }
-
-        if (is_string($value) && in_array($value, ['true', 'false'], true)) {
-            return $value;
-        }
-
-        throw new InvalidArgumentException(
-            '$value must be "true", "false" or numeric'
-        );
-    }
-
-    /**
-     * @param string|null $name
+     * @return int
      *
-     * @return string
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
      */
-    protected function getUrl(string $name = null): string
+    public function delete(string $name): int
     {
-        return null !== $name ? "features/{$name}" : 'features';
+        return $this->httpClient
+            ->delete($this->encodeUrl('features/{name}', $name))
+            ->getStatusCode();
     }
 }

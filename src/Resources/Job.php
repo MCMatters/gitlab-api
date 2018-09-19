@@ -4,10 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-use const false, null;
-
 /**
  * Class Job
  *
@@ -17,32 +13,46 @@ class Job extends AbstractResource
 {
     /**
      * @param int|string $id
-     * @param string|array $scope
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list($id, $scope = ''): array
+    public function list($id, array $query = []): array
     {
-        return $this->requestGet($this->getUrl($id), ['scope' => $scope]);
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('projects/{id}/jobs', $id),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
      * @param int|string $id
      * @param int $pipelineId
-     * @param string|array $scope
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function pipelineList($id, int $pipelineId, $scope = ''): array
+    public function pipelineList($id, int $pipelineId, array $query = []): array
     {
-        return $this->requestGet(
-            "projects/{$this->encode($id)}/pipelines/{$pipelineId}/jobs",
-            ['scope' => $scope]
-        );
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl(
+                    'projects/{id}/pipelines/{pipelineId}/jobs',
+                    [$id, $pipelineId]
+                ),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
@@ -50,93 +60,35 @@ class Job extends AbstractResource
      * @param int $jobId
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function get($id, int $jobId): array
     {
-        return $this->requestGet($this->getUrl($id, $jobId));
+        return $this->httpClient
+            ->get($this->encodeUrl('projects/{id}/jobs/{jobId}', [$id, $jobId]))
+            ->json();
     }
 
     /**
      * @param int|string $id
      * @param int $jobId
      *
-     * @return array
-     * @throws RequestException
-     * @throws ResponseException
-     */
-    public function cancel($id, int $jobId): array
-    {
-        return $this->requestPost("{$this->getUrl($id, $jobId)}/cancel");
-    }
-
-    /**
-     * @param int|string $id
-     * @param int $jobId
+     * @return string
      *
-     * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
      */
-    public function retry($id, int $jobId): array
+    public function artifacts($id, int $jobId): string
     {
-        return $this->requestPost("{$this->getUrl($id, $jobId)}/retry");
-    }
-
-    /**
-     * @param int|string $id
-     * @param int $jobId
-     *
-     * @return array
-     * @throws RequestException
-     * @throws ResponseException
-     */
-    public function erase($id, int $jobId): array
-    {
-        return $this->requestPost("{$this->getUrl($id, $jobId)}/erase");
-    }
-
-    /**
-     * @param int|string $id
-     * @param int $jobId
-     *
-     * @return array
-     * @throws RequestException
-     * @throws ResponseException
-     */
-    public function play($id, int $jobId): array
-    {
-        return $this->requestPost("{$this->getUrl($id, $jobId)}/play");
-    }
-
-    /**
-     * @param int|string $id
-     * @param int $jobId
-     *
-     * @return array|bool
-     * @throws ResponseException
-     */
-    public function artifacts($id, int $jobId)
-    {
-        try {
-            return $this->requestGet("{$this->getUrl($id, $jobId)}/artifacts");
-        } catch (RequestException $e) {
-            return false;
-        }
-    }
-
-    /**
-     * @param int|string $id
-     * @param int $jobId
-     *
-     * @return array
-     * @throws RequestException
-     * @throws ResponseException
-     */
-    public function keepArtifacts($id, int $jobId): array
-    {
-        return $this->requestPost("{$this->getUrl($id, $jobId)}/artifacts/keep");
+        return $this->httpClient
+            ->get($this->encodeUrl(
+                'projects/{id}/jobs/{jobId}/artifacts',
+                [$id, $jobId]
+            ))
+            ->getBody();
     }
 
     /**
@@ -144,19 +96,25 @@ class Job extends AbstractResource
      * @param string $ref
      * @param string $job
      *
-     * @return array|bool
-     * @throws ResponseException
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
      */
-    public function downloadArtifactsArchive($id, string $ref, string $job)
-    {
-        try {
-            return $this->requestGet(
-                "{$this->getUrl($id)}/artifacts/{$ref}/download",
-                ['job' => $job]
-            );
-        } catch (RequestException $e) {
-            return false;
-        }
+    public function downloadArtifactsArchive(
+        $id,
+        string $ref,
+        string $job
+    ): string {
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl(
+                    'projects/{id}/jobs/artifacts/{ref}/download',
+                    [$id, $ref]
+                ),
+                ['query' => ['job' => $job]]
+            )
+            ->getBody();
     }
 
     /**
@@ -164,46 +122,137 @@ class Job extends AbstractResource
      * @param int $jobId
      * @param string $path
      *
-     * @return array|bool
-     * @throws ResponseException
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
      */
-    public function downloadArtifactFile($id, int $jobId, string $path)
+    public function downloadArtifactFile($id, int $jobId, string $path): string
     {
-        try {
-            return $this->requestGet(
-                "{$this->getUrl($id, $jobId)}/artifacts/{$this->encode($path)}"
-            );
-        } catch (RequestException $e) {
-            return false;
-        }
+        return $this->httpClient
+            ->get($this->encodeUrl(
+                'projects/{id}/jobs/{jobId}/artifacts/{path}',
+                [$id, $jobId, $path]
+            ))
+            ->getBody();
     }
 
     /**
      * @param int|string $id
      * @param int $jobId
      *
-     * @return array|bool
-     * @throws ResponseException
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
      */
-    public function traceFile($id, int $jobId)
+    public function getTrace($id, int $jobId): string
     {
-        try {
-            return $this->requestGet("{$this->getUrl($id, $jobId)}/trace");
-        } catch (RequestException $e) {
-            return false;
-        }
+        return $this->httpClient
+            ->get($this->encodeUrl(
+                'projects/{id}/jobs/{jobId}/trace',
+                [$id, $jobId]
+            ))
+            ->getBody();
     }
 
     /**
      * @param int|string $id
-     * @param int|null $jobId
+     * @param int $jobId
      *
-     * @return string
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    protected function getUrl($id, int $jobId = null): string
+    public function cancel($id, int $jobId): array
     {
-        $url = "projects/{$this->encode($id)}/jobs";
+        return $this->httpClient
+            ->post($this->encodeUrl(
+                'projects/{id}/jobs/{jobId}/cancel',
+                [$id, $jobId]
+            ))
+            ->json();
+    }
 
-        return null !== $jobId ? "{$url}/{$jobId}" : $url;
+    /**
+     * @param int|string $id
+     * @param int $jobId
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
+     */
+    public function retry($id, int $jobId): array
+    {
+        return $this->httpClient
+            ->post($this->encodeUrl(
+                'projects/{id}/jobs/{jobId}/retry',
+                [$id, $jobId]
+            ))
+            ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param int $jobId
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
+     */
+    public function erase($id, int $jobId): array
+    {
+        return $this->httpClient
+            ->post($this->encodeUrl(
+                'projects/{id}/jobs/{jobId}/erase',
+                [$id, $jobId]
+            ))
+            ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param int $jobId
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
+     */
+    public function keepArtifacts($id, int $jobId): array
+    {
+        return $this->httpClient
+            ->post($this->encodeUrl(
+                'projects/{id}/jobs/{jobId}/artifacts/keep',
+                [$id, $jobId]
+            ))
+            ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param int $jobId
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
+     */
+    public function play($id, int $jobId): array
+    {
+        return $this->httpClient
+            ->post($this->encodeUrl(
+                'projects/{id}/jobs/{jobId}/play',
+                [$id, $jobId]
+            ))
+            ->json();
     }
 }

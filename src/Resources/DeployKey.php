@@ -4,9 +4,7 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use const false;
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
+use const false, null;
 
 /**
  * Class DeployKey
@@ -16,25 +14,39 @@ use McMatters\GitlabApi\Exceptions\ResponseException;
 class DeployKey extends AbstractResource
 {
     /**
+     * @param array $query
+     *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list(): array
+    public function all(array $query = []): array
     {
-        return $this->requestGet('deploy_keys');
+        return $this->httpClient
+            ->get('deploy_keys', ['query' => $query])
+            ->json();
     }
 
     /**
      * @param int|string $id
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function projectList($id): array
+    public function list($id, array $query = []): array
     {
-        return $this->requestGet($this->getUrl($id));
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('projects/{id}/deploy_keys', $id),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
@@ -42,12 +54,19 @@ class DeployKey extends AbstractResource
      * @param int $keyId
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function get($id, int $keyId): array
     {
-        return $this->requestGet($this->getUrl($id, $keyId));
+        return $this->httpClient
+            ->get($this->encodeUrl(
+                'projects/{id}/deploy_keys/{keyId}',
+                [$id, $keyId]
+            ))
+            ->json();
     }
 
     /**
@@ -57,8 +76,10 @@ class DeployKey extends AbstractResource
      * @param bool $canPush
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function create(
         $id,
@@ -66,14 +87,47 @@ class DeployKey extends AbstractResource
         string $key,
         bool $canPush = false
     ): array {
-        return $this->requestPost(
-            $this->getUrl($id),
-            [
-                'title'    => $title,
-                'key'      => $key,
-                'can_push' => $canPush,
-            ]
-        );
+        return $this->httpClient
+            ->post(
+                $this->encodeUrl('projects/{id}/deploy_keys', $id),
+                [
+                    'json' => [
+                        'title' => $title,
+                        'key' => $key,
+                        'can_push' => $canPush,
+                    ],
+                ]
+            )
+            ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param int $keyId
+     * @param string|null $title
+     * @param bool $canPush
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
+     */
+    public function update(
+        $id,
+        int $keyId,
+        string $title = null,
+        bool $canPush = false
+    ): array {
+        return $this->httpClient
+            ->put(
+                $this->encodeUrl(
+                    'projects/{id}/deploy_keys/{keyId}',
+                    [$id, $keyId]
+                ),
+                ['json' => ['title' => $title, 'can_push' => $canPush]]
+            )
+            ->json();
     }
 
     /**
@@ -81,11 +135,18 @@ class DeployKey extends AbstractResource
      * @param int $keyId
      *
      * @return int
-     * @throws RequestException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
      */
     public function delete($id, int $keyId): int
     {
-        return $this->requestDelete($this->getUrl($id, $keyId));
+        return $this->httpClient
+            ->delete($this->encodeUrl(
+                'projects/{id}/deploy_keys/{keyId}',
+                [$id, $keyId]
+            ))
+            ->getStatusCode();
     }
 
     /**
@@ -93,24 +154,18 @@ class DeployKey extends AbstractResource
      * @param int $keyId
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function enable($id, int $keyId): array
     {
-        return $this->requestPost("{$this->getUrl($id, $keyId)}/enable");
-    }
-
-    /**
-     * @param int|string $id
-     * @param int|null $keyId
-     *
-     * @return string
-     */
-    protected function getUrl($id, int $keyId = null): string
-    {
-        $url = "projects/{$this->encode($id)}/deploy_keys";
-
-        return null !== $keyId ? "{$url}/{$keyId}" : $url;
+        return $this->httpClient
+            ->post($this->encodeUrl(
+                'projects/{id}/deploy_keys/{keyId}/enable',
+                [$id, $keyId]
+            ))
+            ->json();
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
+use McMatters\GitlabApi\Resources\Traits\Api\AwardEmojiTrait;
+
 /**
  * Class IssueAwardEmoji
  *
@@ -11,5 +13,10 @@ namespace McMatters\GitlabApi\Resources;
  */
 class IssueAwardEmoji extends AbstractResource
 {
-    use AwardEmojiApiTrait;
+    use AwardEmojiTrait;
+
+    /**
+     * @var string
+     */
+    protected $type = 'issues';
 }

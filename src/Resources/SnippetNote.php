@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Resources\Traits\NoteApiTrait;
+use McMatters\GitlabApi\Resources\Traits\Api\NoteTrait;
 
 /**
  * Class SnippetNote
@@ -13,5 +13,10 @@ use McMatters\GitlabApi\Resources\Traits\NoteApiTrait;
  */
 class SnippetNote extends AbstractResource
 {
-    use NoteApiTrait;
+    use NoteTrait;
+
+    /**
+     * @var string
+     */
+    protected $type = 'snippets';
 }

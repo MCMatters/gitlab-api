@@ -8,7 +8,7 @@
         }
     ],
     "require": {
-        "guzzlehttp/guzzle": "^6.3"
+        "mcmatters/ticl": "dev-master"
     },
     "autoload": {
         "psr-4": {

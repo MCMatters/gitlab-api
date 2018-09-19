@@ -4,9 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-
 /**
  * Class NotificationSetting
  *
@@ -16,61 +13,46 @@ class NotificationSetting extends AbstractResource
 {
     /**
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function getGlobal(): array
     {
-        return $this->requestGet($this->getUrl());
+        return $this->httpClient->get('notification_settings')->json();
     }
 
     /**
      * @param array $data
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function updateGlobal(array $data = []): array
+    public function updateGlobal(array $data): array
     {
-        return $this->requestPut($this->getUrl(), $data);
+        return $this->httpClient
+            ->put('notification_settings', ['query' => $data])
+            ->json();
     }
 
     /**
      * @param int|string $id
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
-     */
-    public function getProject($id): array
-    {
-        return $this->requestGet($this->getUrl('project', $id));
-    }
-
-    /**
-     * @param int|string $id
-     * @param array $data
      *
-     * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function updateProject($id, array $data = []): array
+    public function getForProject($id): array
     {
-        return $this->requestPut($this->getUrl('project', $id), $data);
-    }
-
-    /**
-     * @param int|string $id
-     *
-     * @return array
-     * @throws RequestException
-     * @throws ResponseException
-     */
-    public function getGroup($id): array
-    {
-        return $this->requestGet($this->getUrl('group', $id));
+        return $this->httpClient
+            ->get($this->encodeUrl('projects/{id}/notification_settings', $id))
+            ->json();
     }
 
     /**
@@ -78,26 +60,54 @@ class NotificationSetting extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function updateGroup($id, array $data = []): array
+    public function updateForProject($id, array $data): array
     {
-        return $this->requestPut($this->getUrl('group', $id), $data);
+        return $this->httpClient
+            ->put(
+                $this->encodeUrl('projects/{id}/notification_settings', $id),
+                ['json' => $data]
+            )
+            ->json();
     }
 
     /**
-     * @param string|null $type
-     * @param int|string|null $id
+     * @param int|string $id
      *
-     * @return string
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    protected function getUrl(string $type = null, $id = null): string
+    public function getForGroup($id): array
     {
-        if (null !== $type && null !== $id) {
-            return "{$type}s/{$this->encode($id)}/notification_settings";
-        }
+        return $this->httpClient
+            ->get($this->encodeUrl('groups/{id}/notification_settings', $id))
+            ->json();
+    }
 
-        return 'notification_settings';
+    /**
+     * @param int|string $id
+     * @param array $data
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
+     */
+    public function updateGroup($id, array $data): array
+    {
+        return $this->httpClient
+            ->put(
+                $this->encodeUrl('groups/{id}/notification_settings', $id),
+                ['json' => $data]
+            )
+            ->json();
     }
 }

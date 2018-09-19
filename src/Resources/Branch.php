@@ -4,9 +4,7 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-use const false, null;
+use const false;
 
 /**
  * Class Branch
@@ -17,14 +15,22 @@ class Branch extends AbstractResource
 {
     /**
      * @param int|string $id
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list($id): array
+    public function list($id, array $query = []): array
     {
-        return $this->requestGet($this->getUrl($id));
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('projects/{id}/repository/branches', $id),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
@@ -32,52 +38,21 @@ class Branch extends AbstractResource
      * @param string $branch
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function get($id, string $branch): array
     {
-        return $this->requestGet($this->getUrl($id, $branch));
-    }
-
-    /**
-     * @param int|string $id
-     * @param string $branch
-     * @param string $ref
-     *
-     * @return array
-     * @throws RequestException
-     * @throws ResponseException
-     */
-    public function create($id, string $branch, string $ref): array
-    {
-        return $this->requestPost(
-            $this->getUrl($id),
-            ['branch' => $branch, 'ref' => $ref]
-        );
-    }
-
-    /**
-     * @param int|string $id
-     * @param string $branch
-     *
-     * @return int
-     * @throws RequestException
-     */
-    public function delete($id, string $branch): int
-    {
-        return $this->requestDelete($this->getUrl($id, $branch));
-    }
-
-    /**
-     * @param int|string $id
-     *
-     * @return int
-     * @throws RequestException
-     */
-    public function deleteMerged($id): int
-    {
-        return $this->requestDelete($this->getUrl($id, null, 'merged'));
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl(
+                    'projects/{id}/repository/branches/{branch}',
+                    [$id, $branch]
+                )
+            )
+            ->json();
     }
 
     /**
@@ -86,21 +61,30 @@ class Branch extends AbstractResource
      * @param array $developersCan
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function protect(
         $id,
         string $branch,
         array $developersCan = ['push' => false, 'merge' => false]
     ): array {
-        return $this->requestPut(
-            "{$this->getUrl($id, $branch)}/protect",
-            [
-                'developers_can_push'  => $developersCan['push'] ?? false,
-                'developers_can_merge' => $developersCan['merge'] ?? false,
-            ]
-        );
+        return $this->httpClient
+            ->put(
+                $this->encodeUrl(
+                    'projects/{id}/repository/branches/{branch}/protect',
+                    [$id, $branch]
+                ),
+                [
+                    'json' => [
+                        'developers_can_push' => $developersCan['push'] ?? false,
+                        'developers_can_merge' => $developersCan['merge'] ?? false,
+                    ],
+                ]
+            )
+            ->json();
     }
 
     /**
@@ -108,31 +92,75 @@ class Branch extends AbstractResource
      * @param string $branch
      *
      * @return int
-     * @throws RequestException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
      */
     public function unprotect($id, string $branch): int
     {
-        list($id, $branch) = $this->encode([$id, $branch]);
-
-        return $this->requestDelete("projects/{$id}/protected_branches/{$branch}");
+        return $this->httpClient
+            ->delete($this->encodeUrl(
+                'projects/{id}/protected_branches/{branch}',
+                [$id, $branch]
+            ))
+            ->getStatusCode();
     }
 
     /**
      * @param int|string $id
-     * @param string|null $branch
-     * @param string|null $type
+     * @param string $branch
+     * @param string $ref
      *
-     * @return string
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    protected function getUrl(
-        $id,
-        string $branch = null,
-        string $type = null
-    ): string {
-        $branchesType = null !== $type ? "{$type}_branches" : 'branches';
+    public function create($id, string $branch, string $ref): array
+    {
+        return $this->httpClient
+            ->post(
+                $this->encodeUrl('projects/{id}/repository/branches', $id),
+                ['json' => ['branch' => $branch, 'ref' => $ref]]
+            )
+            ->json();
+    }
 
-        $url = "projects/{$this->encode($id)}/repository/{$branchesType}";
+    /**
+     * @param int|string $id
+     * @param string $branch
+     *
+     * @return int
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     */
+    public function delete($id, string $branch): int
+    {
+        return $this->httpClient
+            ->delete($this->encodeUrl(
+                'projects/{id}/repository/branches/{branch}',
+                [$id, $branch]
+            ))
+            ->getStatusCode();
+    }
 
-        return null !== $branch ? "{$url}/{$this->encode($branch)}" : $url;
+    /**
+     * @param int|string $id
+     *
+     * @return int
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     */
+    public function deleteMerged($id): int
+    {
+        return $this->httpClient
+            ->delete($this->encodeUrl(
+                'projects/{id}/repository/merged_branches',
+                $id
+            ))
+            ->getStatusCode();
     }
 }

@@ -4,11 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-use const null;
-use function array_merge;
-
 /**
  * Class Namespaces
  *
@@ -17,38 +12,49 @@ use function array_merge;
 class Namespaces extends AbstractResource
 {
     /**
-     * @param array $pagination
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list(array $pagination = []): array
+    public function list(array $query = []): array
     {
-        return $this->requestGet($this->getUrl(), $pagination);
+        return $this->httpClient
+            ->get('namespaces', ['query' => $query])
+            ->json();
     }
 
     /**
-     * @param string|null $search
-     * @param array $pagination
+     * @param string $search
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function search(string $search = null, array $pagination = []): array
+    public function search(string $search, array $query = []): array
     {
-        return $this->requestGet(
-            $this->getUrl(),
-            array_merge($pagination, ['search' => $search])
-        );
+        return $this->list(['search' => $search] + $query);
     }
 
     /**
-     * @return string
+     * @param int|string $id
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    protected function getUrl(): string
+    public function get($id): array
     {
-        return 'namespaces';
+        return $this->httpClient
+            ->get($this->encodeUrl('namespaces/{id}', $id))
+            ->json();
     }
 }

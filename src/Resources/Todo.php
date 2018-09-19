@@ -4,9 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-
 /**
  * Class Todo
  *
@@ -15,36 +12,42 @@ use McMatters\GitlabApi\Exceptions\ResponseException;
 class Todo extends AbstractResource
 {
     /**
-     * @param array $filters
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list(array $filters = []): array
+    public function list(array $query = []): array
     {
-        return $this->requestGet('todos', $filters);
+        return $this->httpClient->get('todos', ['query' => $query])->json();
     }
 
     /**
      * @param int $id
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function markAsDone(int $id): array
     {
-        return $this->requestPost("todos/{$id}/mark_as_done");
+        return $this->httpClient->post("todos/{$id}/mark_as_done")->json();
     }
 
     /**
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function markAllAsDone(): array
     {
-        return $this->requestPost('todos/mark_as_done');
+        return $this->httpClient->post('todos/mark_as_done')->json();
     }
 }

@@ -4,9 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-
 /**
  * Class Setting
  *
@@ -16,31 +13,29 @@ class Setting extends AbstractResource
 {
     /**
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function get(): array
     {
-        return $this->requestGet($this->getUrl());
+        return $this->httpClient->get('application/settings')->json();
     }
 
     /**
      * @param array $data
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function update(array $data = []): array
+    public function update(array $data): array
     {
-        return $this->requestPut($this->getUrl(), $data);
-    }
-
-    /**
-     * @return string
-     */
-    protected function getUrl(): string
-    {
-        return 'application/settings';
+        return $this->httpClient
+            ->put('application/settings', ['json' => $data])
+            ->json();
     }
 }

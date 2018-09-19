@@ -4,11 +4,7 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use InvalidArgumentException;
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
 use const null;
-use function array_filter;
 
 /**
  * Class Label
@@ -19,68 +15,57 @@ class Label extends AbstractResource
 {
     /**
      * @param int|string $id
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list($id): array
+    public function list($id, array $query = []): array
     {
-        return $this->requestGet($this->getUrl($id));
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('projects/{id}/labels', $id),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
      * @param int|string $id
      * @param string $name
      * @param string $color
-     * @param string $description
+     * @param string|null $description
      * @param int|null $priority
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function create(
         $id,
         string $name,
         string $color,
-        string $description = '',
+        string $description = null,
         int $priority = null
     ): array {
-        return $this->requestPost(
-            $this->getUrl($id),
-            [
-                'name'        => $name,
-                'color'       => $color,
-                'description' => $description,
-                'priority'    => $priority,
-            ]
-        );
-    }
-
-    /**
-     * @param int|string $id
-     * @param string $name
-     * @param array $data
-     *
-     * @return array
-     * @throws InvalidArgumentException
-     * @throws RequestException
-     * @throws ResponseException
-     */
-    public function update($id, string $name, array $data): array
-    {
-        $data = array_filter($data);
-
-        if (empty($data['new_name']) && empty($data['color'])) {
-            throw new InvalidArgumentException(
-                '"new_name" or "color" must be provided.'
-            );
-        }
-
-        $data['name'] = $name;
-
-        return $this->requestPut($this->getUrl($id), $data);
+        return $this->httpClient
+            ->post(
+                $this->encodeUrl('projects/{id}/labels', $id),
+                [
+                    'json' => [
+                        'name' => $name,
+                        'color' => $color,
+                        'description' => $description,
+                        'priority' => $priority,
+                    ],
+                ]
+            )
+            ->json();
     }
 
     /**
@@ -88,11 +73,38 @@ class Label extends AbstractResource
      * @param string $name
      *
      * @return int
-     * @throws RequestException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
      */
     public function delete($id, string $name): int
     {
-        return $this->requestDelete($this->getUrl($id), ['name' => $name]);
+        return $this->httpClient
+            ->delete(
+                $this->encodeUrl('projects/{id}/labels', $id),
+                ['query' => ['name' => $name]]
+            )
+            ->getStatusCode();
+    }
+
+    /**
+     * @param int|string $id
+     * @param array $data
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
+     */
+    public function update($id, array $data): array
+    {
+        return $this->httpClient
+            ->put(
+                $this->encodeUrl('projects/{id}/labels', $id),
+                ['json' => $data]
+            )
+            ->json();
     }
 
     /**
@@ -100,12 +112,19 @@ class Label extends AbstractResource
      * @param int|string $labelId
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function subscribe($id, $labelId): array
     {
-        return $this->requestPost("{$this->getUrl($id, $labelId)}/subscribe");
+        return $this->httpClient
+            ->post($this->encodeUrl(
+                'projects/{id}/labels/{labelId}/subscribe',
+                [$id, $labelId])
+            )
+            ->json();
     }
 
     /**
@@ -113,24 +132,18 @@ class Label extends AbstractResource
      * @param int|string $labelId
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function unsubscribe($id, $labelId): array
     {
-        return $this->requestPost("{$this->getUrl($id, $labelId)}/unsubscribe");
-    }
-
-    /**
-     * @param int|string $id
-     * @param int|string|null $labelId
-     *
-     * @return string
-     */
-    protected function getUrl($id, $labelId = null): string
-    {
-        $url = "projects/{$this->encode($id)}/labels";
-
-        return null !== $labelId ? "{$url}/{$this->encode($labelId)}" : $url;
+        return $this->httpClient
+            ->post($this->encodeUrl(
+                'projects/{id}/labels/{labelId}/unsubscribe',
+                [$id, $labelId])
+            )
+            ->json();
     }
 }

@@ -4,10 +4,7 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
 use const null;
-use function array_filter;
 
 /**
  * Class Environment
@@ -18,14 +15,22 @@ class Environment extends AbstractResource
 {
     /**
      * @param int|string $id
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list($id): array
+    public function list($id, array $query = []): array
     {
-        return $this->requestGet($this->getUrl($id));
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('projects/{id}/environments', $id),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
@@ -34,15 +39,19 @@ class Environment extends AbstractResource
      * @param string|null $externalUrl
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function create($id, string $name, string $externalUrl = null): array
     {
-        return $this->requestPost(
-            $this->getUrl($id),
-            array_filter(['name' => $name, 'external_url' => $externalUrl])
-        );
+        return $this->httpClient
+            ->post(
+                $this->encodeUrl('projects/{id}/environments', $id),
+                ['json' => ['name' => $name, 'external_url' => $externalUrl]]
+            )
+            ->json();
     }
 
     /**
@@ -52,8 +61,10 @@ class Environment extends AbstractResource
      * @param string|null $externalUrl
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function update(
         $id,
@@ -61,10 +72,15 @@ class Environment extends AbstractResource
         string $name = null,
         string $externalUrl = null
     ): array {
-        return $this->requestPut(
-            $this->getUrl($id, $environmentId),
-            array_filter(['name' => $name, 'external_url' => $externalUrl])
-        );
+        return $this->httpClient
+            ->put(
+                $this->encodeUrl(
+                    'projects/{id}/environments/{environmentsId}',
+                    [$id, $environmentId]
+                ),
+                ['json' => ['name' => $name, 'external_url' => $externalUrl]]
+            )
+            ->json();
     }
 
     /**
@@ -72,11 +88,18 @@ class Environment extends AbstractResource
      * @param int $environmentId
      *
      * @return int
-     * @throws RequestException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
      */
     public function delete($id, int $environmentId): int
     {
-        return $this->requestDelete($this->getUrl($id, $environmentId));
+        return $this->httpClient
+            ->delete($this->encodeUrl(
+                'projects/{id}/environments/{environmentId}',
+                [$id, $environmentId]
+            ))
+            ->getStatusCode();
     }
 
     /**
@@ -84,24 +107,18 @@ class Environment extends AbstractResource
      * @param int $environmentId
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function stop($id, int $environmentId): array
     {
-        return $this->requestPost("{$this->getUrl($id, $environmentId)}/stop");
-    }
-
-    /**
-     * @param int|string $id
-     * @param int|null $environmentId
-     *
-     * @return string
-     */
-    protected function getUrl($id, int $environmentId = null): string
-    {
-        $url = "projects/{$this->encode($id)}/environments";
-
-        return null !== $environmentId ? "{$url}/{$environmentId}" : $url;
+        return $this->httpClient
+            ->post($this->encodeUrl(
+                'projects/{id}/environments/{environmentId}/stop',
+                [$id, $environmentId]
+            ))
+            ->json();
     }
 }

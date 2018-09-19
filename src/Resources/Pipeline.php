@@ -4,11 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-use const false, null, true;
-use function array_merge;
-
 /**
  * Class Pipeline
  *
@@ -18,22 +13,22 @@ class Pipeline extends AbstractResource
 {
     /**
      * @param int|string $id
-     * @param array $filters
-     * @param array $sorting
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list(
-        $id,
-        array $filters = [],
-        array $sorting = []
-    ): array {
-        return $this->requestGet(
-            $this->getUrl($id),
-            array_merge($filters, $sorting)
-        );
+    public function list($id, array $query = []): array
+    {
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('projects/{id}/pipelines', $id),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
@@ -41,28 +36,40 @@ class Pipeline extends AbstractResource
      * @param int $pipelineId
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function get($id, int $pipelineId): array
     {
-        return $this->requestGet($this->getUrl($id, $pipelineId));
+        return $this->httpClient
+            ->get($this->encodeUrl(
+                'projects/{id}/pipelines/{pipelineId}',
+                [$id, $pipelineId]
+            ))
+            ->json();
     }
 
     /**
      * @param int|string $id
      * @param string $ref
+     * @param array $data
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function create($id, string $ref): array
+    public function create($id, string $ref, array $data = []): array
     {
-        return $this->requestPost(
-            $this->getUrl($id, null, true),
-            ['ref' => $ref]
-        );
+        return  $this->httpClient
+            ->post(
+                $this->encodeUrl('projects/{id}/pipeline', $id),
+                ['json' => ['ref' => $ref] + $data]
+            )
+            ->json();
     }
 
     /**
@@ -70,12 +77,19 @@ class Pipeline extends AbstractResource
      * @param int $pipelineId
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function retryJobs($id, int $pipelineId): array
     {
-        return $this->requestPost("{$this->getUrl($id, $pipelineId)}/retry");
+        return $this->httpClient
+            ->post($this->encodeUrl(
+                'projects/{id}/pipelines/{pipelineId}/retry',
+                [$id, $pipelineId]
+            ))
+            ->json();
     }
 
     /**
@@ -83,29 +97,18 @@ class Pipeline extends AbstractResource
      * @param int $pipelineId
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function cancelJobs($id, int $pipelineId): array
     {
-        return $this->requestPost("{$this->getUrl($id, $pipelineId)}/cancel");
-    }
-
-    /**
-     * @param int|string $id
-     * @param int|null $pipelineId
-     * @param bool $singular
-     *
-     * @return string
-     */
-    protected function getUrl(
-        $id,
-        int $pipelineId = null,
-        bool $singular = false
-    ): string {
-        $url = "projects/{$this->encode($id)}/pipeline";
-        $url .= $singular ? '' : 's';
-
-        return null !== $url ? "{$url}/{$pipelineId}" : $url;
+        return $this->httpClient
+            ->post($this->encodeUrl(
+                'projects/{id}/pipelines/{pipelineId}/cancel',
+                [$id, $pipelineId]
+            ))
+            ->json();
     }
 }

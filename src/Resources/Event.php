@@ -4,11 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\{
-    InvalidDateException, RequestException, ResponseException
-};
-use function array_filter, array_merge;
-
 /**
  * Class Event
  *
@@ -17,78 +12,53 @@ use function array_filter, array_merge;
 class Event extends AbstractResource
 {
     /**
-     * @param array $filters
-     * @param array $sorting
+     * @param array $query
      *
      * @return array
-     * @throws InvalidDateException
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list(array $filters = [], array $sorting = []): array
+    public function list(array $query = []): array
     {
-        return $this->requestGet(
-            'events',
-            $this->transformData(array_merge($filters, $sorting))
-        );
+        return $this->httpClient->get('events', ['query' => $query])->json();
+    }
+
+    /**
+     * @param int $id
+     * @param array $query
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
+     */
+    public function userList(int $id, array $query = []): array
+    {
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('users/{id}/events', $id),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
      * @param int|string $id
-     * @param array $filters
-     * @param array $sorting
+     * @param array $query
      *
      * @return array
-     * @throws InvalidDateException
-     * @throws RequestException
-     * @throws ResponseException
-     */
-    public function userList(
-        $id,
-        array $filters = [],
-        array $sorting = []
-    ): array {
-        return $this->requestGet(
-            "users/{$this->encode($id)}/events",
-            $this->transformData(array_merge($filters, $sorting))
-        );
-    }
-
-    /**
-     * @param int|string $id
-     * @param array $filters
-     * @param array $sorting
      *
-     * @return array
-     * @throws InvalidDateException
-     * @throws RequestException
-     * @throws ResponseException
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function projectList(
-        $id,
-        array $filters = [],
-        array $sorting = []
-    ): array {
-        return $this->requestGet(
-            "{$this->encode($id)}/events",
-            $this->transformData(array_merge($filters, $sorting))
-        );
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return array
-     * @throws InvalidDateException
-     */
-    protected function transformData(array $data = []): array
+    public function projectList($id, array $query = []): array
     {
-        foreach (['before', 'after'] as $key) {
-            if (!empty($data[$key])) {
-                $data[$key] = $this->transformDate($data[$key], 'Y-m-d');
-            }
-        }
-
-        return array_filter($data);
+        return $this->httpClient
+            ->get($this->encodeUrl('{id}/events', $id), ['query' => $query])
+            ->json();
     }
 }

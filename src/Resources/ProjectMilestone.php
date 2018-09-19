@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Resources\Traits\MilestoneApiTrait;
+use McMatters\GitlabApi\Resources\Traits\Api\MilestoneTrait;
 
 /**
  * Class ProjectMilestone
@@ -13,5 +13,10 @@ use McMatters\GitlabApi\Resources\Traits\MilestoneApiTrait;
  */
 class ProjectMilestone extends AbstractResource
 {
-    use MilestoneApiTrait;
+    use MilestoneTrait;
+
+    /**
+     * @var string
+     */
+    protected $type = 'projects';
 }

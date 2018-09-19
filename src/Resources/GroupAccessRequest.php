@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Resources\Traits\AccessRequestApiTrait;
+use McMatters\GitlabApi\Resources\Traits\Api\AccessRequestTrait;
 
 /**
  * Class GroupAccessRequest
@@ -13,5 +13,10 @@ use McMatters\GitlabApi\Resources\Traits\AccessRequestApiTrait;
  */
 class GroupAccessRequest extends AbstractResource
 {
-    use AccessRequestApiTrait;
+    use AccessRequestTrait;
+
+    /**
+     * @var string
+     */
+    protected $type = 'groups';
 }

@@ -4,10 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-use const null;
-
 /**
  * Class Tag
  *
@@ -18,13 +14,22 @@ class Tag extends AbstractResource
     /**
      * @param int|string $id
      *
+     * @param array $query
+     *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list($id): array
+    public function list($id, array $query = []): array
     {
-        return $this->requestGet($this->encode($id));
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('projects/{id}/repository/tags', $id),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
@@ -32,41 +37,45 @@ class Tag extends AbstractResource
      * @param string $name
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function get($id, string $name): array
     {
-        return $this->requestGet($this->getUrl($id, $name));
+        return $this->httpClient
+            ->get($this->encodeUrl(
+                'projects/{id}/repository/tags/{name}',
+                [$id, $name]
+            ))
+            ->json();
     }
 
     /**
      * @param int|string $id
      * @param string $name
      * @param string $ref
-     * @param string|null $message
-     * @param string|null $description
+     * @param array $data
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function create(
         $id,
         string $name,
         string $ref,
-        string $message = null,
-        string $description = null
+        array $data = []
     ): array {
-        return $this->requestPost(
-            $this->getUrl($id),
-            [
-                'name'        => $name,
-                'ref'         => $ref,
-                'message'     => $message,
-                'description' => $description,
-            ]
-        );
+        return $this->httpClient
+            ->post(
+                $this->encodeUrl('projects/{id}/repository/tags', $id),
+                ['json' => ['tag_name' => $name, 'ref' => $ref] + $data]
+            )
+            ->json();
     }
 
     /**
@@ -74,11 +83,18 @@ class Tag extends AbstractResource
      * @param string $name
      *
      * @return int
-     * @throws RequestException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
      */
     public function delete($id, string $name): int
     {
-        return $this->requestDelete($this->getUrl($id, $name));
+        return $this->httpClient
+            ->delete($this->encodeUrl(
+                'projects/{id}/repository/tags/{name}',
+                [$id, $name]
+            ))
+            ->getStatusCode();
     }
 
     /**
@@ -87,15 +103,22 @@ class Tag extends AbstractResource
      * @param string $description
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function createRelease($id, string $name, string $description): array
     {
-        return $this->requestPost(
-            "{$this->getUrl($id, $name)}/release",
-            ['description' => $description]
-        );
+        return $this->httpClient
+            ->post(
+                $this->encodeUrl(
+                    'projects/{id}/repository/tags/{name}/release',
+                    [$id, $name]
+                ),
+                ['description' => $description]
+            )
+            ->json();
     }
 
     /**
@@ -104,27 +127,21 @@ class Tag extends AbstractResource
      * @param string $description
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function updateRelease($id, string $name, string $description): array
     {
-        return $this->requestPut(
-            "{$this->getUrl($id, $name)}/release",
-            ['description' => $description]
-        );
-    }
-
-    /**
-     * @param int|string $id
-     * @param string|null $name
-     *
-     * @return string
-     */
-    protected function getUrl($id, string $name = null): string
-    {
-        $url = "projects/{$this->encode($id)}/repository/tags";
-
-        return null !== $name ? "{$url}/{$this->encode($name)}" : $url;
+        return $this->httpClient
+            ->put(
+                $this->encodeUrl(
+                    'projects/{id}/repository/tags/{name}/release',
+                    [$id, $name]
+                ),
+                ['description' => $description]
+            )
+            ->json();
     }
 }

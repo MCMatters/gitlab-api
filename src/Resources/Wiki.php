@@ -5,8 +5,8 @@ declare(strict_types = 1);
 namespace McMatters\GitlabApi\Resources;
 
 use InvalidArgumentException;
-use const false, null, true;
-use function array_filter, implode, in_array;
+use const null, true;
+use function implode, in_array;
 
 /**
  * Class Wiki
@@ -17,18 +17,22 @@ class Wiki extends AbstractResource
 {
     /**
      * @param int|string $id
-     * @param bool $withContent
+     * @param array $query
      *
      * @return array
-     * @throws \McMatters\GitlabApi\Exceptions\ResponseException
-     * @throws \McMatters\GitlabApi\Exceptions\RequestException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list($id, bool $withContent = false): array
+    public function list($id, array $query = []): array
     {
-        return $this->requestGet(
-            $this->getUrl($id),
-            ['with_content' => (int) $withContent]
-        );
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('projects/{id}/wikis', $id),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
@@ -36,12 +40,16 @@ class Wiki extends AbstractResource
      * @param string $slug
      *
      * @return array
-     * @throws \McMatters\GitlabApi\Exceptions\ResponseException
-     * @throws \McMatters\GitlabApi\Exceptions\RequestException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function get($id, string $slug): array
     {
-        return $this->requestGet($this->getUrl($id, $slug));
+        return $this->httpClient
+            ->get($this->encodeUrl('projects/{id}/wikis/{slug}', [$id, $slug]))
+            ->json();
     }
 
     /**
@@ -51,9 +59,10 @@ class Wiki extends AbstractResource
      * @param string $format
      *
      * @return array
-     * @throws InvalidArgumentException
-     * @throws \McMatters\GitlabApi\Exceptions\ResponseException
-     * @throws \McMatters\GitlabApi\Exceptions\RequestException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function create(
         $id,
@@ -63,10 +72,18 @@ class Wiki extends AbstractResource
     ): array {
         $this->checkFormat($format);
 
-        return $this->requestPost(
-            $this->getUrl($id),
-            ['title' => $title, 'content' => $content, 'format' => $format]
-        );
+        return $this->httpClient
+            ->post(
+                $this->encodeUrl('projects/{id}/wikis', $id),
+                [
+                    'json' => [
+                        'title' => $title,
+                        'content' => $content,
+                        'format' => $format,
+                    ],
+                ]
+            )
+            ->json();
     }
 
     /**
@@ -76,9 +93,10 @@ class Wiki extends AbstractResource
      * @param string $format
      *
      * @return array
-     * @throws InvalidArgumentException
-     * @throws \McMatters\GitlabApi\Exceptions\ResponseException
-     * @throws \McMatters\GitlabApi\Exceptions\RequestException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function update(
         $id,
@@ -88,15 +106,12 @@ class Wiki extends AbstractResource
     ): array {
         $this->checkFormat($format);
 
-        $data = array_filter($data);
-
-        if (empty($data)) {
-            throw new InvalidArgumentException('Title or content must be provided.');
-        }
-
-        $data['format'] = $format;
-
-        return $this->requestPut($this->getUrl($id, $slug), $data);
+        return $this->httpClient
+            ->put(
+                $this->encodeUrl('projects/{id}/wikis/{slug}', [$id, $slug]),
+                ['json' => ['format' => $format] + $data]
+            )
+            ->json();
     }
 
     /**
@@ -104,11 +119,18 @@ class Wiki extends AbstractResource
      * @param string $slug
      *
      * @return int
-     * @throws \McMatters\GitlabApi\Exceptions\RequestException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
      */
     public function delete($id, string $slug): int
     {
-        return $this->requestDelete($this->getUrl($id, $slug));
+        return $this->httpClient
+            ->delete($this->encodeUrl(
+                'projects/{id}/wikis/{slug}',
+                [$id, $slug]
+            ))
+            ->getStatusCode();
     }
 
     /**
@@ -122,21 +144,8 @@ class Wiki extends AbstractResource
 
         if (!in_array($format, $formats, true)) {
             throw new InvalidArgumentException(
-                'Supported formats are '.implode(', ', $formats)
+                'Invalid format. Supported formats: '.implode(', ', $formats)
             );
         }
-    }
-
-    /**
-     * @param int|string $id
-     * @param string|null $slug
-     *
-     * @return string
-     */
-    protected function getUrl($id, string $slug = null): string
-    {
-        $url = "projects/{$this->encode($id)}/wikis";
-
-        return null !== $slug ? "{$url}/{$this->encode($slug)}" : $url;
     }
 }

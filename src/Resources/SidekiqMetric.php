@@ -4,9 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-
 /**
  * Class SidekiqMetric
  *
@@ -16,41 +13,49 @@ class SidekiqMetric extends AbstractResource
 {
     /**
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function queueMetrics(): array
     {
-        return $this->requestGet('sidekiq/queue_metrics');
+        return $this->httpClient->get('sidekiq/queue_metrics')->json();
     }
 
     /**
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function processMetrics(): array
     {
-        return $this->requestGet('sidekiq/process_metrics');
+        return $this->httpClient->get('sidekiq/process_metrics')->json();
     }
 
     /**
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
-     */
-    public function compoundMetrics(): array
-    {
-        return $this->requestGet('sidekiq/compound_metrics');
-    }
-
-    /**
-     * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function jobStatistics(): array
     {
-        return $this->requestGet('sidekiq/job_stats');
+        return $this->httpClient->get('sidekiq/job_stats')->json();
+    }
+
+    /**
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
+     */
+    public function compoundMetrics(): array
+    {
+        return $this->httpClient->get('sidekiq/compound_metrics')->json();
     }
 }

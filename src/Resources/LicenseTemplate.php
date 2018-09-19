@@ -4,10 +4,7 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
 use const null;
-use function array_filter;
 
 /**
  * Class LicenseTemplate
@@ -17,13 +14,19 @@ use function array_filter;
 class LicenseTemplate extends AbstractResource
 {
     /**
+     * @param array $query
+     *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list(): array
+    public function list(array $query = []): array
     {
-        return $this->requestGet($this->getUrl());
+        return $this->httpClient
+            ->get('templates/licenses', ['query' => $query])
+            ->json();
     }
 
     /**
@@ -32,29 +35,21 @@ class LicenseTemplate extends AbstractResource
      * @param string|null $fullName
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function get(
         string $key,
         string $project = null,
         string $fullName = null
     ): array {
-        return $this->requestGet(
-            $this->getUrl($key),
-            array_filter(['project' => $project, 'fullname' => $fullName])
-        );
-    }
-
-    /**
-     * @param string|null $key
-     *
-     * @return string
-     */
-    protected function getUrl(string $key = null): string
-    {
-        $url = 'templates/licenses';
-
-        return null !== $key ? "{$url}/{$key}" : $url;
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('templates/licenses/{key}', $key),
+                ['query' => ['project' => $project, 'fullname' => $fullName]]
+            )
+            ->json();
     }
 }

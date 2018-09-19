@@ -4,10 +4,8 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
 use const false, null;
-use function array_key_exists, array_merge, base64_decode;
+use function array_key_exists, base64_decode;
 
 /**
  * Class RepositoryFile
@@ -19,54 +17,49 @@ class RepositoryFile extends AbstractResource
     /**
      * @param int|string $id
      * @param string $file
-     * @param string $ref
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function get($id, string $file, string $ref): array
+    public function get($id, string $file, array $query = []): array
     {
-        return $this->requestGet($this->getUrl($id, $file), ['ref' => $ref]);
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl(
+                    'projects/{id}/repository/files/{file}',
+                    [$id, $file]
+                ),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
      * @param int|string $id
      * @param string $file
-     * @param string $ref
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
-     */
-    public function getRaw($id, string $file, string $ref): array
-    {
-        return $this->requestGet(
-            "{$this->getUrl($id, $file)}/raw",
-            ['ref' => $ref]
-        );
-    }
-
-    /**
-     * @param int|string $id
-     * @param string $file
-     * @param string $ref
      *
-     * @return string|null
-     * @throws RequestException
-     * @throws ResponseException
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function getContent($id, string $file, string $ref)
+    public function getRaw($id, string $file, array $query = []): array
     {
-        $info = $this->get($id, $file, $ref);
-
-        if (!array_key_exists('content', $info)) {
-            return null;
-        }
-
-        $content = base64_decode($info['content']);
-
-        return false === $content ? null : $content;
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl(
+                    'projects/{id}/repository/files/{file}/raw',
+                    [$id, $file]
+                ),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
@@ -78,8 +71,10 @@ class RepositoryFile extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function create(
         $id,
@@ -89,16 +84,21 @@ class RepositoryFile extends AbstractResource
         string $message,
         array $data = []
     ): array {
-        $data = array_merge(
-            $data,
-            [
-                'branch'         => $branch,
-                'content'        => $content,
-                'commit_message' => $message,
-            ]
-        );
-
-        return $this->requestPost($this->getUrl($id, $file), $data);
+        return $this->httpClient
+            ->post(
+                $this->encodeUrl(
+                    'projects/{id}/repository/files/{file}',
+                    [$id, $file]
+                ),
+                [
+                    'json' => [
+                        'branch' => $branch,
+                        'content' => $content,
+                        'commit_message' => $message,
+                    ] + $data,
+                ]
+            )
+            ->json();
     }
 
     /**
@@ -110,8 +110,10 @@ class RepositoryFile extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws ResponseException
-     * @throws RequestException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function update(
         $id,
@@ -121,16 +123,21 @@ class RepositoryFile extends AbstractResource
         string $message,
         array $data = []
     ): array {
-        $data = array_merge(
-            $data,
-            [
-                'branch'         => $branch,
-                'content'        => $content,
-                'commit_message' => $message,
-            ]
-        );
-
-        return $this->requestPut($this->getUrl($id, $file), $data);
+        return $this->httpClient
+            ->put(
+                $this->encodeUrl(
+                    'projects/{id}/repository/files/{file}',
+                    [$id, $file]
+                ),
+                [
+                    'json' => [
+                        'branch' => $branch,
+                        'content' => $content,
+                        'commit_message' => $message,
+                    ] + $data,
+                ]
+            )
+            ->json();
     }
 
     /**
@@ -138,42 +145,57 @@ class RepositoryFile extends AbstractResource
      * @param string $file
      * @param string $branch
      * @param string $message
-     * @param array $data
+     * @param array $query
      *
      * @return int
-     * @throws RequestException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
      */
     public function delete(
         $id,
         string $file,
         string $branch,
         string $message,
-        array $data = []
+        array $query = []
     ): int {
-        $data = array_merge(
-            $data,
-            [
-                'branch'         => $branch,
-                'commit_message' => $message,
-            ]
-        );
-
-        return $this->requestDelete(
-            "projects/{$id}/repository/files/{$file}",
-            $data
-        );
+        return $this->httpClient
+            ->delete(
+                $this->encodeUrl(
+                    'projects/{id}/repository/files/{file}',
+                    [$id, $file]
+                ),
+                [
+                    'query' => [
+                        'branch' => $branch,
+                        'commit_message' => $message,
+                    ] + $query,
+                ]
+            )
+            ->getStatusCode();
     }
 
     /**
      * @param int|string $id
      * @param string $file
+     * @param array $query
      *
-     * @return string
+     * @return string|null
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    protected function getUrl($id, string $file): string
+    public function getContent($id, string $file, array $query = [])
     {
-        list($id, $file) = $this->encode([$id, $file]);
+        $info = $this->get($id, $file, $query);
 
-        return "projects/{$id}/repository/files/{$file}";
+        if (!array_key_exists('content', $info)) {
+            return null;
+        }
+
+        $content = base64_decode($info['content']);
+
+        return false === $content ? null : $content;
     }
 }

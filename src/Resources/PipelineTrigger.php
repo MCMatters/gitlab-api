@@ -4,11 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-use const null;
-use function array_filter;
-
 /**
  * Class PipelineTrigger
  *
@@ -18,14 +13,22 @@ class PipelineTrigger extends AbstractResource
 {
     /**
      * @param int|string $id
+     * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list($id): array
+    public function list($id, array $query = []): array
     {
-        return $this->requestGet($this->getUrl($id));
+        return $this->httpClient
+            ->get(
+                $this->encodeUrl('projects/{id}/triggers', $id),
+                ['query' => $query]
+            )
+            ->json();
     }
 
     /**
@@ -33,12 +36,19 @@ class PipelineTrigger extends AbstractResource
      * @param int $triggerId
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function get($id, int $triggerId): array
     {
-        return $this->requestGet($this->getUrl($id, $triggerId));
+        return $this->httpClient
+            ->get($this->encodeUrl(
+                'projects/{id}/triggers/{triggerId}',
+                [$id, $triggerId]
+            ))
+            ->json();
     }
 
     /**
@@ -46,35 +56,63 @@ class PipelineTrigger extends AbstractResource
      * @param string $description
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function create($id, string $description): array
     {
-        return $this->requestPost(
-            $this->getUrl($id),
-            ['description' => $description]
-        );
+        return $this->httpClient
+            ->post(
+                $this->encodeUrl('projects/{id}/triggers', $id),
+                ['json' => ['description' => $description]]
+            )
+            ->json();
     }
 
     /**
      * @param int|string $id
      * @param int $triggerId
-     * @param string|null $description
+     * @param string $description
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function update(
-        $id,
-        int $triggerId,
-        string $description = null
-    ): array {
-        return $this->requestPut(
-            $this->getUrl($id, $triggerId),
-            array_filter(['description' => $description])
-        );
+    public function update($id, int $triggerId, string $description): array
+    {
+        return $this->httpClient
+            ->put(
+                $this->encodeUrl(
+                    'projects/{id}/triggers/{triggerId}',
+                    [$id, $triggerId]
+                ),
+                ['json' => ['description' => $description]]
+            )
+            ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param int $triggerId
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
+     */
+    public function takeOwnership($id, int $triggerId): array
+    {
+        return $this->httpClient
+            ->post($this->encodeUrl(
+                'projects/{id}/triggers/{triggerId}/take_ownership',
+                [$id, $triggerId]
+            ))
+            ->json();
     }
 
     /**
@@ -82,36 +120,17 @@ class PipelineTrigger extends AbstractResource
      * @param int $triggerId
      *
      * @return int
-     * @throws RequestException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
      */
     public function delete($id, int $triggerId): int
     {
-        return $this->requestDelete($this->getUrl($id, $triggerId));
-    }
-
-    /**
-     * @param int|string $id
-     * @param int $triggerId
-     *
-     * @return array
-     * @throws RequestException
-     * @throws ResponseException
-     */
-    public function takeOwnership($id, int $triggerId): array
-    {
-        return $this->requestPost("{$this->getUrl($id, $triggerId)}/take_ownership");
-    }
-
-    /**
-     * @param int|string $id
-     * @param int|null $triggerId
-     *
-     * @return string
-     */
-    protected function getUrl($id, int $triggerId = null): string
-    {
-        $url = "projects/{$this->encode($id)}/triggers";
-
-        return null !== $triggerId ? "{$url}/{$triggerId}" : $url;
+        return $this->httpClient
+            ->delete($this->encodeUrl(
+                'projects/{id}/triggers/{triggerId}',
+                [$id, $triggerId]
+            ))
+            ->getStatusCode();
     }
 }

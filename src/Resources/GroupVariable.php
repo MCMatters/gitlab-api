@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Resources\Traits\VariableApiTrait;
+use McMatters\GitlabApi\Resources\Traits\Api\VariableTrait;
 
 /**
  * Class GroupVariable
@@ -13,5 +13,10 @@ use McMatters\GitlabApi\Resources\Traits\VariableApiTrait;
  */
 class GroupVariable extends AbstractResource
 {
-    use VariableApiTrait;
+    use VariableTrait;
+
+    /**
+     * @var string
+     */
+    protected $type = 'groups';
 }

@@ -4,9 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Exceptions\RequestException;
-use McMatters\GitlabApi\Exceptions\ResponseException;
-
 /**
  * Class GitlabCiTemplate
  *
@@ -15,36 +12,34 @@ use McMatters\GitlabApi\Exceptions\ResponseException;
 class GitlabCiTemplate extends AbstractResource
 {
     /**
+     * @param array $query
+     *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
-    public function list(): array
+    public function list(array $query = []): array
     {
-        return $this->requestGet($this->getUrl());
+        return $this->httpClient
+            ->get('templates/gitlab_ci_ymls', ['query' => $query])
+            ->json();
     }
 
     /**
      * @param string $key
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\Ticl\Exceptions\RequestException
+     * @throws \McMatters\Ticl\Exceptions\JsonDecodingException
      */
     public function get(string $key): array
     {
-        return $this->requestGet($this->getUrl($key));
-    }
-
-    /**
-     * @param string|null $key
-     *
-     * @return string
-     */
-    protected function getUrl(string $key = null): string
-    {
-        $url = 'templates/gitlab_ci_ymls';
-
-        return null !== $key ? "{$url}/{$key}" : $url;
+        return $this->httpClient
+            ->get($this->encodeUrl('templates/gitlab_ci_ymls/{key}', $key))
+            ->json();
     }
 }
