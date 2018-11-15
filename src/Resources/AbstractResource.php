@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources;
 
-use McMatters\GitlabApi\Resources\Traits\EncodingDataTrait;
 use McMatters\Ticl\Client;
 use const true;
 use function preg_replace, rawurlencode, rtrim;
@@ -16,8 +15,6 @@ use function preg_replace, rawurlencode, rtrim;
  */
 abstract class AbstractResource
 {
-    use EncodingDataTrait;
-
     /**
      * @var Client
      */
