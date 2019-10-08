@@ -182,7 +182,7 @@ class StandaloneContext extends Context
     /**
      * @return \McMatters\GitlabApi\Resources\Standalone\Setting
      */
-    public function Setting(): Setting
+    public function setting(): Setting
     {
         return $this->resource(Setting::class);
     }
