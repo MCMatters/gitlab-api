@@ -115,8 +115,11 @@ class ManagedLicense extends ProjectResource
      *
      * @see https://gitlab.com/help/api/managed_licenses.md#edit-an-existing-managed-license
      */
-    public function update($id, $managedLicenseId, string $approvalStatus): array
-    {
+    public function update(
+        $id,
+        $managedLicenseId,
+        string $approvalStatus
+    ): array {
         return $this->httpClient
             ->patch(
                 $this->encodeUrl(

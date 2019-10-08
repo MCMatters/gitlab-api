@@ -21,8 +21,10 @@ class StringHelper
      *
      * @return mixed
      */
-    public static function pascal(string $value, string $delimiter = '_'): string
-    {
+    public static function pascal(
+        string $value,
+        string $delimiter = '_'
+    ): string {
         return str_replace($delimiter, '', ucwords($value, $delimiter));
     }
 

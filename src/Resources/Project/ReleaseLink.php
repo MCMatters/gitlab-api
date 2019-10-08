@@ -76,8 +76,12 @@ class ReleaseLink extends ProjectResource
      *
      * @see https://gitlab.com/help/api/releases/links.md#create-a-link
      */
-    public function create($id, string $tagName, string $name, string $url): array
-    {
+    public function create(
+        $id,
+        string $tagName,
+        string $name,
+        string $url
+    ): array {
         return $this->httpClient
             ->post(
                 $this->encodeUrl(
@@ -103,8 +107,12 @@ class ReleaseLink extends ProjectResource
      *
      * @see https://gitlab.com/help/api/releases/links.md#update-a-link
      */
-    public function update($id, string $tagName, int $linkId, array $data): array
-    {
+    public function update(
+        $id,
+        string $tagName,
+        int $linkId,
+        array $data
+    ): array {
         return $this->httpClient
             ->put(
                 $this->encodeUrl(

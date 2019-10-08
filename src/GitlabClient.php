@@ -5,7 +5,8 @@ declare(strict_types = 1);
 namespace McMatters\GitlabApi;
 
 use McMatters\GitlabApi\ResourceContexts\{
-    GroupContext, ProjectContext, StandaloneContext, TemplateContext, UserContext
+    GroupContext, ProjectContext, StandaloneContext, TemplateContext,
+    UserContext
 };
 use McMatters\Ticl\Client;
 

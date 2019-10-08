@@ -349,7 +349,7 @@ class Project extends ProjectResource
                 [
                     'json' => [
                         'group_id' => $groupId,
-                        'group_access' => $groupAccess
+                        'group_access' => $groupAccess,
                     ] + $data,
                 ]
             )
@@ -521,7 +521,6 @@ class Project extends ProjectResource
     {
         return $this->list(['search' => $search] + $query);
     }
-
 
     /**
      * @param int|string $id

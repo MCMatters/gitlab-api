@@ -240,8 +240,11 @@ class PipelineSchedule extends ProjectResource
      *
      * @see https://gitlab.com/help/api/pipeline_schedules.md#delete-a-pipeline-schedule-variable
      */
-    public function deleteVariable($id, int $pipelineScheduleId, string $key): int
-    {
+    public function deleteVariable(
+        $id,
+        int $pipelineScheduleId,
+        string $key
+    ): int {
         return $this->httpClient
             ->delete($this->encodeUrl(
                 'projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key',

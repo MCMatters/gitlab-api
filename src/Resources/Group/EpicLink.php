@@ -96,8 +96,12 @@ class EpicLink extends GroupResource
      *
      * @see https://gitlab.com/help/api/epic_links.md#re-order-a-child-epic
      */
-    public function reorderChild($id, int $iid, int $childEpicId, array $data = []): array
-    {
+    public function reorderChild(
+        $id,
+        int $iid,
+        int $childEpicId,
+        array $data = []
+    ): array {
         return $this->httpClient
             ->put(
                 $this->encodeUrl(

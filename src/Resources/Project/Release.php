@@ -86,7 +86,7 @@ class Release extends ProjectResource
                     'json' => [
                         'name' => $name,
                         'tag_name' => $tagName,
-                        'description' => $description
+                        'description' => $description,
                     ] + $data,
                 ]
             )

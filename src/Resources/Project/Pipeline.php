@@ -98,7 +98,7 @@ class Pipeline extends ProjectResource
      */
     public function create($id, string $ref, array $data = []): array
     {
-        return  $this->httpClient
+        return $this->httpClient
             ->post(
                 $this->encodeUrl('projects/:id/pipeline', $id),
                 ['json' => ['ref' => $ref] + $data]

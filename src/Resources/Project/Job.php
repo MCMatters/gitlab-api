@@ -48,8 +48,11 @@ class Job extends ProjectResource
      *
      * @see https://gitlab.com/help/api/jobs.md#list-pipeline-jobs
      */
-    public function listForPipeline($id, int $pipelineId, array $query = []): array
-    {
+    public function listForPipeline(
+        $id,
+        int $pipelineId,
+        array $query = []
+    ): array {
         return $this->httpClient
             ->get(
                 $this->encodeUrl(

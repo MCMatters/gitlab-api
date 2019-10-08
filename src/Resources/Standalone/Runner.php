@@ -169,8 +169,8 @@ class Runner extends StandaloneResource
     {
         try {
             return HttpStatusCode::OK === $this->httpClient
-                ->post('runners/verify', ['json' => ['token' => $token]])
-                ->getStatusCode();
+                    ->post('runners/verify', ['json' => ['token' => $token]])
+                    ->getStatusCode();
         } catch (Throwable $e) {
             return false;
         }

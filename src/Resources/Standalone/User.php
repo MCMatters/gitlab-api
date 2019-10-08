@@ -75,7 +75,7 @@ class User extends StandaloneResource
                     'json' => [
                         'email' => $email,
                         'username' => $username,
-                        'name' => $name
+                        'name' => $name,
                     ] + $data,
                 ]
             )

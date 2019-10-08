@@ -105,7 +105,7 @@ class MergeRequestApproval extends ProjectResource
                 [
                     'json' => [
                         'name' => $name,
-                        'approvals_required' => $approvalsRequired
+                        'approvals_required' => $approvalsRequired,
                     ] + $data,
                 ]
             )
@@ -197,8 +197,11 @@ class MergeRequestApproval extends ProjectResource
      *
      * @see https://gitlab.com/help/api/merge_request_approvals.md#get-configuration-1
      */
-    public function mergeRequestLevelList($id, int $iid, array $query = []): array
-    {
+    public function mergeRequestLevelList(
+        $id,
+        int $iid,
+        array $query = []
+    ): array {
         return $this->httpClient
             ->get(
                 $this->encodeUrl(
@@ -309,8 +312,11 @@ class MergeRequestApproval extends ProjectResource
      *
      * @see https://gitlab.com/help/api/merge_request_approvals.md#get-merge-request-level-rules
      */
-    public function mergeRequestLevelRules($id, int $iid, array $query = []): array
-    {
+    public function mergeRequestLevelRules(
+        $id,
+        int $iid,
+        array $query = []
+    ): array {
         return $this->httpClient
             ->get(
                 $this->encodeUrl(
@@ -403,8 +409,11 @@ class MergeRequestApproval extends ProjectResource
      *
      * @see https://gitlab.com/help/api/merge_request_approvals.md#delete-merge-request-level-rule
      */
-    public function deleteMergeRequesLevelRule($id, int $iid, int $approvalRuleId): int
-    {
+    public function deleteMergeRequesLevelRule(
+        $id,
+        int $iid,
+        int $approvalRuleId
+    ): int {
         return $this->httpClient
             ->delete($this->encodeUrl(
                 'projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id',

@@ -92,8 +92,11 @@ class Repository extends ProjectResource
      *
      * @see https://gitlab.com/help/api/repositories.md#get-file-archive
      */
-    public function getArchive($id, array $query = [], string $format = ''): array
-    {
+    public function getArchive(
+        $id,
+        array $query = [],
+        string $format = ''
+    ): array {
         $suffix = '' !== $format ? ".{$format}" : '';
 
         return $this->httpClient
