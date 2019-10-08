@@ -5,8 +5,10 @@ declare(strict_types = 1);
 namespace McMatters\GitlabApi\Helpers;
 
 use Throwable;
-use const false, null;
+
 use function array_key_exists, explode, is_callable, strpos;
+
+use const false, null;
 
 /**
  * Class ArrayHelper

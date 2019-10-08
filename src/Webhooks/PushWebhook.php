@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Webhooks;
 
-use InvalidArgumentException;
 use function is_array;
 
 /**
@@ -12,11 +11,12 @@ use function is_array;
  *
  * @package McMatters\GitlabApi\Webhooks
  */
-class PushWebhook extends AbstractWebhook
+class PushWebhook extends Webhook
 {
     /**
      * @return string
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getId(): string
     {
@@ -25,7 +25,8 @@ class PushWebhook extends AbstractWebhook
 
     /**
      * @return int
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getProjectId(): int
     {
@@ -34,7 +35,8 @@ class PushWebhook extends AbstractWebhook
 
     /**
      * @return string
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getUserName(): string
     {

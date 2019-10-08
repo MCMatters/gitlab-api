@@ -4,8 +4,9 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Helpers;
 
-use const false, true;
 use function preg_replace, strpos, strtolower, str_replace, ucwords;
+
+use const false, true;
 
 /**
  * Class StringHelper

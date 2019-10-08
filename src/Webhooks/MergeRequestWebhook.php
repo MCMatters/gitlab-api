@@ -4,23 +4,22 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Webhooks;
 
-use InvalidArgumentException;
-
 /**
  * Class MergeRequestWebhook
  *
  * @package McMatters\GitlabApi\Webhooks
  */
-class MergeRequestWebhook extends AbstractWebhook
+class MergeRequestWebhook extends Webhook
 {
-    const ACTION_OPEN = 'open';
-    const ACTION_UPDATE = 'update';
-    const ACTION_MERGE = 'merge';
-    const ACTION_CLOSE = 'close';
+    public const ACTION_OPEN = 'open';
+    public const ACTION_UPDATE = 'update';
+    public const ACTION_MERGE = 'merge';
+    public const ACTION_CLOSE = 'close';
 
     /**
      * @return int
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getIid(): int
     {
@@ -29,7 +28,8 @@ class MergeRequestWebhook extends AbstractWebhook
 
     /**
      * @return int
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getProjectId(): int
     {
@@ -38,7 +38,8 @@ class MergeRequestWebhook extends AbstractWebhook
 
     /**
      * @return string
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getUserName(): string
     {
@@ -47,7 +48,8 @@ class MergeRequestWebhook extends AbstractWebhook
 
     /**
      * @return string
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getAction(): string
     {
@@ -56,7 +58,8 @@ class MergeRequestWebhook extends AbstractWebhook
 
     /**
      * @return string
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getSourceBranch(): string
     {
@@ -65,7 +68,8 @@ class MergeRequestWebhook extends AbstractWebhook
 
     /**
      * @return string
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getTargetBranch(): string
     {
@@ -74,7 +78,8 @@ class MergeRequestWebhook extends AbstractWebhook
 
     /**
      * @return array
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getLastCommit(): array
     {
@@ -83,7 +88,8 @@ class MergeRequestWebhook extends AbstractWebhook
 
     /**
      * @return string
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getLastCommitHash(): string
     {

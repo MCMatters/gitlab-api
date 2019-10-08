@@ -11,11 +11,11 @@ namespace McMatters\GitlabApi\Resources;
  */
 interface EventTargetType
 {
-    const ISSUE = 'issue';
-    const MILESTONE = 'milestone';
-    const MERGE_REQUEST = 'merge_request';
-    const NOTE = 'note';
-    const PROJECT = 'project';
-    const SNIPPET = 'snippet';
-    const USER = 'user';
+    public const ISSUE = 'issue';
+    public const MILESTONE = 'milestone';
+    public const MERGE_REQUEST = 'merge_request';
+    public const NOTE = 'note';
+    public const PROJECT = 'project';
+    public const SNIPPET = 'snippet';
+    public const USER = 'user';
 }

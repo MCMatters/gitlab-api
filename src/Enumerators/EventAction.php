@@ -11,15 +11,15 @@ namespace McMatters\GitlabApi\Enumerators;
  */
 interface EventAction
 {
-    const CREATED = 'created';
-    const UPDATED = 'updated';
-    const CLOSED = 'closed';
-    const REOPENED = 'reopened';
-    const PUSHED = 'pushed';
-    const COMMENTED = 'commented';
-    const MERGED = 'merged';
-    const JOINED = 'joined';
-    const LEFT = 'left';
-    const DESTROYED = 'destroyed';
-    const EXPIRED = 'expired';
+    public const CREATED = 'created';
+    public const UPDATED = 'updated';
+    public const CLOSED = 'closed';
+    public const REOPENED = 'reopened';
+    public const PUSHED = 'pushed';
+    public const COMMENTED = 'commented';
+    public const MERGED = 'merged';
+    public const JOINED = 'joined';
+    public const LEFT = 'left';
+    public const DESTROYED = 'destroyed';
+    public const EXPIRED = 'expired';
 }

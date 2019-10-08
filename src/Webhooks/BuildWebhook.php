@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Webhooks;
 
-use InvalidArgumentException;
 use McMatters\GitlabApi\Helpers\StringHelper;
 
 /**
@@ -12,11 +11,12 @@ use McMatters\GitlabApi\Helpers\StringHelper;
  *
  * @package McMatters\GitlabApi\Webhooks
  */
-class BuildWebhook extends AbstractWebhook
+class BuildWebhook extends Webhook
 {
     /**
      * @return int
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getId(): int
     {
@@ -41,7 +41,8 @@ class BuildWebhook extends AbstractWebhook
 
     /**
      * @return int
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getProjectId(): int
     {

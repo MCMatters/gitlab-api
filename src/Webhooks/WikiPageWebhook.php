@@ -4,22 +4,21 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Webhooks;
 
-use InvalidArgumentException;
-
 /**
  * Class WikiPageWebhook
  *
  * @package McMatters\GitlabApi\Webhooks
  */
-class WikiPageWebhook extends AbstractWebhook
+class WikiPageWebhook extends Webhook
 {
-    const ACTION_CREATE = 'create';
-    const ACTION_UPDATE = 'update';
-    const ACTION_DELETE = 'delete';
+    public const ACTION_CREATE = 'create';
+    public const ACTION_UPDATE = 'update';
+    public const ACTION_DELETE = 'delete';
 
     /**
      * @return string
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getProjectId(): string
     {
@@ -28,7 +27,8 @@ class WikiPageWebhook extends AbstractWebhook
 
     /**
      * @return string
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getUserName(): string
     {
@@ -37,7 +37,8 @@ class WikiPageWebhook extends AbstractWebhook
 
     /**
      * @return string
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getSlug(): string
     {
@@ -46,7 +47,8 @@ class WikiPageWebhook extends AbstractWebhook
 
     /**
      * @return string
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getTitle(): string
     {
@@ -55,7 +57,8 @@ class WikiPageWebhook extends AbstractWebhook
 
     /**
      * @return string
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getFormat(): string
     {
@@ -64,7 +67,8 @@ class WikiPageWebhook extends AbstractWebhook
 
     /**
      * @return string
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getUrl(): string
     {
@@ -73,7 +77,8 @@ class WikiPageWebhook extends AbstractWebhook
 
     /**
      * @return string
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getAction(): string
     {

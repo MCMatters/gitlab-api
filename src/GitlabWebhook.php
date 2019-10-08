@@ -7,10 +7,12 @@ namespace McMatters\GitlabApi;
 use InvalidArgumentException;
 use McMatters\GitlabApi\Exceptions\UnsupportedWebhook;
 use McMatters\GitlabApi\Helpers\StringHelper;
-use McMatters\GitlabApi\Webhooks\AbstractWebhook;
+use McMatters\GitlabApi\Webhooks\Webhook;
 use stdClass;
-use const true;
+
 use function class_exists, gettype, is_a, is_array, is_string, json_encode;
+
+use const true;
 
 /**
  * Class GitlabWebhook
@@ -22,11 +24,12 @@ class GitlabWebhook
     /**
      * @param mixed $payload
      *
-     * @return AbstractWebhook
-     * @throws UnsupportedWebhook
-     * @throws InvalidArgumentException
+     * @return \McMatters\GitlabApi\Webhooks\Webhook
+     *
+     * @throws \McMatters\GitlabApi\Exceptions\UnsupportedWebhook
+     * @throws \InvalidArgumentException
      */
-    public static function make($payload): AbstractWebhook
+    public static function make($payload): Webhook
     {
         $payload = self::transformPayload($payload);
 
@@ -41,7 +44,8 @@ class GitlabWebhook
      * @param mixed $payload
      *
      * @return array
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     protected static function transformPayload($payload): array
     {
@@ -66,7 +70,8 @@ class GitlabWebhook
      * @param array $payload
      *
      * @return string
-     * @throws UnsupportedWebhook
+     *
+     * @throws \McMatters\GitlabApi\Exceptions\UnsupportedWebhook
      */
     protected static function getClass(array $payload): string
     {
@@ -83,9 +88,11 @@ class GitlabWebhook
     /**
      * @param array $payload
      *
-     * @throws InvalidArgumentException
+     * @return void
+     *
+     * @throws \InvalidArgumentException
      */
-    protected static function checkObjectKind(array $payload)
+    protected static function checkObjectKind(array $payload): void
     {
         if (empty($payload['object_kind'])) {
             throw new InvalidArgumentException('There is no key "object_kind"');

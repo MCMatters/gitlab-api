@@ -11,10 +11,10 @@ namespace McMatters\GitlabApi\Enumerators;
  */
 interface NotificationLevel
 {
-    const DISABLED = 'disabled';
-    const PARTICIPATING = 'participating';
-    const WATCH = 'watch';
-    const GLOBAL = 'global';
-    const MENTION = 'mention';
-    const CUSTOM = 'custom';
+    public const DISABLED = 'disabled';
+    public const PARTICIPATING = 'participating';
+    public const WATCH = 'watch';
+    public const GLOBAL = 'global';
+    public const MENTION = 'mention';
+    public const CUSTOM = 'custom';
 }

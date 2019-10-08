@@ -11,9 +11,10 @@ namespace McMatters\GitlabApi\Enumerators;
  */
 interface AccessLevel
 {
-    const GUEST = 10;
-    const REPORTER = 20;
-    const DEVELOPER = 30;
-    const MASTER = 40;
-    const OWNER = 50;
+    public const GUEST = 10;
+    public const REPORTER = 20;
+    public const DEVELOPER = 30;
+    public const MASTER = 40;
+    public const OWNER = 50;
+    public const ADMIN = 60;
 }

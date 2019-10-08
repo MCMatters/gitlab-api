@@ -4,18 +4,17 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Webhooks;
 
-use InvalidArgumentException;
-
 /**
  * Class PipelineWebhook
  *
  * @package McMatters\GitlabApi\Webhooks
  */
-class PipelineWebhook extends AbstractWebhook
+class PipelineWebhook extends Webhook
 {
     /**
      * @return string
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getProjectId(): string
     {

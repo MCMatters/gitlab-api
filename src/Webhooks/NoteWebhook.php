@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Webhooks;
 
-use InvalidArgumentException;
 use McMatters\GitlabApi\Helpers\StringHelper;
 
 /**
@@ -12,11 +11,12 @@ use McMatters\GitlabApi\Helpers\StringHelper;
  *
  * @package McMatters\GitlabApi\Webhooks
  */
-class NoteWebhook extends AbstractWebhook
+class NoteWebhook extends Webhook
 {
     /**
      * @return string
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getNoteableType(): string
     {
@@ -25,7 +25,8 @@ class NoteWebhook extends AbstractWebhook
 
     /**
      * @return int
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getNoteableId(): int
     {
@@ -34,7 +35,8 @@ class NoteWebhook extends AbstractWebhook
 
     /**
      * @return array
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getNoteableModel(): array
     {
@@ -45,7 +47,8 @@ class NoteWebhook extends AbstractWebhook
 
     /**
      * @return int
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getProjectId(): int
     {
@@ -54,7 +57,8 @@ class NoteWebhook extends AbstractWebhook
 
     /**
      * @return string
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function getUserName(): string
     {

@@ -11,7 +11,7 @@ namespace McMatters\GitlabApi\Enumerators;
  */
 interface Visibility
 {
-    const PUBLIC = 'public';
-    const INTERNAL = 'internal';
-    const PRIVATE = 'private';
+    public const PUBLIC = 'public';
+    public const INTERNAL = 'internal';
+    public const PRIVATE = 'private';
 }
