@@ -27,7 +27,8 @@ class BroadcastMessage extends StandaloneResource
     public function list(array $query = []): array
     {
         return $this->httpClient
-            ->get('broadcast_messages', ['query' => $query])
+            ->withQuery($query)
+            ->get('broadcast_messages')
             ->json();
     }
 
@@ -64,10 +65,8 @@ class BroadcastMessage extends StandaloneResource
     public function create(string $message, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                'broadcast_messages',
-                ['json' => ['message' => $message] + $data]
-            )
+            ->withJson(['message' => $message] + $data)
+            ->post('broadcast_messages')
             ->json();
     }
 
@@ -86,10 +85,8 @@ class BroadcastMessage extends StandaloneResource
     public function update(int $id, array $data): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl('broadcast_messages/:id', $id),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl('broadcast_messages/:id', $id))
             ->json();
     }
 

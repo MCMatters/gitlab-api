@@ -28,10 +28,8 @@ class Commit extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/repository/commits', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/repository/commits', $id))
             ->json();
     }
 
@@ -58,16 +56,13 @@ class Commit extends ProjectResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/repository/commits', $id),
-                [
-                    'json' => [
-                            'branch' => $branch,
-                            'commit_message' => $message,
-                            'actions' => $actions,
-                        ] + $data,
-                ]
+            ->withJson([
+                    'branch' => $branch,
+                    'commit_message' => $message,
+                    'actions' => $actions,
+                ] + $data
             )
+            ->post($this->encodeUrl('projects/:id/repository/commits', $id))
             ->json();
     }
 
@@ -87,13 +82,11 @@ class Commit extends ProjectResource
     public function get($id, string $sha, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/repository/commits/:sha',
-                    [$id, $sha]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/repository/commits/:sha',
+                [$id, $sha]
+            ))
             ->json();
     }
 
@@ -113,13 +106,11 @@ class Commit extends ProjectResource
     public function references($id, string $sha, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/repository/commits/:sha/refs',
-                    [$id, $sha]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/repository/commits/:sha/refs',
+                [$id, $sha]
+            ))
             ->json();
     }
 
@@ -139,13 +130,11 @@ class Commit extends ProjectResource
     public function cherryPick($id, string $sha, string $branch): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    'projects/:id/repository/commits/:sha/cherry_pick',
-                    [$id, $sha]
-                ),
-                ['json' => ['branch' => $branch]]
-            )
+            ->withJson(['branch' => $branch])
+            ->post($this->encodeUrl(
+                'projects/:id/repository/commits/:sha/cherry_pick',
+                [$id, $sha]
+            ))
             ->json();
     }
 
@@ -165,13 +154,11 @@ class Commit extends ProjectResource
     public function revert($id, string $sha, string $branch): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    'projects/:id/repository/commits/:sha/revert',
-                    [$id, $sha]
-                ),
-                ['json' => ['branch' => $branch]]
-            )
+            ->withJson(['branch' => $branch])
+            ->post($this->encodeUrl(
+                'projects/:id/repository/commits/:sha/revert',
+                [$id, $sha]
+            ))
             ->json();
     }
 
@@ -213,13 +200,11 @@ class Commit extends ProjectResource
     public function comments($id, string $sha, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/repository/commits/:sha/comments',
-                    [$id, $sha]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/repository/commits/:sha/comments',
+                [$id, $sha]
+            ))
             ->json();
     }
 
@@ -244,13 +229,11 @@ class Commit extends ProjectResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    'projects/:id/repository/commits/:sha/comments',
-                    [$id, $sha]
-                ),
-                ['json' => ['note' => $comment] + $data]
-            )
+            ->withJson(['note' => $comment] + $data)
+            ->post($this->encodeUrl(
+                'projects/:id/repository/commits/:sha/comments',
+                [$id, $sha]
+            ))
             ->json();
     }
 
@@ -270,13 +253,11 @@ class Commit extends ProjectResource
     public function statuses($id, string $sha, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/repository/commits/:sha/statuses',
-                    [$id, $sha]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/repository/commits/:sha/statuses',
+                [$id, $sha]
+            ))
             ->json();
     }
 
@@ -301,13 +282,12 @@ class Commit extends ProjectResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    'projects/:id/statuses/:sha',
-                    [$id, $sha]
-                ),
-                ['json' => $data, 'query' => ['state' => $state]]
-            )
+            ->withJson($data)
+            ->withQuery(['state' => $state])
+            ->post($this->encodeUrl(
+                'projects/:id/statuses/:sha',
+                [$id, $sha]
+            ))
             ->json();
     }
 
@@ -327,13 +307,11 @@ class Commit extends ProjectResource
     public function mergeRequests($id, string $sha, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/repository/commits/:sha/merge_requests',
-                    [$id, $sha]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/repository/commits/:sha/merge_requests',
+                [$id, $sha]
+            ))
             ->json();
     }
 

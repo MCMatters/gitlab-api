@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace McMatters\GitlabApi\Resources\Project;
 
 use McMatters\GitlabApi\Resources\ProjectResource;
-use McMatters\GitlabApi\Resources\Resource;
 
 /**
  * Class Runner
@@ -29,10 +28,8 @@ class Runner extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/runners', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/runners', $id))
             ->json();
     }
 
@@ -51,10 +48,8 @@ class Runner extends ProjectResource
     public function enable($id, int $runnerId): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/runners', $id),
-                ['json' => ['runner_id' => $runnerId]]
-            )
+            ->withJson(['runner_id' => $runnerId])
+            ->post($this->encodeUrl('projects/:id/runners', $id))
             ->json();
     }
 

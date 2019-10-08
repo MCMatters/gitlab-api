@@ -28,10 +28,8 @@ class Package extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/packages', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/packages', $id))
             ->json();
     }
 
@@ -73,13 +71,11 @@ class Package extends ProjectResource
     public function files($id, int $packageId, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/packages/:package_id/package_files',
-                    [$id, $packageId]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/packages/:package_id/package_files',
+                [$id, $packageId]
+            ))
             ->json();
     }
 

@@ -28,10 +28,8 @@ class PipelineSchedule extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/pipeline_schedules', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/pipeline_schedules', $id))
             ->json();
     }
 
@@ -80,16 +78,13 @@ class PipelineSchedule extends ProjectResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/pipeline_schedules', $id),
-                [
-                    'json' => [
-                        'description' => $description,
-                        'ref' => $ref,
-                        'cron' => $cron,
-                    ] + $data,
-                ]
+            ->withJson([
+                    'description' => $description,
+                    'ref' => $ref,
+                    'cron' => $cron,
+                ] + $data
             )
+            ->post($this->encodeUrl('projects/:id/pipeline_schedules', $id))
             ->json();
     }
 
@@ -109,13 +104,11 @@ class PipelineSchedule extends ProjectResource
     public function update($id, int $pipelineScheduleId, array $data): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/pipeline_schedules/:pipeline_schedule_id',
-                    [$id, $pipelineScheduleId]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                'projects/:id/pipeline_schedules/:pipeline_schedule_id',
+                [$id, $pipelineScheduleId]
+            ))
             ->json();
     }
 
@@ -185,13 +178,11 @@ class PipelineSchedule extends ProjectResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    'projects/:id/pipeline_schedules/:pipeline_schedule_id/variables',
-                    [$id, $pipelineScheduleId]
-                ),
-                ['json' => ['key' => $key, 'value' => $value] + $data]
-            )
+            ->withJson(['key' => $key, 'value' => $value] + $data)
+            ->post($this->encodeUrl(
+                'projects/:id/pipeline_schedules/:pipeline_schedule_id/variables',
+                [$id, $pipelineScheduleId]
+            ))
             ->json();
     }
 
@@ -218,13 +209,11 @@ class PipelineSchedule extends ProjectResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key',
-                    [$id, $pipelineScheduleId, $key]
-                ),
-                ['json' => ['value' => $value] + $data]
-            )
+            ->withJson(['value' => $value] + $data)
+            ->put($this->encodeUrl(
+                'projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key',
+                [$id, $pipelineScheduleId, $key]
+            ))
             ->json();
     }
 

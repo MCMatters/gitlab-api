@@ -29,10 +29,8 @@ class EpicLink extends GroupResource
     public function list($id, int $iid, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('groups/:id/epics/:epic_iid/epics', [$id, $iid]),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('groups/:id/epics/:epic_iid/epics', [$id, $iid]))
             ->json();
     }
 
@@ -75,10 +73,8 @@ class EpicLink extends GroupResource
     public function createAndAssignChild($id, int $iid, string $title): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('groups/:id/epics/:epic_iid/epics', [$id, $iid]),
-                ['json' => ['title' => $title]]
-            )
+            ->withJson(['title' => $title])
+            ->post($this->encodeUrl('groups/:id/epics/:epic_iid/epics', [$id, $iid]))
             ->json();
     }
 
@@ -103,13 +99,11 @@ class EpicLink extends GroupResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'groups/:id/epics/:epic_iid/epics/:child_epic_id',
-                    [$id, $iid, $childEpicId]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                'groups/:id/epics/:epic_iid/epics/:child_epic_id',
+                [$id, $iid, $childEpicId]
+            ))
             ->json();
     }
 

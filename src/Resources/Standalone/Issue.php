@@ -26,6 +26,6 @@ class Issue extends StandaloneResource
      */
     public function list(array $query = []): array
     {
-        return $this->httpClient->get('issues', ['query' => $query])->json();
+        return $this->httpClient->withQuery($query)->get('issues')->json();
     }
 }

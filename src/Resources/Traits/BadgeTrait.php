@@ -27,10 +27,8 @@ trait BadgeTrait
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get($this->encodeUrl(
-                ':type/:id/badges', [$this->type, $id]),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(':type/:id/badges', [$this->type, $id]))
             ->json();
     }
 
@@ -74,10 +72,8 @@ trait BadgeTrait
     public function create($id, string $linkUrl, string $imageUrl): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(':type/:id/badges', [$this->type, $id]),
-                ['json' => ['link_url' => $linkUrl, 'image_url' => $imageUrl]]
-            )
+            ->withJson(['link_url' => $linkUrl, 'image_url' => $imageUrl])
+            ->post($this->encodeUrl(':type/:id/badges', [$this->type, $id]))
             ->json();
     }
 
@@ -98,13 +94,11 @@ trait BadgeTrait
     public function update($id, int $badgeId, array $data): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    ':type/:id/badges/:badge_id',
-                    [$this->type, $id, $badgeId]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                ':type/:id/badges/:badge_id',
+                [$this->type, $id, $badgeId]
+            ))
             ->json();
     }
 
@@ -147,13 +141,11 @@ trait BadgeTrait
     public function preview($id, string $linkUrl, string $imageUrl): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    ':type/:id/badges/render',
-                    [$this->type, $id]
-                ),
-                ['query' => ['link_url' => $linkUrl, 'image_url' => $imageUrl]]
-            )
+            ->withQuery(['link_url' => $linkUrl, 'image_url' => $imageUrl])
+            ->get($this->encodeUrl(
+                ':type/:id/badges/render',
+                [$this->type, $id]
+            ))
             ->json();
     }
 }

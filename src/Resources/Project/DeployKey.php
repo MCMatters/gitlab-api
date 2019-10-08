@@ -28,10 +28,8 @@ class DeployKey extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/deploy_keys', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/deploy_keys', $id))
             ->json();
     }
 
@@ -78,10 +76,8 @@ class DeployKey extends ProjectResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/deploy_keys', $id),
-                ['json' => ['title' => $title, 'key' => $key] + $data]
-            )
+            ->withJson(['title' => $title, 'key' => $key] + $data)
+            ->post($this->encodeUrl('projects/:id/deploy_keys', $id))
             ->json();
     }
 
@@ -101,13 +97,11 @@ class DeployKey extends ProjectResource
     public function update($id, int $keyId, array $data = []): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/deploy_keys/:key_id',
-                    [$id, $keyId]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                'projects/:id/deploy_keys/:key_id',
+                [$id, $keyId]
+            ))
             ->json();
     }
 

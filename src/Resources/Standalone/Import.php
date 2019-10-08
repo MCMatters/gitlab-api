@@ -27,7 +27,8 @@ class Import extends StandaloneResource
     public function github(array $data): array
     {
         return $this->httpClient
-            ->post('import/github', ['json' => $data])
+            ->withJson($data)
+            ->post('import/github')
             ->json();
     }
 }

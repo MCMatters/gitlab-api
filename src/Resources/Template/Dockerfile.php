@@ -27,7 +27,8 @@ class Dockerfile extends TemplateResource
     public function list(array $query = []): array
     {
         return $this->httpClient
-            ->get('templates/dockerfiles', ['query' => $query])
+            ->withQuery($query)
+            ->get('templates/dockerfiles')
             ->json();
     }
 

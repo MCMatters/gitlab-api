@@ -28,10 +28,8 @@ class ManagedLicense extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/managed_licenses', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/managed_licenses', $id))
             ->json();
     }
 
@@ -73,10 +71,8 @@ class ManagedLicense extends ProjectResource
     public function create($id, string $name, string $approvalStatus): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/managed_licenses', $id),
-                ['json' => ['name' => $name, 'approval_status' => $approvalStatus]]
-            )
+            ->withJson(['name' => $name, 'approval_status' => $approvalStatus])
+            ->post($this->encodeUrl('projects/:id/managed_licenses', $id))
             ->json();
     }
 
@@ -121,13 +117,11 @@ class ManagedLicense extends ProjectResource
         string $approvalStatus
     ): array {
         return $this->httpClient
-            ->patch(
-                $this->encodeUrl(
-                    'projects/:id/managed_licenses/:managed_license_id',
-                    [$id, $managedLicenseId]
-                ),
-                ['json' => ['approval_status' => $approvalStatus]]
-            )
+            ->withQuery(['approval_status' => $approvalStatus])
+            ->patch($this->encodeUrl(
+                'projects/:id/managed_licenses/:managed_license_id',
+                [$id, $managedLicenseId]
+            ))
             ->json();
     }
 }

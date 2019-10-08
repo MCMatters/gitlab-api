@@ -40,7 +40,7 @@ class License extends StandaloneResource
      */
     public function all(array $query = []): array
     {
-        return $this->httpClient->get('licenses', ['query' => $query])->json();
+        return $this->httpClient->withQuery($query)->get('licenses')->json();
     }
 
     /**
@@ -57,7 +57,8 @@ class License extends StandaloneResource
     public function create(string $license): array
     {
         return $this->httpClient
-            ->post('license', ['json' => ['license' => $license]])
+            ->withJson(['license' => $license])
+            ->post('license')
             ->json();
     }
 

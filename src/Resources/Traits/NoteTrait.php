@@ -30,13 +30,11 @@ trait NoteTrait
     public function list($id, int $iid, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    ':base_type/:id/:type/:iid/notes',
-                    [$this->baseType, $id, $this->type, $iid]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                ':base_type/:id/:type/:iid/notes',
+                [$this->baseType, $id, $this->type, $iid]
+            ))
             ->json();
     }
 
@@ -86,13 +84,11 @@ trait NoteTrait
     public function create($id, int $iid, string $body, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    ':base_type/:id/:type/:iid/notes',
-                    [$this->baseType, $id, $this->type, $iid]
-                ),
-                ['json' => ['body' => $body] + $data]
-            )
+            ->withJson(['body' => $body] + $data)
+            ->post($this->encodeUrl(
+                ':base_type/:id/:type/:iid/notes',
+                [$this->baseType, $id, $this->type, $iid]
+            ))
             ->json();
     }
 
@@ -116,13 +112,11 @@ trait NoteTrait
     public function update($id, int $iid, int $noteId, string $body): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    ':base_type/:id/:type/:iid/notes/:note_id',
-                    [$this->baseType, $id, $this->type, $iid, $noteId]
-                ),
-                ['json' => ['body' => $body]]
-            )
+            ->withJson(['body' => $body])
+            ->put($this->encodeUrl(
+                ':base_type/:id/:type/:iid/notes/:note_id',
+                [$this->baseType, $id, $this->type, $iid, $noteId]
+            ))
             ->json();
     }
 

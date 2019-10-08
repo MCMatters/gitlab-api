@@ -29,10 +29,8 @@ trait LabelTrait
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(':type/:id/labels', [$this->type, $id]),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(':type/:id/labels', [$this->type, $id]))
             ->json();
     }
 
@@ -58,10 +56,8 @@ trait LabelTrait
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(':type/:id/labels', [$this->type, $id]),
-                ['json' => ['name' => $name, 'color' => $color] + $data]
-            )
+            ->withJson(['name' => $name, 'color' => $color] + $data)
+            ->post($this->encodeUrl(':type/:id/labels', [$this->type, $id]))
             ->json();
     }
 
@@ -81,10 +77,8 @@ trait LabelTrait
     public function update($id, array $data): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(':type/:id/labels', [$this->type, $id]),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(':type/:id/labels', [$this->type, $id]))
             ->json();
     }
 
@@ -103,10 +97,8 @@ trait LabelTrait
     public function delete($id, $labelId): int
     {
         return $this->httpClient
-            ->delete(
-                $this->encodeUrl(':type/:id/labels', [$this->type, $id]),
-                ['query' => $this->getLabelKeyMap($labelId)]
-            )
+            ->withQuery($this->getLabelKeyMap($labelId))
+            ->delete($this->encodeUrl(':type/:id/labels', [$this->type, $id]))
             ->getStatusCode();
     }
 

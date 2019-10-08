@@ -28,10 +28,8 @@ class Epic extends GroupResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('groups/:id/epics', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('groups/:id/epics', $id))
             ->json();
     }
 
@@ -70,10 +68,8 @@ class Epic extends GroupResource
     public function create($id, string $title, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('groups/:id/epics', $id),
-                ['json' => ['title' => $title] + $data]
-            )
+            ->withJson(['title' => $title] + $data)
+            ->post($this->encodeUrl('groups/:id/epics', $id))
             ->json();
     }
 
@@ -93,10 +89,8 @@ class Epic extends GroupResource
     public function update($id, $iid, array $data): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl('groups/:id/epics/:epic_iid', [$id, $iid]),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl('groups/:id/epics/:epic_iid', [$id, $iid]))
             ->json();
     }
 

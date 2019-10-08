@@ -26,8 +26,6 @@ class Event extends StandaloneResource
      */
     public function list(array $query = []): array
     {
-        return $this->httpClient
-            ->get('events', ['query' => $query])
-            ->json();
+        return $this->httpClient->withQuery($query)->get('events')->json();
     }
 }

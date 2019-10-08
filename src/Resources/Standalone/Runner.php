@@ -30,7 +30,7 @@ class Runner extends StandaloneResource
      */
     public function list(array $query = []): array
     {
-        return $this->httpClient->get('runners', ['query' => $query])->json();
+        return $this->httpClient->withQuery($query)->get('runners')->json();
     }
 
     /**
@@ -46,9 +46,7 @@ class Runner extends StandaloneResource
      */
     public function all(array $query = []): array
     {
-        return $this->httpClient
-            ->get('runners/all', ['query' => $query])
-            ->json();
+        return $this->httpClient->withQuery($query)->get('runners/all')->json();
     }
 
     /**
@@ -81,9 +79,7 @@ class Runner extends StandaloneResource
      */
     public function update(int $id, array $data): array
     {
-        return $this->httpClient
-            ->put("runners/{$id}", ['json' => $data])
-            ->json();
+        return $this->httpClient->withJson($data)->put("runners/{$id}")->json();
     }
 
     /**
@@ -98,9 +94,7 @@ class Runner extends StandaloneResource
      */
     public function delete(int $id): int
     {
-        return $this->httpClient
-            ->delete("runners/{$id}")
-            ->getStatusCode();
+        return $this->httpClient->delete("runners/{$id}")->getStatusCode();
     }
 
     /**
@@ -118,7 +112,8 @@ class Runner extends StandaloneResource
     public function jobs(int $id, array $query = []): array
     {
         return $this->httpClient
-            ->get("runners/{$id}/jobs", ['query' => $query])
+            ->withQuery($query)
+            ->get("runners/{$id}/jobs")
             ->json();
     }
 
@@ -137,7 +132,8 @@ class Runner extends StandaloneResource
     public function register(string $token, array $data = []): array
     {
         return $this->httpClient
-            ->post('runners', ['json' => ['token' => $token] + $data])
+            ->withJson(['token' => $token] + $data)
+            ->post('runners')
             ->json();
     }
 
@@ -154,7 +150,8 @@ class Runner extends StandaloneResource
     public function deleteRegistered(string $token): int
     {
         return $this->httpClient
-            ->delete('runners', ['json' => ['token' => $token]])
+            ->withJson(['token' => $token])
+            ->delete('runners')
             ->getStatusCode();
     }
 
@@ -169,7 +166,8 @@ class Runner extends StandaloneResource
     {
         try {
             return HttpStatusCode::OK === $this->httpClient
-                    ->post('runners/verify', ['json' => ['token' => $token]])
+                    ->withJson(['token' => $token])
+                    ->post('runners/verify')
                     ->getStatusCode();
         } catch (Throwable $e) {
             return false;

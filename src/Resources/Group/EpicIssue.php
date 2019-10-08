@@ -29,10 +29,8 @@ class EpicIssue extends GroupResource
     public function list($id, int $iid, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('groups/:id/epics/:epic_iid/issues', [$id, $iid]),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('groups/:id/epics/:epic_iid/issues', [$id, $iid]))
             ->json();
     }
 
@@ -102,13 +100,11 @@ class EpicIssue extends GroupResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'groups/:id/epics/:epic_iid/issues/:epic_issue_id',
-                    [$id, $iid, $epicIssueId]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                'groups/:id/epics/:epic_iid/issues/:epic_issue_id',
+                [$id, $iid, $epicIssueId]
+            ))
             ->json();
     }
 }

@@ -27,10 +27,8 @@ trait IssueBoardTrait
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(':type/:id/boards', [$this->type, $id]),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(':type/:id/boards', [$this->type, $id]))
             ->json();
     }
 
@@ -74,10 +72,8 @@ trait IssueBoardTrait
     public function create($id, string $name, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(':type/:id/boards', [$this->type, $id]),
-                ['json' => ['name' => $name] + $data]
-            )
+            ->withJson(['name' => $name] + $data)
+            ->post($this->encodeUrl(':type/:id/boards', [$this->type, $id]))
             ->json();
     }
 
@@ -98,13 +94,11 @@ trait IssueBoardTrait
     public function update($id, int $boardId, array $data): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    ':type/:id/boards/:board_id',
-                    [$this->type, $id, $boardId]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                ':type/:id/boards/:board_id',
+                [$this->type, $id, $boardId]
+            ))
             ->json();
     }
 
@@ -147,13 +141,11 @@ trait IssueBoardTrait
     public function listLists($id, int $boardId, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    ':type/:id/boards/:board_id/lists',
-                    [$this->type, $id, $boardId]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                ':type/:id/boards/:board_id/lists',
+                [$this->type, $id, $boardId]
+            ))
             ->json();
     }
 
@@ -198,13 +190,11 @@ trait IssueBoardTrait
     public function createList($id, int $boardId, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    ':type/:id/boards/:board_id/lists',
-                    [$this->type, $id, $boardId]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->post($this->encodeUrl(
+                ':type/:id/boards/:board_id/lists',
+                [$this->type, $id, $boardId]
+            ))
             ->json();
     }
 
@@ -230,13 +220,11 @@ trait IssueBoardTrait
         array $data = []
     ): array {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    ':type/:id/boards/:board_id/lists/:list_id',
-                    [$this->type, $id, $boardId, $listId]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                ':type/:id/boards/:board_id/lists/:list_id',
+                [$this->type, $id, $boardId, $listId]
+            ))
             ->json();
     }
 

@@ -28,10 +28,8 @@ class MergeRequest extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/merge_requests', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/merge_requests', $id))
             ->json();
     }
 
@@ -51,13 +49,11 @@ class MergeRequest extends ProjectResource
     public function get($id, int $iid, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/merge_requests/:merge_request_iid',
-                    [$id, $iid]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/merge_requests/:merge_request_iid',
+                [$id, $iid]
+            ))
             ->json();
     }
 
@@ -77,13 +73,11 @@ class MergeRequest extends ProjectResource
     public function participants($id, int $iid, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/merge_requests/:merge_request_iid/participants',
-                    [$id, $iid]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/merge_requests/:merge_request_iid/participants',
+                [$id, $iid]
+            ))
             ->json();
     }
 
@@ -103,13 +97,11 @@ class MergeRequest extends ProjectResource
     public function commits($id, int $iid, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/merge_requests/:merge_request_iid/commits',
-                    [$id, $iid]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/merge_requests/:merge_request_iid/commits',
+                [$id, $iid]
+            ))
             ->json();
     }
 
@@ -129,13 +121,11 @@ class MergeRequest extends ProjectResource
     public function changes($id, int $iid, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/merge_requests/:merge_request_iid/changes',
-                    [$id, $iid]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/merge_requests/:merge_request_iid/changes',
+                [$id, $iid]
+            ))
             ->json();
     }
 
@@ -155,13 +145,11 @@ class MergeRequest extends ProjectResource
     public function pipelines($id, int $iid, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/merge_requests/:merge_request_iid/pipelines',
-                    [$id, $iid]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/merge_requests/:merge_request_iid/pipelines',
+                [$id, $iid]
+            ))
             ->json();
     }
 
@@ -181,13 +169,11 @@ class MergeRequest extends ProjectResource
     public function createPipeline($id, int $iid, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    'projects/:id/merge_requests/:merge_request_iid/pipelines',
-                    [$id, $iid]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->post($this->encodeUrl(
+                'projects/:id/merge_requests/:merge_request_iid/pipelines',
+                [$id, $iid]
+            ))
             ->json();
     }
 
@@ -214,16 +200,13 @@ class MergeRequest extends ProjectResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/merge_requests', $id),
-                [
-                    'json' => [
-                        'source_branch' => $sourceBranch,
-                        'target_branch' => $targetBranch,
-                        'title' => $title,
-                    ] + $data,
-                ]
+            ->withJson([
+                    'source_branch' => $sourceBranch,
+                    'target_branch' => $targetBranch,
+                    'title' => $title,
+                ] + $data
             )
+            ->post($this->encodeUrl('projects/:id/merge_requests', $id))
             ->json();
     }
 
@@ -243,13 +226,11 @@ class MergeRequest extends ProjectResource
     public function update($id, int $iid, array $data): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/merge_requests/:merge_request_iid',
-                    [$id, $iid]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                'projects/:id/merge_requests/:merge_request_iid',
+                [$id, $iid]
+            ))
             ->json();
     }
 
@@ -290,13 +271,11 @@ class MergeRequest extends ProjectResource
     public function accept($id, int $iid, array $data = []): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/merge_requests/:merge_request_iid/merge',
-                    [$id, $iid]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                'projects/:id/merge_requests/:merge_request_iid/merge',
+                [$id, $iid]
+            ))
             ->json();
     }
 
@@ -382,13 +361,11 @@ class MergeRequest extends ProjectResource
     public function closesIssues($id, int $iid, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/merge_requests/:merge_request_iid/closes_issues',
-                    [$id, $iid]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/merge_requests/:merge_request_iid/closes_issues',
+                [$id, $iid]
+            ))
             ->json();
     }
 
@@ -474,13 +451,11 @@ class MergeRequest extends ProjectResource
     public function diffVersions($id, int $iid, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/merge_requests/:merge_request_iid/versions',
-                    [$id, $iid]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/merge_requests/:merge_request_iid/versions',
+                [$id, $iid]
+            ))
             ->json();
     }
 
@@ -523,13 +498,11 @@ class MergeRequest extends ProjectResource
     public function setEstimatedTime($id, int $iid, string $duration): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    'projects/:id/merge_requests/:merge_request_iid/time_estimate',
-                    [$id, $iid]
-                ),
-                ['json' => ['duration' => $duration]]
-            )
+            ->withJson(['duration' => $duration])
+            ->post($this->encodeUrl(
+                'projects/:id/merge_requests/:merge_request_iid/time_estimate',
+                [$id, $iid]
+            ))
             ->json();
     }
 
@@ -571,13 +544,11 @@ class MergeRequest extends ProjectResource
     public function createSpentTime($id, int $iid, string $duration): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    'projects/:id/merge_requests/:merge_request_iid/add_spent_time',
-                    [$id, $iid]
-                ),
-                ['json' => ['duration' => $duration]]
-            )
+            ->withJson(['duration' => $duration])
+            ->post($this->encodeUrl(
+                'projects/:id/merge_requests/:merge_request_iid/add_spent_time',
+                [$id, $iid]
+            ))
             ->json();
     }
 

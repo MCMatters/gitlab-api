@@ -29,10 +29,8 @@ class Template extends ProjectResource
     public function listByType($id, string $type, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/templates/:type', [$id, $type]),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/templates/:type', [$id, $type]))
             ->json();
     }
 
@@ -57,13 +55,11 @@ class Template extends ProjectResource
         array $query = []
     ): array {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/templates/:type/:key',
-                    [$id, $type, $key]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/templates/:type/:key',
+                [$id, $type, $key]
+            ))
             ->json();
     }
 }

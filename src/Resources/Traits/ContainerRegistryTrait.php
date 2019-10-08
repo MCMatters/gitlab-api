@@ -27,13 +27,11 @@ trait ContainerRegistryTrait
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    ':type/:id/registry/repositories',
-                    [$this->type, $id]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                ':type/:id/registry/repositories',
+                [$this->type, $id]
+            ))
             ->json();
     }
 }

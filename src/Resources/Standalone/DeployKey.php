@@ -26,8 +26,6 @@ class DeployKey extends StandaloneResource
      */
     public function list(array $query = []): array
     {
-        return $this->httpClient
-            ->get('deploy_keys', ['query' => $query])
-            ->json();
+        return $this->httpClient->withQuery($query)->get('deploy_keys')->json();
     }
 }

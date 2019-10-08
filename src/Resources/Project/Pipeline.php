@@ -28,10 +28,8 @@ class Pipeline extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/pipelines', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/pipelines', $id))
             ->json();
     }
 
@@ -73,13 +71,11 @@ class Pipeline extends ProjectResource
     public function variables($id, int $pipelineId, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/pipelines/:pipeline_id/variables',
-                    [$id, $pipelineId]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/pipelines/:pipeline_id/variables',
+                [$id, $pipelineId]
+            ))
             ->json();
     }
 
@@ -99,10 +95,8 @@ class Pipeline extends ProjectResource
     public function create($id, string $ref, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/pipeline', $id),
-                ['json' => ['ref' => $ref] + $data]
-            )
+            ->withJson(['ref' => $ref] + $data)
+            ->post($this->encodeUrl('projects/:id/pipeline', $id))
             ->json();
     }
 

@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace McMatters\GitlabApi\Resources\Project;
 
 use McMatters\GitlabApi\Resources\ProjectResource;
-use McMatters\GitlabApi\Resources\Resource;
 
 /**
  * Class ProjectImportExport
@@ -29,10 +28,8 @@ class Export extends ProjectResource
     public function export($id, array $data): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/export', $id),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->post($this->encodeUrl('projects/:id/export', $id))
             ->json();
     }
 

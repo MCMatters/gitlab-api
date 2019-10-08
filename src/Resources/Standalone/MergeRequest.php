@@ -27,7 +27,8 @@ class MergeRequest extends StandaloneResource
     public function list(array $query = []): array
     {
         return $this->httpClient
-            ->get('merge_requests', ['query' => $query])
+            ->withQuery($query)
+            ->get('merge_requests')
             ->json();
     }
 }

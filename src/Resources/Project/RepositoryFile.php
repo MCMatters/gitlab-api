@@ -33,13 +33,11 @@ class RepositoryFile extends ProjectResource
     public function get($id, string $filePath, string $ref = 'master'): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/repository/files/:file_path',
-                    [$id, $filePath]
-                ),
-                ['query' => ['ref' => $ref]]
-            )
+            ->withQuery(['ref' => $ref])
+            ->get($this->encodeUrl(
+                'projects/:id/repository/files/:file_path',
+                [$id, $filePath]
+            ))
             ->json();
     }
 
@@ -61,13 +59,11 @@ class RepositoryFile extends ProjectResource
         string $ref = 'master'
     ): array {
         return $this->httpClient
-            ->head(
-                $this->encodeUrl(
-                    'projects/:id/repository/files/:file_path',
-                    [$id, $filePath]
-                ),
-                ['query' => ['ref' => $ref]]
-            )
+            ->withQuery(['ref' => $ref])
+            ->head($this->encodeUrl(
+                'projects/:id/repository/files/:file_path',
+                [$id, $filePath]
+            ))
             ->getHeaders();
     }
 
@@ -90,13 +86,11 @@ class RepositoryFile extends ProjectResource
         string $ref = 'master'
     ): array {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/repository/files/:file_path/blame',
-                    [$id, $filePath]
-                ),
-                ['query' => ['ref' => $ref]]
-            )
+            ->withQuery(['ref' => $ref])
+            ->get($this->encodeUrl(
+                'projects/:id/repository/files/:file_path/blame',
+                [$id, $filePath]
+            ))
             ->json();
     }
 
@@ -118,13 +112,11 @@ class RepositoryFile extends ProjectResource
         string $ref = 'master'
     ): array {
         return $this->httpClient
-            ->head(
-                $this->encodeUrl(
-                    'projects/:id/repository/files/:file_path/blame',
-                    [$id, $filePath]
-                ),
-                ['query' => ['ref' => $ref]]
-            )
+            ->withQuery(['ref' => $ref])
+            ->head($this->encodeUrl(
+                'projects/:id/repository/files/:file_path/blame',
+                [$id, $filePath]
+            ))
             ->getHeaders();
     }
 
@@ -147,13 +139,11 @@ class RepositoryFile extends ProjectResource
         string $ref = 'master'
     ): array {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/repository/files/:file_path/raw',
-                    [$id, $filePath]
-                ),
-                ['query' => ['ref' => $ref]]
-            )
+            ->withQuery(['ref' => $ref])
+            ->get($this->encodeUrl(
+                'projects/:id/repository/files/:file_path/raw',
+                [$id, $filePath]
+            ))
             ->json();
     }
 
@@ -175,13 +165,11 @@ class RepositoryFile extends ProjectResource
         string $ref = 'master'
     ): array {
         return $this->httpClient
-            ->head(
-                $this->encodeUrl(
-                    'projects/:id/repository/files/:file_path/raw',
-                    [$id, $filePath]
-                ),
-                ['query' => ['ref' => $ref]]
-            )
+            ->withQuery(['ref' => $ref])
+            ->head($this->encodeUrl(
+                'projects/:id/repository/files/:file_path/raw',
+                [$id, $filePath]
+            ))
             ->getHeaders();
     }
 
@@ -210,19 +198,16 @@ class RepositoryFile extends ProjectResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    'projects/:id/repository/files/:file_path',
-                    [$id, $filePath]
-                ),
-                [
-                    'json' => [
-                        'branch' => $branch,
-                        'content' => $content,
-                        'commit_message' => $commitMessage,
-                    ] + $data,
-                ]
+            ->withJson([
+                    'branch' => $branch,
+                    'content' => $content,
+                    'commit_message' => $commitMessage,
+                ] + $data
             )
+            ->post($this->encodeUrl(
+                'projects/:id/repository/files/:file_path',
+                [$id, $filePath]
+            ))
             ->json();
     }
 
@@ -251,19 +236,16 @@ class RepositoryFile extends ProjectResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/repository/files/:file_path',
-                    [$id, $filePath]
-                ),
-                [
-                    'json' => [
-                        'branch' => $branch,
-                        'content' => $content,
-                        'commit_message' => $commitMessage,
-                    ] + $data,
-                ]
+            ->withJson([
+                    'branch' => $branch,
+                    'content' => $content,
+                    'commit_message' => $commitMessage,
+                ] + $data
             )
+            ->put($this->encodeUrl(
+                'projects/:id/repository/files/:file_path',
+                [$id, $filePath]
+            ))
             ->json();
     }
 
@@ -289,18 +271,15 @@ class RepositoryFile extends ProjectResource
         array $data = []
     ): int {
         return $this->httpClient
-            ->delete(
-                $this->encodeUrl(
-                    'projects/:id/repository/files/:file_path',
-                    [$id, $filePath]
-                ),
-                [
-                    'json' => [
-                        'branch' => $branch,
-                        'commit_message' => $commitMessage,
-                    ] + $data,
-                ]
+            ->withJson([
+                    'branch' => $branch,
+                    'commit_message' => $commitMessage,
+                ] + $data
             )
+            ->delete($this->encodeUrl(
+                'projects/:id/repository/files/:file_path',
+                [$id, $filePath]
+            ))
             ->getStatusCode();
     }
 

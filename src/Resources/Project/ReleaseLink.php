@@ -29,13 +29,11 @@ class ReleaseLink extends ProjectResource
     public function list($id, string $tagName, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/releases/:tag_name/assets/links',
-                    [$id, $tagName]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/releases/:tag_name/assets/links',
+                [$id, $tagName]
+            ))
             ->json();
     }
 
@@ -83,13 +81,11 @@ class ReleaseLink extends ProjectResource
         string $url
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    'projects/:id/releases/:tag_name/assets/links',
-                    [$id, $tagName]
-                ),
-                ['json' => ['name' => $name, 'url' => $url]]
-            )
+            ->withJson(['name' => $name, 'url' => $url])
+            ->post($this->encodeUrl(
+                'projects/:id/releases/:tag_name/assets/links',
+                [$id, $tagName]
+            ))
             ->json();
     }
 
@@ -114,13 +110,11 @@ class ReleaseLink extends ProjectResource
         array $data
     ): array {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/releases/:tag_name/assets/links/:link_id',
-                    [$id, $tagName, $linkId]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                'projects/:id/releases/:tag_name/assets/links/:link_id',
+                [$id, $tagName, $linkId]
+            ))
             ->json();
     }
 

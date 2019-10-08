@@ -28,10 +28,8 @@ class Project extends UserResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('users/:user_id/projects', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('users/:user_id/projects', $id))
             ->json();
     }
 
@@ -50,10 +48,8 @@ class Project extends UserResource
     public function listStarred($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('users/:user_id/starred_projects', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('users/:user_id/starred_projects', $id))
             ->json();
     }
 }

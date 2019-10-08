@@ -28,7 +28,8 @@ class Issue extends GroupResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get($this->encodeUrl('groups/:id/issues', $id), ['query' => $query])
+            ->withQuery($query)
+            ->get($this->encodeUrl('groups/:id/issues', $id))
             ->json();
     }
 }

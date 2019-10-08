@@ -27,10 +27,8 @@ trait VariableTrait
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(':type/:id/variables', [$this->type, $id]),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(':type/:id/variables', [$this->type, $id]))
             ->json();
     }
 
@@ -79,10 +77,8 @@ trait VariableTrait
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(':type/:id/variables', [$this->type, $id]),
-                ['json' => ['key' => $key, 'value' => $value] + $data]
-            )
+            ->withJson(['key' => $key, 'value' => $value] + $data)
+            ->post($this->encodeUrl(':type/:id/variables', [$this->type, $id]))
             ->json();
     }
 
@@ -108,13 +104,11 @@ trait VariableTrait
         array $data
     ): array {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    ':type/:id/variables/:key',
-                    [$this->type, $id, $key]
-                ),
-                ['json' => ['value' => $value] + $data]
-            )
+            ->withJson(['value' => $value] + $data)
+            ->put($this->encodeUrl(
+                ':type/:id/variables/:key',
+                [$this->type, $id, $key]
+            ))
             ->json();
     }
 

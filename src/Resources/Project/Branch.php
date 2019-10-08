@@ -28,10 +28,8 @@ class Branch extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/repository/branches', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/repository/branches', $id))
             ->json();
     }
 
@@ -50,12 +48,10 @@ class Branch extends ProjectResource
     public function get($id, string $branch): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/repository/branches/:branch',
-                    [$id, $branch]
-                )
-            )
+            ->get($this->encodeUrl(
+                'projects/:id/repository/branches/:branch',
+                [$id, $branch]
+            ))
             ->json();
     }
 
@@ -75,10 +71,8 @@ class Branch extends ProjectResource
     public function create($id, string $branch, string $ref): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/repository/branches', $id),
-                ['json' => ['branch' => $branch, 'ref' => $ref]]
-            )
+            ->withJson(['branch' => $branch, 'ref' => $ref])
+            ->post($this->encodeUrl('projects/:id/repository/branches', $id))
             ->json();
     }
 

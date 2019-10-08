@@ -28,10 +28,8 @@ class Environment extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/environments', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/environments', $id))
             ->json();
     }
 
@@ -73,10 +71,8 @@ class Environment extends ProjectResource
     public function create($id, string $name, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/environments', $id),
-                ['json' => ['name' => $name] + $data]
-            )
+            ->withJson(['name' => $name] + $data)
+            ->post($this->encodeUrl('projects/:id/environments', $id))
             ->json();
     }
 
@@ -96,13 +92,11 @@ class Environment extends ProjectResource
     public function update($id, int $environmentId, array $data): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/environments/:environment_id',
-                    [$id, $environmentId]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                'projects/:id/environments/:environment_id',
+                [$id, $environmentId]
+            ))
             ->json();
     }
 

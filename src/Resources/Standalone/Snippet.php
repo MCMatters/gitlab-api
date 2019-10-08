@@ -26,7 +26,7 @@ class Snippet extends StandaloneResource
      */
     public function list(array $query = []): array
     {
-        return $this->httpClient->get('snippets', ['query' => $query])->json();
+        return $this->httpClient->withQuery($query)->get('snippets')->json();
     }
 
     /**
@@ -81,16 +81,13 @@ class Snippet extends StandaloneResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                'snippets',
-                [
-                    'json' => [
-                        'title' => $title,
-                        'file_name' => $fileName,
-                        'content' => $content,
-                    ] + $data,
-                ]
+            ->withJson([
+                    'title' => $title,
+                    'file_name' => $fileName,
+                    'content' => $content,
+                ] + $data
             )
+            ->post('snippets')
             ->json();
     }
 
@@ -109,7 +106,8 @@ class Snippet extends StandaloneResource
     public function update(int $id, array $data): array
     {
         return $this->httpClient
-            ->put("snippets/{$id}", ['json' => $data])
+            ->withJson($data)
+            ->put("snippets/{$id}")
             ->json();
     }
 
@@ -142,7 +140,8 @@ class Snippet extends StandaloneResource
     public function listPublic(array $query = []): array
     {
         return $this->httpClient
-            ->get('snippets/public', ['query' => $query])
+            ->withQuery($query)
+            ->get('snippets/public')
             ->json();
     }
 

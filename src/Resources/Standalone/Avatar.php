@@ -30,7 +30,8 @@ class Avatar extends StandaloneResource
     public function getUrl(string $email, array $query = []): ?string
     {
         $response = $this->httpClient
-            ->get('avatar', ['query' => ['email' => $email] + $query])
+            ->withQuery(['email' => $email] + $query)
+            ->get('avatar')
             ->json();
 
         return $response['avatar_url'] ?? null;

@@ -27,7 +27,8 @@ class GitlabCi extends TemplateResource
     public function list(array $query = []): array
     {
         return $this->httpClient
-            ->get('templates/gitlab_ci_ymls', ['query' => $query])
+            ->withQuery($query)
+            ->get('templates/gitlab_ci_ymls')
             ->json();
     }
 

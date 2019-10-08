@@ -28,10 +28,8 @@ class Release extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/releases', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/releases', $id))
             ->json();
     }
 
@@ -80,16 +78,13 @@ class Release extends ProjectResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/releases', $id),
-                [
-                    'json' => [
-                        'name' => $name,
-                        'tag_name' => $tagName,
-                        'description' => $description,
-                    ] + $data,
-                ]
+            ->withJson([
+                    'name' => $name,
+                    'tag_name' => $tagName,
+                    'description' => $description,
+                ] + $data
             )
+            ->post($this->encodeUrl('projects/:id/releases', $id))
             ->json();
     }
 
@@ -109,12 +104,11 @@ class Release extends ProjectResource
     public function update($id, string $tagName, array $data): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/releases/:tag_name',
-                    [$id, $tagName]
-                ),
-                ['json' => $data]
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                'projects/:id/releases/:tag_name',
+                [$id, $tagName]
+            )
             )
             ->json();
     }

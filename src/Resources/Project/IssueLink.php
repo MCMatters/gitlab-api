@@ -29,20 +29,18 @@ class IssueLink extends ProjectResource
     public function list($id, int $iid, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/issues/:issue_iid/links',
-                    [$id, $iid]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/issues/:issue_iid/links',
+                [$id, $iid]
+            ))
             ->json();
     }
 
     /**
-     * @param $id
+     * @param int|string $id
      * @param int $iid
-     * @param $targetProjectId
+     * @param int|string $targetProjectId
      * @param int|string $targetIssueId
      *
      * @return array
@@ -60,15 +58,11 @@ class IssueLink extends ProjectResource
         $targetIssueId
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/issues/:issue_iid/links', [$id, $iid]),
-                [
-                    'json' => [
-                        'target_project_id' => $targetProjectId,
-                        'target_issue_iid' => $targetIssueId,
-                    ],
-                ]
-            )
+            ->withJson([
+                'target_project_id' => $targetProjectId,
+                'target_issue_iid' => $targetIssueId,
+            ])
+            ->post($this->encodeUrl('projects/:id/issues/:issue_iid/links', [$id, $iid]))
             ->json();
     }
 

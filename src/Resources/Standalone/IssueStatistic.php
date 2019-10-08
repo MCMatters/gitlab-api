@@ -27,7 +27,8 @@ class IssueStatistic extends StandaloneResource
     public function list(array $query = []): array
     {
         return $this->httpClient
-            ->get('issues_statistics', ['query' => $query])
+            ->withQuery($query)
+            ->get('issues_statistics')
             ->json();
     }
 }

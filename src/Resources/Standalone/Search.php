@@ -28,10 +28,8 @@ class Search extends StandaloneResource
     public function search(string $scope, string $search): array
     {
         return $this->httpClient
-            ->get(
-                'search',
-                ['query' => ['scope' => $scope, 'search' => $search]]
-            )
+            ->withQuery(['scope' => $scope, 'search' => $search])
+            ->get('search')
             ->json();
     }
 }

@@ -26,11 +26,11 @@ class User extends StandaloneResource
      */
     public function list(array $query = []): array
     {
-        return $this->httpClient->get('users', ['query' => $query])->json();
+        return $this->httpClient->withQuery($query)->get('users')->json();
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      * @param array $query
      *
      * @return array
@@ -41,10 +41,11 @@ class User extends StandaloneResource
      *
      * @see https://gitlab.com/help/api/users.md#single-user
      */
-    public function get(int $id, array $query = []): array
+    public function get($id, array $query = []): array
     {
         return $this->httpClient
-            ->get("users/{$id}", ['query' => $query])
+            ->withQuery($query)
+            ->get($this->encodeUrl('users/:id', $id))
             ->json();
     }
 
@@ -69,21 +70,18 @@ class User extends StandaloneResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                'users',
-                [
-                    'json' => [
-                        'email' => $email,
-                        'username' => $username,
-                        'name' => $name,
-                    ] + $data,
-                ]
+            ->withJson([
+                    'email' => $email,
+                    'username' => $username,
+                    'name' => $name,
+                ] + $data
             )
+            ->post('users')
             ->json();
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      * @param array $data
      *
      * @return array
@@ -94,15 +92,16 @@ class User extends StandaloneResource
      *
      * @see https://gitlab.com/help/api/users.md#user-modification
      */
-    public function update(int $id, array $data): array
+    public function update($id, array $data): array
     {
         return $this->httpClient
-            ->put("users/{$id}", ['json' => $data])
+            ->withJson($data)
+            ->put($this->encodeUrl('users/:id', $id))
             ->json();
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      * @param array $query
      *
      * @return int
@@ -112,10 +111,11 @@ class User extends StandaloneResource
      *
      * @see https://gitlab.com/help/api/users.md#user-deletion
      */
-    public function delete(int $id, array $query = []): int
+    public function delete($id, array $query = []): int
     {
         return $this->httpClient
-            ->delete("users/{$id}", ['query' => $query])
+            ->withQuery($query)
+            ->delete($this->encodeUrl('users/:id', $id))
             ->getStatusCode();
     }
 
@@ -133,7 +133,7 @@ class User extends StandaloneResource
      */
     public function getCurrent(array $query = []): array
     {
-        return $this->httpClient->get('user', ['query' => $query])->json();
+        return $this->httpClient->withQuery($query)->get('user')->json();
     }
 
     /**
@@ -184,7 +184,7 @@ class User extends StandaloneResource
      */
     public function setStatusForCurrent(array $data): array
     {
-        return $this->httpClient->put('user/status', ['json' => $data])->json();
+        return $this->httpClient->withJson($data)->put('user/status')->json();
     }
 
     /**
@@ -214,11 +214,11 @@ class User extends StandaloneResource
      */
     public function sshKeysForCurrent(array $query = []): array
     {
-        return $this->httpClient->get('user/keys', ['query' => $query])->json();
+        return $this->httpClient->withQuery($query)->get('user/keys')->json();
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      * @param array $query
      *
      * @return array
@@ -229,10 +229,11 @@ class User extends StandaloneResource
      *
      * @see https://gitlab.com/help/api/users.md#list-ssh-keys-for-user
      */
-    public function sshKeys(int $id, array $query = []): array
+    public function sshKeys($id, array $query = []): array
     {
         return $this->httpClient
-            ->get("users/{$id}/keys", ['query' => $query])
+            ->withQuery($query)
+            ->get($this->encodeUrl('users/:id/keys', $id))
             ->json();
     }
 
@@ -267,12 +268,13 @@ class User extends StandaloneResource
     public function createSshKeyForCurrent(string $title, string $key): array
     {
         return $this->httpClient
-            ->post('user/keys', ['json' => ['title' => $title, 'key' => $key]])
+            ->withJson(['title' => $title, 'key' => $key])
+            ->post('user/keys')
             ->json();
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      * @param string $title
      * @param string $key
      *
@@ -284,13 +286,11 @@ class User extends StandaloneResource
      *
      * @see https://gitlab.com/help/api/users.md#add-ssh-key-for-user
      */
-    public function createSshKey(int $id, string $title, string $key): array
+    public function createSshKey($id, string $title, string $key): array
     {
         return $this->httpClient
-            ->post(
-                "users/{$id}/keys",
-                ['json' => ['title' => $title, 'key' => $key]]
-            )
+            ->withJson(['title' => $title, 'key' => $key])
+            ->post($this->encodeUrl('users/:id/keys', $id))
             ->json();
     }
 
@@ -310,7 +310,7 @@ class User extends StandaloneResource
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      * @param int $keyId
      *
      * @return int
@@ -320,10 +320,10 @@ class User extends StandaloneResource
      *
      * @see https://gitlab.com/help/api/users.md#delete-ssh-key-for-given-user
      */
-    public function deleteSshKey(int $id, int $keyId): int
+    public function deleteSshKey($id, int $keyId): int
     {
         return $this->httpClient
-            ->delete("users/{$id}/keys/{$keyId}")
+            ->delete($this->encodeUrl('users/:id/keys/:key_id', [$id, $keyId]))
             ->getStatusCode();
     }
 
@@ -341,7 +341,8 @@ class User extends StandaloneResource
     public function gpgKeysForCurrent(array $query = []): array
     {
         return $this->httpClient
-            ->get('user/gpg_keys', ['query' => $query])
+            ->withQuery($query)
+            ->get('user/gpg_keys')
             ->json();
     }
 
@@ -375,7 +376,8 @@ class User extends StandaloneResource
     public function createGpgKeyForCurrent(string $key): array
     {
         return $this->httpClient
-            ->post('user/gpg_keys', ['json' => ['key' => $key]])
+            ->withJson(['key' => $key])
+            ->post('user/gpg_keys')
             ->json();
     }
 
@@ -397,7 +399,7 @@ class User extends StandaloneResource
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      * @param array $query
      *
      * @return array
@@ -408,15 +410,16 @@ class User extends StandaloneResource
      *
      * @see https://gitlab.com/help/api/users.md#list-all-gpg-keys-for-given-user
      */
-    public function gpgKeys(int $id, array $query = []): array
+    public function gpgKeys($id, array $query = []): array
     {
         return $this->httpClient
-            ->get("users/{$id}/gpg_keys", ['query' => $query])
+            ->withQuery($query)
+            ->get($this->encodeUrl('users/:id/gpg_keys', $id))
             ->json();
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      * @param int $keyId
      *
      * @return array
@@ -427,13 +430,15 @@ class User extends StandaloneResource
      *
      * @see https://gitlab.com/help/api/users.md#get-a-specific-gpg-key-for-a-given-user
      */
-    public function getGpgKey(int $id, int $keyId): array
+    public function getGpgKey($id, int $keyId): array
     {
-        return $this->httpClient->get("users/{$id}/gpg_keys/{$keyId}")->json();
+        return $this->httpClient
+            ->get($this->encodeUrl('users/:id/gpg_keys/:key_id', [$id, $keyId]))
+            ->json();
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      * @param string $key
      *
      * @return array
@@ -444,15 +449,16 @@ class User extends StandaloneResource
      *
      * @see https://gitlab.com/help/api/users.md#add-a-gpg-key-for-a-given-user
      */
-    public function createGpgKey(int $id, string $key): array
+    public function createGpgKey($id, string $key): array
     {
         return $this->httpClient
-            ->post("users/{$id}/gpg_keys", ['json' => ['key' => $key]])
+            ->withJson(['key' => $key])
+            ->post($this->encodeUrl('users/:id/gpg_keys', $id))
             ->json();
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      * @param int $keyId
      *
      * @return int
@@ -462,10 +468,13 @@ class User extends StandaloneResource
      *
      * @see https://gitlab.com/help/api/users.md#delete-a-gpg-key-for-a-given-user
      */
-    public function deleteGpgKey(int $id, int $keyId): int
+    public function deleteGpgKey($id, int $keyId): int
     {
         return $this->httpClient
-            ->delete("users/{$id}/gpg_keys/{$keyId}")
+            ->delete($this->encodeUrl(
+                'users/:id/gpg_keys/:key_id',
+                [$id, $keyId]
+            ))
             ->getStatusCode();
     }
 
@@ -482,9 +491,7 @@ class User extends StandaloneResource
      */
     public function emailsForCurrent(array $query = []): array
     {
-        return $this->httpClient
-            ->get('user/emails', ['query' => $query])
-            ->json();
+        return $this->httpClient->withQuery($query)->get('user/emails')->json();
     }
 
     /**
@@ -502,7 +509,8 @@ class User extends StandaloneResource
     public function emails(int $id, array $query = []): array
     {
         return $this->httpClient
-            ->get("users/{$id}/emails", ['query' => $query])
+            ->withQuery($query)
+            ->get($this->encodeUrl('users/:id/emails', $id))
             ->json();
     }
 
@@ -536,12 +544,13 @@ class User extends StandaloneResource
     public function createEmailForCurrent(string $email): array
     {
         return $this->httpClient
-            ->post('user/emails', ['json' => ['email' => $email]])
+            ->withJson(['email' => $email])
+            ->post('user/emails')
             ->json();
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      * @param string $email
      *
      * @return array
@@ -552,10 +561,11 @@ class User extends StandaloneResource
      *
      * @see https://gitlab.com/help/api/users.md#add-email-for-user
      */
-    public function createEmail(int $id, string $email): array
+    public function createEmail($id, string $email): array
     {
         return $this->httpClient
-            ->post("users/{$id}/emails", ['json' => ['email' => $email]])
+            ->withJson(['email' => $email])
+            ->post($this->encodeUrl('users/:id/emails', $id))
             ->json();
     }
 
@@ -577,7 +587,7 @@ class User extends StandaloneResource
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      * @param int $emailId
      *
      * @return int
@@ -587,15 +597,18 @@ class User extends StandaloneResource
      *
      * @see https://gitlab.com/help/api/users.md#delete-email-for-given-user
      */
-    public function deleteEmail(int $id, int $emailId): int
+    public function deleteEmail($id, int $emailId): int
     {
         return $this->httpClient
-            ->delete("users/{$id}/emails/{$emailId}")
+            ->delete($this->encodeUrl(
+                'users/:id/emails/:email_id',
+                [$id, $emailId]
+            ))
             ->getStatusCode();
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      *
      * @return array
      *
@@ -605,13 +618,15 @@ class User extends StandaloneResource
      *
      * @see https://gitlab.com/help/api/users.md#block-user
      */
-    public function block(int $id): array
+    public function block($id): array
     {
-        return $this->httpClient->post("users/{$id}/block")->json();
+        return $this->httpClient
+            ->post($this->encodeUrl('users/:id/block', $id))
+            ->json();
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      *
      * @return array
      *
@@ -621,13 +636,15 @@ class User extends StandaloneResource
      *
      * @see https://gitlab.com/help/api/users.md#unblock-user
      */
-    public function unblock(int $id): array
+    public function unblock($id): array
     {
-        return $this->httpClient->post("users/{$id}/unblock")->json();
+        return $this->httpClient
+            ->post($this->encodeUrl('users/:id/unblock', $id))
+            ->json();
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      * @param array $query
      *
      * @return array
@@ -638,15 +655,16 @@ class User extends StandaloneResource
      *
      * @see https://gitlab.com/help/api/users.md#get-all-impersonation-tokens-of-a-user
      */
-    public function impersonationTokens(int $id, array $query = []): array
+    public function impersonationTokens($id, array $query = []): array
     {
         return $this->httpClient
-            ->get("users/{$id}/impersonation_tokens", ['query' => $query])
+            ->withQuery($query)
+            ->get($this->encodeUrl('users/:id/impersonation_tokens', $id))
             ->json();
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      * @param int $impersonationTokenId
      *
      * @return array
@@ -662,12 +680,15 @@ class User extends StandaloneResource
         int $impersonationTokenId
     ): array {
         return $this->httpClient
-            ->get("users/{$id}/impersonation_tokens/{$impersonationTokenId}")
+            ->get($this->encodeUrl(
+                'users/:id/impersonation_tokens/:impersonation_token_id',
+                [$id, $impersonationTokenId]
+            ))
             ->json();
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      * @param string $name
      * @param array $scopes
      * @param array $data
@@ -681,21 +702,19 @@ class User extends StandaloneResource
      * @see https://gitlab.com/help/api/users.md#create-an-impersonation-token
      */
     public function createImpersonationToken(
-        int $id,
+        $id,
         string $name,
         array $scopes,
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                "users/{$id}/impersonation_tokens",
-                ['json' => ['name' => $name, 'scopes' => $scopes] + $data]
-            )
+            ->withJson(['name' => $name, 'scopes' => $scopes] + $data)
+            ->post($this->encodeUrl('users/:id/impersonation_tokens', $id))
             ->json();
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      * @param int $impersonationTokenId
      *
      * @return int
@@ -710,7 +729,10 @@ class User extends StandaloneResource
         int $impersonationTokenId
     ): int {
         return $this->httpClient
-            ->delete("users/{$id}/impersonation_tokens/{$impersonationTokenId}")
+            ->delete($this->encodeUrl(
+                'users/:id/impersonation_tokens/:impersonation_token_id',
+                [$id, $impersonationTokenId]
+            ))
             ->getStatusCode();
     }
 
@@ -728,7 +750,8 @@ class User extends StandaloneResource
     public function activities(array $query = []): array
     {
         return $this->httpClient
-            ->get('user/activities', ['query' => $query])
+            ->withQuery($query)
+            ->get('user/activities')
             ->json();
     }
 }

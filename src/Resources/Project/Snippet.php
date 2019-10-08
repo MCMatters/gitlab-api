@@ -28,10 +28,8 @@ class Snippet extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/snippets', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/snippets', $id))
             ->json();
     }
 
@@ -82,17 +80,14 @@ class Snippet extends ProjectResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/snippets', $id),
-                [
-                    'json' => [
-                        'title' => $title,
-                        'file_name' => $fileName,
-                        'code' => $code,
-                        'visibility' => $visibility,
-                    ] + $data,
-                ]
+            ->withJson([
+                    'title' => $title,
+                    'file_name' => $fileName,
+                    'code' => $code,
+                    'visibility' => $visibility,
+                ] + $data
             )
+            ->post($this->encodeUrl('projects/:id/snippets', $id))
             ->json();
     }
 
@@ -112,13 +107,11 @@ class Snippet extends ProjectResource
     public function update($id, int $snippetId, array $data): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/snippets/:snippet_id',
-                    [$id, $snippetId]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                'projects/:id/snippets/:snippet_id',
+                [$id, $snippetId]
+            ))
             ->json();
     }
 

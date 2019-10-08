@@ -54,13 +54,11 @@ class ContainerRegistry extends ProjectResource
     public function tags($id, int $repositoryId, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/registry/repositories/:repository_id/tags',
-                    [$id, $repositoryId]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/registry/repositories/:repository_id/tags',
+                [$id, $repositoryId]
+            ))
             ->json();
     }
 
@@ -131,13 +129,11 @@ class ContainerRegistry extends ProjectResource
         array $data = []
     ): int {
         return $this->httpClient
-            ->delete(
-                $this->encodeUrl(
-                    'projects/:id/registry/repositories/:repository_id/tags',
-                    [$id, $repositoryId]
-                ),
-                ['json' => ['name_regex' => $nameRegex] + $data]
-            )
+            ->withJson(['name_regex' => $nameRegex] + $data)
+            ->delete($this->encodeUrl(
+                'projects/:id/registry/repositories/:repository_id/tags',
+                [$id, $repositoryId]
+            ))
             ->getStatusCode();
     }
 }

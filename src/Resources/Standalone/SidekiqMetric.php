@@ -27,7 +27,8 @@ class SidekiqMetric extends StandaloneResource
     public function queueMetrics(array $query = []): array
     {
         return $this->httpClient
-            ->get('sidekiq/queue_metrics', ['query' => $query])
+            ->withQuery($query)
+            ->get('sidekiq/queue_metrics')
             ->json();
     }
 
@@ -45,7 +46,8 @@ class SidekiqMetric extends StandaloneResource
     public function processMetrics(array $query = []): array
     {
         return $this->httpClient
-            ->get('sidekiq/process_metrics', ['query' => $query])
+            ->withQuery($query)
+            ->get('sidekiq/process_metrics')
             ->json();
     }
 
@@ -63,7 +65,8 @@ class SidekiqMetric extends StandaloneResource
     public function jobStatistics(array $query = []): array
     {
         return $this->httpClient
-            ->get('sidekiq/job_stats', ['query' => $query])
+            ->withQuery($query)
+            ->get('sidekiq/job_stats')
             ->json();
     }
 
@@ -79,7 +82,8 @@ class SidekiqMetric extends StandaloneResource
     public function compoundMetrics(array $query = []): array
     {
         return $this->httpClient
-            ->get('sidekiq/compound_metrics', ['query' => $query])
+            ->withQuery($query)
+            ->get('sidekiq/compound_metrics')
             ->json();
     }
 }

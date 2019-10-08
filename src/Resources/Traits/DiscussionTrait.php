@@ -31,13 +31,11 @@ trait DiscussionTrait
     public function list($id, int $iid, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    ':base_type/:id/:type/:iid/discussions',
-                    [$this->baseType, $id, $this->type, $iid]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                ':base_type/:id/:type/:iid/discussions',
+                [$this->baseType, $id, $this->type, $iid]
+            ))
             ->json();
     }
 
@@ -89,13 +87,11 @@ trait DiscussionTrait
     public function create($id, int $iid, string $body, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    ':base_type/:id/:type/:iid/discussions',
-                    [$this->baseType, $id, $this->type, $iid]
-                ),
-                ['json' => ['body' => $body] + $data]
-            )
+            ->withJson(['body' => $body] + $data)
+            ->post($this->encodeUrl(
+                ':base_type/:id/:type/:iid/discussions',
+                [$this->baseType, $id, $this->type, $iid]
+            ))
             ->json();
     }
 
@@ -126,13 +122,11 @@ trait DiscussionTrait
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    ':base_type/:id/:type/:iid/discussions/:discussion_id/notes',
-                    [$this->baseType, $id, $this->type, $iid, $discussionId]
-                ),
-                ['json' => ['body' => $body] + $data]
-            )
+            ->withJson(['body' => $body] + $data)
+            ->post($this->encodeUrl(
+                ':base_type/:id/:type/:iid/discussions/:discussion_id/notes',
+                [$this->baseType, $id, $this->type, $iid, $discussionId]
+            ))
             ->json();
     }
 
@@ -163,13 +157,11 @@ trait DiscussionTrait
         array $data = []
     ): array {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    ':base_type/:id/:type/:iid/discussions/:discussion_id/notes/:note_id',
-                    [$this->baseType, $id, $this->type, $iid, $discussionId, $noteId]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                ':base_type/:id/:type/:iid/discussions/:discussion_id/notes/:note_id',
+                [$this->baseType, $id, $this->type, $iid, $discussionId, $noteId]
+            ))
             ->json();
     }
 

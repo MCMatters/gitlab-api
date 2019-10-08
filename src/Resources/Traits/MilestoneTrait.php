@@ -27,10 +27,8 @@ trait MilestoneTrait
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(':type/:id/milestones', [$this->type, $id]),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(':type/:id/milestones', [$this->type, $id]))
             ->json();
     }
 
@@ -74,10 +72,8 @@ trait MilestoneTrait
     public function create($id, string $title, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(':type/:id/milestones', [$this->type, $id]),
-                ['json' => ['title' => $title] + $data]
-            )
+            ->withJson(['title' => $title] + $data)
+            ->post($this->encodeUrl(':type/:id/milestones', [$this->type, $id]))
             ->json();
     }
 
@@ -98,13 +94,11 @@ trait MilestoneTrait
     public function update($id, int $milestoneId, array $data): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    ':type/:id/milestones/:milestone_id',
-                    [$this->type, $id, $milestoneId]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                ':type/:id/milestones/:milestone_id',
+                [$this->type, $id, $milestoneId]
+            ))
             ->json();
     }
 
@@ -147,13 +141,11 @@ trait MilestoneTrait
     public function issues($id, int $milestoneId, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    ':type/:id/milestones/:milestone_id/issues',
-                    [$this->type, $id, $milestoneId]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                ':type/:id/milestones/:milestone_id/issues',
+                [$this->type, $id, $milestoneId]
+            ))
             ->json();
     }
 
@@ -177,13 +169,11 @@ trait MilestoneTrait
         array $query = []
     ): array {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    ':type/:id/milestones/:milestone_id/merge_requests',
-                    [$this->type, $id, $milestoneId]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                ':type/:id/milestones/:milestone_id/merge_requests',
+                [$this->type, $id, $milestoneId]
+            ))
             ->json();
     }
 
@@ -207,13 +197,11 @@ trait MilestoneTrait
         array $query = []
     ): array {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    ':type/:id/milestones/:milestone_id/burndown_events',
-                    [$this->type, $id, $milestoneId]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                ':type/:id/milestones/:milestone_id/burndown_events',
+                [$this->type, $id, $milestoneId]
+            ))
             ->json();
     }
 }

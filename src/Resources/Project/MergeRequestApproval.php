@@ -28,10 +28,8 @@ class MergeRequestApproval extends ProjectResource
     public function projectLevelList($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/approvals', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/approvals', $id))
             ->json();
     }
 
@@ -50,10 +48,8 @@ class MergeRequestApproval extends ProjectResource
     public function projectLevelUpdate($id, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/approvals', $id),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->post($this->encodeUrl('projects/:id/approvals', $id))
             ->json();
     }
 
@@ -72,10 +68,8 @@ class MergeRequestApproval extends ProjectResource
     public function projectLevelRules($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/approval_rules', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/approval_rules', $id))
             ->json();
     }
 
@@ -100,15 +94,12 @@ class MergeRequestApproval extends ProjectResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/approval_rules', $id),
-                [
-                    'json' => [
-                        'name' => $name,
-                        'approvals_required' => $approvalsRequired,
-                    ] + $data,
-                ]
+            ->withJson([
+                    'name' => $name,
+                    'approvals_required' => $approvalsRequired,
+                ] + $data
             )
+            ->post($this->encodeUrl('projects/:id/approval_rules', $id))
             ->json();
     }
 
@@ -131,13 +122,11 @@ class MergeRequestApproval extends ProjectResource
         array $data
     ): array {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/approval_rules/:approval_rule_id',
-                    [$id, $approvalRuleId]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                'projects/:id/approval_rules/:approval_rule_id',
+                [$id, $approvalRuleId]
+            ))
             ->json();
     }
 
@@ -177,10 +166,8 @@ class MergeRequestApproval extends ProjectResource
     public function updateProjectLevelApprovers($id, array $data): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl('projects/:id/approvers', $id),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl('projects/:id/approvers', $id))
             ->json();
     }
 
@@ -203,13 +190,11 @@ class MergeRequestApproval extends ProjectResource
         array $query = []
     ): array {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/merge_requests/:merge_request_iid/approvals',
-                    [$id, $iid]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/merge_requests/:merge_request_iid/approvals',
+                [$id, $iid]
+            ))
             ->json();
     }
 
@@ -234,17 +219,11 @@ class MergeRequestApproval extends ProjectResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    'projects/:id/merge_requests/:merge_request_iid/approvals',
-                    [$id, $iid, $approvalsRequired]
-                ),
-                [
-                    'json' => [
-                        'approvals_required' => $approvalsRequired,
-                    ] + $data,
-                ]
-            )
+            ->withJson(['approvals_required' => $approvalsRequired] + $data)
+            ->post($this->encodeUrl(
+                'projects/:id/merge_requests/:merge_request_iid/approvals',
+                [$id, $iid, $approvalsRequired]
+            ))
             ->json();
     }
 
@@ -267,13 +246,11 @@ class MergeRequestApproval extends ProjectResource
         array $data
     ): array {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/merge_requests/:merge_request_iid/approvers',
-                    [$id, $iid]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                'projects/:id/merge_requests/:merge_request_iid/approvers',
+                [$id, $iid]
+            ))
             ->json();
     }
 
@@ -318,13 +295,11 @@ class MergeRequestApproval extends ProjectResource
         array $query = []
     ): array {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/merge_requests/:merge_request_iid/approval_rules',
-                    [$id, $iid]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/merge_requests/:merge_request_iid/approval_rules',
+                [$id, $iid]
+            ))
             ->json();
     }
 
@@ -351,17 +326,16 @@ class MergeRequestApproval extends ProjectResource
         array $data = []
     ): array {
         return $this->httpClient
+            ->withJson([
+                    'name' => $name,
+                    'approvals_required' => $approvalsRequired,
+                ] + $data
+            )
             ->post(
                 $this->encodeUrl(
                     'projects/:id/merge_requests/:merge_request_iid/approval_rules',
                     [$id, $iid]
-                ),
-                [
-                    'json' => [
-                        'name' => $name,
-                        'approvals_required' => $approvalsRequired,
-                    ] + $data,
-                ]
+                )
             )
             ->json();
     }
@@ -387,13 +361,11 @@ class MergeRequestApproval extends ProjectResource
         array $data
     ): array {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/merge_request/:merge_request_iid/approval_rules/:approval_rule_id',
-                    [$id, $iid, $approvalRuleId]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                'projects/:id/merge_request/:merge_request_iid/approval_rules/:approval_rule_id',
+                [$id, $iid, $approvalRuleId]
+            ))
             ->json();
     }
 
@@ -438,13 +410,11 @@ class MergeRequestApproval extends ProjectResource
     public function approve($id, int $iid, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    'projects/:id/merge_requests/:merge_request_iid/approve',
-                    [$id, $iid]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->post($this->encodeUrl(
+                'projects/:id/merge_requests/:merge_request_iid/approve',
+                [$id, $iid]
+            ))
             ->json();
     }
 

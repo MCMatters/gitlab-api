@@ -28,7 +28,8 @@ class Event extends UserResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get($this->encodeUrl('users/:id/events', $id), ['query' => $query])
+            ->withQuery($query)
+            ->get($this->encodeUrl('users/:id/events', $id))
             ->json();
     }
 }

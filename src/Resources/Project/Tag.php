@@ -28,10 +28,8 @@ class Tag extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/repository/tags', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/repository/tags', $id))
             ->json();
     }
 
@@ -78,10 +76,8 @@ class Tag extends ProjectResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/repository/tags', $id),
-                ['json' => ['tag_name' => $tagName, 'ref' => $ref] + $data]
-            )
+            ->withJson(['tag_name' => $tagName, 'ref' => $ref] + $data)
+            ->post($this->encodeUrl('projects/:id/repository/tags', $id))
             ->json();
     }
 
@@ -125,13 +121,11 @@ class Tag extends ProjectResource
         string $description
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    'projects/:id/repository/tags/:tag_name/release',
-                    [$id, $tagName]
-                ),
-                ['json' => ['description' => $description]]
-            )
+            ->withJson(['description' => $description])
+            ->post($this->encodeUrl(
+                'projects/:id/repository/tags/:tag_name/release',
+                [$id, $tagName]
+            ))
             ->json();
     }
 
@@ -154,13 +148,11 @@ class Tag extends ProjectResource
         string $description
     ): array {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/repository/tags/:tag_name/release',
-                    [$id, $tagName]
-                ),
-                ['json' => ['description' => $description]]
-            )
+            ->withJson(['description' => $description])
+            ->put($this->encodeUrl(
+                'projects/:id/repository/tags/:tag_name/release',
+                [$id, $tagName]
+            ))
             ->json();
     }
 }

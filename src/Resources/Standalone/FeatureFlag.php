@@ -26,9 +26,7 @@ class FeatureFlag extends StandaloneResource
      */
     public function list(array $query = []): array
     {
-        return $this->httpClient
-            ->get('features', ['query' => $query])
-            ->json();
+        return $this->httpClient->withQuery($query)->get('features')->json();
     }
 
     /**
@@ -47,10 +45,8 @@ class FeatureFlag extends StandaloneResource
     public function set(string $name, $value, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('features/:name', $name),
-                ['json' => ['value' => $value] + $data]
-            )
+            ->withJson(['value' => $value] + $data)
+            ->post($this->encodeUrl('features/:name', $name))
             ->json();
     }
 

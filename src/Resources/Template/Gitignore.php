@@ -27,7 +27,8 @@ class Gitignore extends TemplateResource
     public function list(array $query = []): array
     {
         return $this->httpClient
-            ->get('templates/gitignores', ['query' => $query])
+            ->withQuery($query)
+            ->get('templates/gitignores')
             ->json();
     }
 

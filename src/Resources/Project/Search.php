@@ -29,10 +29,8 @@ class Search extends ProjectResource
     public function search($id, string $scope, string $search): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/search', $id),
-                ['query' => ['scope' => $scope, 'search' => $search]]
-            )
+            ->withQuery(['scope' => $scope, 'search' => $search])
+            ->get($this->encodeUrl('projects/:id/search', $id))
             ->json();
     }
 }

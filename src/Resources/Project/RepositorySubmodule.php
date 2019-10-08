@@ -36,13 +36,11 @@ class RepositorySubmodule extends ProjectResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/repository/submodules/:submodule',
-                    [$id, $submodule]
-                ),
-                ['json' => ['branch' => $branch, 'commit_sha' => $sha] + $data]
-            )
+            ->withJson(['branch' => $branch, 'commit_sha' => $sha] + $data)
+            ->put($this->encodeUrl(
+                'projects/:id/repository/submodules/:submodule',
+                [$id, $submodule]
+            ))
             ->json();
     }
 }

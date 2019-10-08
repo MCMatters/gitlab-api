@@ -28,10 +28,8 @@ class ProtectedTag extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/protected_tags', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/protected_tags', $id))
             ->json();
     }
 
@@ -73,10 +71,8 @@ class ProtectedTag extends ProjectResource
     public function protect($id, string $name, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/protected_tags', $id),
-                ['json' => ['name' => $name] + $data]
-            )
+            ->withJson(['name' => $name] + $data)
+            ->post($this->encodeUrl('projects/:id/protected_tags', $id))
             ->json();
     }
 

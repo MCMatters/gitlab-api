@@ -28,10 +28,8 @@ class PageDomain extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/pages/domains', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/pages/domains', $id))
             ->json();
     }
 
@@ -73,10 +71,8 @@ class PageDomain extends ProjectResource
     public function create($id, string $domain, array $data): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/pages/domains', $id),
-                ['json' => ['domain' => $domain] + $data]
-            )
+            ->withJson(['domain' => $domain] + $data)
+            ->post($this->encodeUrl('projects/:id/pages/domains', $id))
             ->json();
     }
 
@@ -96,13 +92,11 @@ class PageDomain extends ProjectResource
     public function update($id, string $domain, array $data): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/pages/domains/:domain',
-                    [$id, $domain]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                'projects/:id/pages/domains/:domain',
+                [$id, $domain]
+            ))
             ->json();
     }
 

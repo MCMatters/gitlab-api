@@ -29,10 +29,8 @@ class Search extends GroupResource
     public function search($id, string $scope, string $search): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('groups/:id/search', $id),
-                ['query' => ['scope' => $scope, 'search' => $search]]
-            )
+            ->withQuery(['scope' => $scope, 'search' => $search])
+            ->get($this->encodeUrl('groups/:id/search', $id))
             ->json();
     }
 }

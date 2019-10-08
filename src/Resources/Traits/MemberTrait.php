@@ -26,10 +26,8 @@ trait MemberTrait
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(':type/:id/members', [$this->type, $id]),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(':type/:id/members', [$this->type, $id]))
             ->json();
     }
 
@@ -48,10 +46,8 @@ trait MemberTrait
     public function all($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(':type/:id/members/all', [$this->type, $id]),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(':type/:id/members/all', [$this->type, $id]))
             ->json();
     }
 
@@ -98,15 +94,12 @@ trait MemberTrait
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(':type/:id/members', [$this->type, $id]),
-                [
-                    'json' => [
-                        'user_id' => $userId,
-                        'access_level' => $accessLevel,
-                    ] + $data,
-                ]
+            ->withJson([
+                    'user_id' => $userId,
+                    'access_level' => $accessLevel,
+                ] + $data
             )
+            ->post($this->encodeUrl(':type/:id/members', [$this->type, $id]))
             ->json();
     }
 
@@ -131,13 +124,11 @@ trait MemberTrait
         array $data = []
     ): array {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    ':type/:id/members/:user_id',
-                    [$this->type, $id, $userId]
-                ),
-                ['json' => ['access_level' => $accessLevel] + $data]
-            )
+            ->withJson(['access_level' => $accessLevel] + $data)
+            ->put($this->encodeUrl(
+                ':type/:id/members/:user_id',
+                [$this->type, $id, $userId]
+            ))
             ->json();
     }
 

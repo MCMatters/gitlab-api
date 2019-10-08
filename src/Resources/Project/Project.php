@@ -27,9 +27,7 @@ class Project extends ProjectResource
      */
     public function list(array $query = []): array
     {
-        return $this->httpClient
-            ->get('projects', ['query' => $query])
-            ->json();
+        return $this->httpClient->withQuery($query)->get('projects')->json();
     }
 
     /**
@@ -47,7 +45,8 @@ class Project extends ProjectResource
     public function get($id, array $query = []): array
     {
         return $this->httpClient
-            ->get($this->encodeUrl('projects/:id', $id), ['query' => $query])
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id', $id))
             ->json();
     }
 
@@ -66,10 +65,8 @@ class Project extends ProjectResource
     public function users($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/users', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/users', $id))
             ->json();
     }
 
@@ -86,7 +83,7 @@ class Project extends ProjectResource
      */
     public function create(array $data): array
     {
-        return $this->httpClient->post('projects', ['json' => $data])->json();
+        return $this->httpClient->withJson($data)->post('projects')->json();
     }
 
     /**
@@ -104,7 +101,8 @@ class Project extends ProjectResource
     public function createForUser(int $userId, array $data): array
     {
         return $this->httpClient
-            ->post("projects/user/{$$userId}", ['json' => $data])
+            ->withJson($data)
+            ->post("projects/user/{$$userId}")
             ->json();
     }
 
@@ -123,7 +121,8 @@ class Project extends ProjectResource
     public function update($id, array $data): array
     {
         return $this->httpClient
-            ->put($this->encodeUrl('projects/:id', $id), ['json' => $data])
+            ->withJson($data)
+            ->put($this->encodeUrl('projects/:id', $id))
             ->json();
     }
 
@@ -143,10 +142,8 @@ class Project extends ProjectResource
     public function fork($id, $namespace, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/fork', $id),
-                ['json' => ['namespace' => $namespace] + $data]
-            )
+            ->withJson(['namespace' => $namespace] + $data)
+            ->post($this->encodeUrl('projects/:id/fork', $id))
             ->json();
     }
 
@@ -165,10 +162,8 @@ class Project extends ProjectResource
     public function forks($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/forks', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/forks', $id))
             ->json();
     }
 
@@ -223,10 +218,8 @@ class Project extends ProjectResource
     public function starrers($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/starrers', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/starrers', $id))
             ->json();
     }
 
@@ -344,15 +337,12 @@ class Project extends ProjectResource
         array $data = []
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/share', $id),
-                [
-                    'json' => [
-                        'group_id' => $groupId,
-                        'group_access' => $groupAccess,
-                    ] + $data,
-                ]
+            ->withJson([
+                    'group_id' => $groupId,
+                    'group_access' => $groupAccess,
+                ] + $data
             )
+            ->post($this->encodeUrl('projects/:id/share', $id))
             ->json();
     }
 
@@ -392,10 +382,8 @@ class Project extends ProjectResource
     public function hooks($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/hooks', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/hooks', $id))
             ->json();
     }
 
@@ -415,10 +403,8 @@ class Project extends ProjectResource
     public function createHook($id, string $url, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/hooks', $id),
-                ['json' => ['url' => $url] + $data]
-            )
+            ->withJson(['url' => $url] + $data)
+            ->post($this->encodeUrl('projects/:id/hooks', $id))
             ->json();
     }
 
@@ -438,10 +424,8 @@ class Project extends ProjectResource
     public function updateHook($id, int $hookId, array $data): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl('projects/:id/hooks/:hook_id', [$id, $hookId]),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl('projects/:id/hooks/:hook_id', [$id, $hookId]))
             ->json();
     }
 
@@ -555,10 +539,8 @@ class Project extends ProjectResource
     public function pushRules($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/push_rule', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/push_rule', $id))
             ->json();
     }
 
@@ -577,10 +559,8 @@ class Project extends ProjectResource
     public function createPushRule($id, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/push_rule', $id),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->post($this->encodeUrl('projects/:id/push_rule', $id))
             ->json();
     }
 
@@ -599,10 +579,8 @@ class Project extends ProjectResource
     public function updatePushRule($id, array $data = []): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl('projects/:id/push_rule', $id),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl('projects/:id/push_rule', $id))
             ->json();
     }
 
@@ -620,10 +598,8 @@ class Project extends ProjectResource
     public function deletePushRule($id, array $query = []): int
     {
         return $this->httpClient
-            ->delete(
-                $this->encodeUrl('projects/:id/push_rule', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->delete($this->encodeUrl('projects/:id/push_rule', $id))
             ->getStatusCode();
     }
 
@@ -642,10 +618,8 @@ class Project extends ProjectResource
     public function transfer($id, $namespace): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl('projects/:id/transfer', $id),
-                ['json' => ['namespace' => $namespace]]
-            )
+            ->withJson(['namespace' => $namespace])
+            ->put($this->encodeUrl('projects/:id/transfer', $id))
             ->json();
     }
 
@@ -681,10 +655,8 @@ class Project extends ProjectResource
     public function downloadSnapshot($id, array $query = []): string
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/snapshot', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/snapshot', $id))
             ->getBody();
     }
 }

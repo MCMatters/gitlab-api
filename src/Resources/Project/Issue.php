@@ -28,7 +28,8 @@ class Issue extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get($this->encodeUrl('projects/:id/issues', $id), ['query' => $query])
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/issues', $id))
             ->json();
     }
 
@@ -70,10 +71,8 @@ class Issue extends ProjectResource
     public function create($id, string $title, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/issues', $id),
-                ['json' => ['title' => $title] + $data]
-            )
+            ->withJson(['title' => $title] + $data)
+            ->post($this->encodeUrl('projects/:id/issues', $id))
             ->json();
     }
 
@@ -93,10 +92,8 @@ class Issue extends ProjectResource
     public function update($id, int $iid, array $data): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl('projects/:id/issues/:issue_iid', [$id, $iid]),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl('projects/:id/issues/:issue_iid', [$id, $iid]))
             ->json();
     }
 
@@ -134,10 +131,8 @@ class Issue extends ProjectResource
     public function move($id, int $iid, int $toProjectId): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/issues/:issue_iid/move', [$id, $iid]),
-                ['json' => ['to_project_id' => $toProjectId]]
-            )
+            ->withJson(['to_project_id' => $toProjectId])
+            ->post($this->encodeUrl('projects/:id/issues/:issue_iid/move', [$id, $iid]))
             ->json();
     }
 
@@ -223,13 +218,11 @@ class Issue extends ProjectResource
     public function setEstimatedTime($id, int $iid, string $duration): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    'projects/:id/issues/:issue_iid/time_estimate',
-                    [$id, $iid]
-                ),
-                ['json' => ['duration' => $duration]]
-            )
+            ->withJson(['duration' => $duration])
+            ->post($this->encodeUrl(
+                'projects/:id/issues/:issue_iid/time_estimate',
+                [$id, $iid]
+            ))
             ->json();
     }
 
@@ -271,13 +264,11 @@ class Issue extends ProjectResource
     public function addSpentTime($id, int $iid, string $duration): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    'projects/:id/issues/:issue_iid/add_spent_time',
-                    [$id, $iid]
-                ),
-                ['json' => ['duration' => $duration]]
-            )
+            ->withJson(['duration' => $duration])
+            ->post($this->encodeUrl(
+                'projects/:id/issues/:issue_iid/add_spent_time',
+                [$id, $iid]
+            ))
             ->json();
     }
 
@@ -344,13 +335,11 @@ class Issue extends ProjectResource
         array $query = []
     ): array {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/issues/:issue_id/related_merge_requests',
-                    [$id, $iid]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/issues/:issue_id/related_merge_requests',
+                [$id, $iid]
+            ))
             ->json();
     }
 
@@ -373,13 +362,11 @@ class Issue extends ProjectResource
         array $query = []
     ): array {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/issues/:issue_id/closed_by',
-                    [$id, $iid]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/issues/:issue_id/closed_by',
+                [$id, $iid]
+            ))
             ->json();
     }
 
@@ -399,13 +386,11 @@ class Issue extends ProjectResource
     public function participants($id, int $iid, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/issues/:issue_id/participants',
-                    [$id, $iid]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/issues/:issue_id/participants',
+                [$id, $iid]
+            ))
             ->json();
     }
 

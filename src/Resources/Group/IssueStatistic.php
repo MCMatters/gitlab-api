@@ -28,10 +28,8 @@ class IssueStatistic extends GroupResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('groups/:id/issues_statistics', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('groups/:id/issues_statistics', $id))
             ->json();
     }
 }

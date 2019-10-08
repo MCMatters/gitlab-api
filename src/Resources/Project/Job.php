@@ -28,10 +28,8 @@ class Job extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/jobs', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/jobs', $id))
             ->json();
     }
 
@@ -54,13 +52,11 @@ class Job extends ProjectResource
         array $query = []
     ): array {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/pipelines/:pipeline_id/jobs',
-                    [$id, $pipelineId]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/pipelines/:pipeline_id/jobs',
+                [$id, $pipelineId]
+            ))
             ->json();
     }
 
@@ -122,13 +118,11 @@ class Job extends ProjectResource
         string $job
     ): string {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/jobs/artifacts/:ref/download',
-                    [$id, $ref]
-                ),
-                ['query' => ['job' => $job]]
-            )
+            ->withQuery(['job' => $job])
+            ->get($this->encodeUrl(
+                'projects/:id/jobs/artifacts/:ref/download',
+                [$id, $ref]
+            ))
             ->getBody();
     }
 
@@ -174,13 +168,11 @@ class Job extends ProjectResource
         string $job
     ): string {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/jobs/artifacts/:ref_name/raw/:path',
-                    [$id, $ref, $path]
-                ),
-                ['query' => ['job' => $job]]
-            )
+            ->withQuery(['job' => $job])
+            ->get($this->encodeUrl(
+                'projects/:id/jobs/artifacts/:ref_name/raw/:path',
+                [$id, $ref, $path]
+            ))
             ->getBody();
     }
 

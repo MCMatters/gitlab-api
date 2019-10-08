@@ -28,10 +28,8 @@ class PipelineTrigger extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/triggers', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/triggers', $id))
             ->json();
     }
 
@@ -72,10 +70,8 @@ class PipelineTrigger extends ProjectResource
     public function create($id, string $description): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/triggers', $id),
-                ['json' => ['description' => $description]]
-            )
+            ->withJson(['description' => $description])
+            ->post($this->encodeUrl('projects/:id/triggers', $id))
             ->json();
     }
 
@@ -95,13 +91,11 @@ class PipelineTrigger extends ProjectResource
     public function update($id, int $triggerId, string $description): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/triggers/:trigger_id',
-                    [$id, $triggerId]
-                ),
-                ['json' => ['description' => $description]]
-            )
+            ->withJson(['description' => $description])
+            ->put($this->encodeUrl(
+                'projects/:id/triggers/:trigger_id',
+                [$id, $triggerId]
+            ))
             ->json();
     }
 

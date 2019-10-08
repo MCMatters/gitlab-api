@@ -42,13 +42,11 @@ class MergeRequestDiscussion extends ProjectResource
         bool $resolved = true
     ): array {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id',
-                    [$id, $iid, $discussionId]
-                ),
-                ['json' => ['resolved' => $resolved]]
-            )
+            ->withJson(['resolved' => $resolved])
+            ->put($this->encodeUrl(
+                'projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id',
+                [$id, $iid, $discussionId]
+            ))
             ->json();
     }
 

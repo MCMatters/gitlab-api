@@ -28,10 +28,8 @@ class MergeRequest extends GroupResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('groups/:id/merge_requests', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('groups/:id/merge_requests', $id))
             ->json();
     }
 }

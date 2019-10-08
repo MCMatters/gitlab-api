@@ -31,10 +31,8 @@ class Label extends ProjectResource
     public function promote($id, string $name): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl('projects/:id/labels/promote', $id),
-                ['json' => ['name' => $name]]
-            )
+            ->withJson(['name' => $name])
+            ->put($this->encodeUrl('projects/:id/labels/promote', $id))
             ->json();
     }
 }

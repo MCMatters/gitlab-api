@@ -27,7 +27,8 @@ class PageDomain extends StandaloneResource
     public function list(array $query = []): array
     {
         return $this->httpClient
-            ->get('pages/domains', ['query' => $query])
+            ->withQuery($query)
+            ->get('pages/domains')
             ->json();
     }
 }

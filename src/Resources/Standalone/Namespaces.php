@@ -26,9 +26,7 @@ class Namespaces extends StandaloneResource
      */
     public function list(array $query = []): array
     {
-        return $this->httpClient
-            ->get('namespaces', ['query' => $query])
-            ->json();
+        return $this->httpClient->withQuery($query)->get('namespaces')->json();
     }
 
     /**

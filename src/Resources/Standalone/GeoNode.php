@@ -26,9 +26,7 @@ class GeoNode extends StandaloneResource
      */
     public function list(array $query = []): array
     {
-        return $this->httpClient
-            ->get('geo_nodes', ['query' => $query])
-            ->json();
+        return $this->httpClient->withQuery($query)->get('geo_nodes')->json();
     }
 
     /**
@@ -62,7 +60,8 @@ class GeoNode extends StandaloneResource
     public function update(int $id, array $data): array
     {
         return $this->httpClient
-            ->put("geo_nodes/{$id}", ['json' => $data])
+            ->withJson($data)
+            ->put("geo_nodes/{$id}")
             ->json();
     }
 
@@ -115,7 +114,8 @@ class GeoNode extends StandaloneResource
     public function getStatuses(array $query = []): array
     {
         return $this->httpClient
-            ->get('geo_nodes/status', ['query' => $query])
+            ->withQuery($query)
+            ->get('geo_nodes/status')
             ->json();
     }
 
@@ -149,7 +149,8 @@ class GeoNode extends StandaloneResource
     public function getCurrentFailures(array $query = []): array
     {
         return $this->httpClient
-            ->get('geo_nodes/current/failures', ['query' => $query])
+            ->withQuery($query)
+            ->get('geo_nodes/current/failures')
             ->json();
     }
 }

@@ -29,13 +29,11 @@ trait ResourceLabelEventTrait
     public function list($id, int $iid, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    ':base_type/:id/:type/:iid/resource_label_events',
-                    [$this->baseType, $id, $this->type, $iid]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                ':base_type/:id/:type/:iid/resource_label_events',
+                [$this->baseType, $id, $this->type, $iid]
+            ))
             ->json();
     }
 

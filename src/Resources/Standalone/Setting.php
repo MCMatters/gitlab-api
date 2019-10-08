@@ -27,7 +27,8 @@ class Setting extends StandaloneResource
     public function list(array $query = []): array
     {
         return $this->httpClient
-            ->get('application/settings', ['query' => $query])
+            ->withQuery($query)
+            ->get('application/settings')
             ->json();
     }
 
@@ -45,7 +46,8 @@ class Setting extends StandaloneResource
     public function update(array $data): array
     {
         return $this->httpClient
-            ->put('application/settings', ['json' => $data])
+            ->withJson($data)
+            ->put('application/settings')
             ->json();
     }
 }

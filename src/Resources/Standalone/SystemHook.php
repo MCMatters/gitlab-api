@@ -26,7 +26,7 @@ class SystemHook extends StandaloneResource
      */
     public function list(array $query = []): array
     {
-        return $this->httpClient->get('hooks', ['query' => $query])->json();
+        return $this->httpClient->withQuery($query)->get('hooks')->json();
     }
 
     /**
@@ -44,7 +44,8 @@ class SystemHook extends StandaloneResource
     public function create(string $url, array $data = []): array
     {
         return $this->httpClient
-            ->post('hooks', ['json' => ['url' => $url] + $data])
+            ->withJson(['url' => $url] + $data)
+            ->post('hooks')
             ->json();
     }
 

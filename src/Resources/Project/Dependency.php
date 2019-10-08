@@ -28,10 +28,8 @@ class Dependency extends ProjectResource
         }
 
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/dependencies', $id),
-                ['query' => ['package_manager' => $manager]]
-            )
+            ->withQuery(['package_manager' => $manager])
+            ->get($this->encodeUrl('projects/:id/dependencies', $id))
             ->json();
     }
 }

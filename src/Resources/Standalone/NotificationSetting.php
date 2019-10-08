@@ -41,7 +41,8 @@ class NotificationSetting extends StandaloneResource
     public function update(array $data): array
     {
         return $this->httpClient
-            ->put('notification_settings', ['json' => $data])
+            ->withJson($data)
+            ->put('notification_settings')
             ->json();
     }
 }

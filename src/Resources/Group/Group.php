@@ -28,7 +28,7 @@ class Group extends GroupResource
      */
     public function list(array $query = []): array
     {
-        return $this->httpClient->get('groups', ['query' => $query])->json();
+        return $this->httpClient->withQuery($query)->get('groups')->json();
     }
 
     /**
@@ -46,10 +46,8 @@ class Group extends GroupResource
     public function subGroups($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('groups/:id/subgroups', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('groups/:id/subgroups', $id))
             ->json();
     }
 
@@ -68,10 +66,8 @@ class Group extends GroupResource
     public function projects($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('groups/:id/projects', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('groups/:id/projects', $id))
             ->json();
     }
 
@@ -90,7 +86,8 @@ class Group extends GroupResource
     public function get($id, array $query = []): array
     {
         return $this->httpClient
-            ->get($this->encodeUrl('groups/:id', $id), ['query' => $query])
+            ->withQuery($query)
+            ->get($this->encodeUrl('groups/:id', $id))
             ->json();
     }
 
@@ -110,10 +107,8 @@ class Group extends GroupResource
     public function create(string $name, string $path, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                'groups',
-                ['json' => ['name' => $name, 'path' => $path] + $data]
-            )
+            ->withJson(['name' => $name, 'path' => $path] + $data)
+            ->post('groups')
             ->json();
     }
 
@@ -154,7 +149,8 @@ class Group extends GroupResource
     public function update($id, array $data): array
     {
         return $this->httpClient
-            ->put($this->encodeUrl('groups/:id', $id), ['json' => $data])
+            ->withJson($data)
+            ->put($this->encodeUrl('groups/:id', $id))
             ->json();
     }
 
@@ -225,10 +221,8 @@ class Group extends GroupResource
     public function createLdapLink($id, array $data): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('groups/:id/ldap_group_links', $id),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->post($this->encodeUrl('groups/:id/ldap_group_links', $id))
             ->json();
     }
 

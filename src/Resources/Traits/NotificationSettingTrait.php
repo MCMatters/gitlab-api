@@ -47,13 +47,11 @@ trait NotificationSettingTrait
     public function update($id, array $data): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    ':type/:id/notification_settings',
-                    [$this->type, $id]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                ':type/:id/notification_settings',
+                [$this->type, $id]
+            ))
             ->json();
     }
 }

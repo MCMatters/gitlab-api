@@ -29,7 +29,8 @@ class CI extends StandaloneResource
     public function lint(string $content)
     {
         $response = $this->httpClient
-            ->post('lint', ['json' => ['content' => $content]])
+            ->withJson(['content' => $content])
+            ->post('lint')
             ->json();
 
         if (!empty($response['status']) && $response['status'] === 'valid') {

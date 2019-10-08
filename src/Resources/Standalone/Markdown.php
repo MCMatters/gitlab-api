@@ -34,16 +34,8 @@ class Markdown extends StandaloneResource
         string $project = null
     ): array {
         return $this->httpClient
-            ->post(
-                'markdown',
-                [
-                    'json' => [
-                        'text' => $text,
-                        'gfm' => $gfm,
-                        'project' => $project,
-                    ],
-                ]
-            )
+            ->withJson(['text' => $text, 'gfm' => $gfm, 'project' => $project])
+            ->post('markdown')
             ->json();
     }
 }

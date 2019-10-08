@@ -26,13 +26,11 @@ trait CustomAttributesTrait
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    ':type/:id/custom_attributes',
-                    [$this->type, $id]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                ':type/:id/custom_attributes',
+                [$this->type, $id]
+            ))
             ->json();
     }
 
@@ -74,13 +72,11 @@ trait CustomAttributesTrait
     public function set($id, string $key, string $value): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    ':type/:id/custom_attributes/:key',
-                    [$this->type, $id, $key]
-                ),
-                ['json' => ['value' => $value]]
-            )
+            ->withJson(['value' => $value])
+            ->put($this->encodeUrl(
+                ':type/:id/custom_attributes/:key',
+                [$this->type, $id, $key]
+            ))
             ->json();
     }
 

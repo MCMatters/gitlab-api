@@ -28,10 +28,8 @@ class Repository extends ProjectResource
     public function listTree($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/repository/tree', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/repository/tree', $id))
             ->json();
     }
 
@@ -100,10 +98,8 @@ class Repository extends ProjectResource
         $suffix = '' !== $format ? ".{$format}" : '';
 
         return $this->httpClient
-            ->get(
-                $this->encodeUrl("projects/:id/repository/archive{$suffix}", $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl("projects/:id/repository/archive{$suffix}", $id))
             ->json();
     }
 
@@ -128,10 +124,8 @@ class Repository extends ProjectResource
         array $query = []
     ): array {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/repository/compare', $id),
-                ['query' => ['from' => $from, 'to' => $to] + $query]
-            )
+            ->withQuery(['from' => $from, 'to' => $to] + $query)
+            ->get($this->encodeUrl('projects/:id/repository/compare', $id))
             ->json();
     }
 
@@ -150,10 +144,8 @@ class Repository extends ProjectResource
     public function contributors($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/repository/contributors', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/repository/contributors', $id))
             ->json();
     }
 
@@ -172,10 +164,8 @@ class Repository extends ProjectResource
     public function getMergeBase($id, array $refs): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/repository/merge_base', $id),
-                ['query' => ['refs' => $refs]]
-            )
+            ->withQuery(['refs' => $refs])
+            ->get($this->encodeUrl('projects/:id/repository/merge_base', $id))
             ->json();
     }
 }

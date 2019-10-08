@@ -27,7 +27,8 @@ class License extends TemplateResource
     public function list(array $query = []): array
     {
         return $this->httpClient
-            ->get('templates/licenses', ['query' => $query])
+            ->withQuery($query)
+            ->get('templates/licenses')
             ->json();
     }
 
@@ -46,10 +47,8 @@ class License extends TemplateResource
     public function get(string $key, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('templates/licenses/:key', $key),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('templates/licenses/:key', $key))
             ->json();
     }
 }

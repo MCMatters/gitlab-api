@@ -27,10 +27,8 @@ class Service extends ProjectResource
     public function set($id, string $service, array $data = []): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl('projects/:id/services/:service', [$id, $service]),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl('projects/:id/services/:service', [$id, $service]))
             ->json();
     }
 

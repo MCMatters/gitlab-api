@@ -28,10 +28,8 @@ class IssueStatistic extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/issues_statistics', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/issues_statistics', $id))
             ->json();
     }
 }

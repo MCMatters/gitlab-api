@@ -28,10 +28,8 @@ class Cluster extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/clusters', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/clusters', $id))
             ->json();
     }
 
@@ -73,10 +71,8 @@ class Cluster extends ProjectResource
     public function create($id, string $name, array $data = []): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/clusters/user', $id),
-                ['json' => ['name' => $name] + $data]
-            )
+            ->withJson(['name' => $name] + $data)
+            ->post($this->encodeUrl('projects/:id/clusters/user', $id))
             ->json();
     }
 
@@ -96,13 +92,11 @@ class Cluster extends ProjectResource
     public function update($id, int $clusterId, array $data): array
     {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    'projects/:id/clusters/:cluster_id',
-                    [$id, $clusterId]
-                ),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl(
+                'projects/:id/clusters/:cluster_id',
+                [$id, $clusterId]
+            ))
             ->json();
     }
 

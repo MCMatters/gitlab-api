@@ -28,10 +28,8 @@ class Wiki extends ProjectResource
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl('projects/:id/wikis', $id),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl('projects/:id/wikis', $id))
             ->json();
     }
 
@@ -75,16 +73,12 @@ class Wiki extends ProjectResource
         string $format = 'markdown'
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl('projects/:id/wikis', $id),
-                [
-                    'json' => [
-                        'title' => $title,
-                        'content' => $content,
-                        'format' => $format,
-                    ],
-                ]
-            )
+            ->withJson([
+                'title' => $title,
+                'content' => $content,
+                'format' => $format,
+            ])
+            ->post($this->encodeUrl('projects/:id/wikis', $id))
             ->json();
     }
 
@@ -107,10 +101,8 @@ class Wiki extends ProjectResource
         array $data
     ): array {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl('projects/:id/wikis/:slug', [$id, $slug]),
-                ['json' => $data]
-            )
+            ->withJson($data)
+            ->put($this->encodeUrl('projects/:id/wikis/:slug', [$id, $slug]))
             ->json();
     }
 

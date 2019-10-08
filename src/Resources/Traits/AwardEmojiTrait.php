@@ -27,13 +27,11 @@ trait AwardEmojiTrait
     public function list($id, int $iid, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/:type/:iid/award_emoji',
-                    [$id, $this->type, $iid]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/:type/:iid/award_emoji',
+                [$id, $this->type, $iid]
+            ))
             ->json();
     }
 
@@ -76,13 +74,11 @@ trait AwardEmojiTrait
     public function create($id, int $iid, string $name): array
     {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    'projects/:id/:type/:iid/award_emoji',
-                    [$id, $this->type, $iid]
-                ),
-                ['query' => ['name' => $name]]
-            )
+            ->withJson(['name' => $name])
+            ->post($this->encodeUrl(
+                'projects/:id/:type/:iid/award_emoji',
+                [$id, $this->type, $iid]
+            ))
             ->json();
     }
 
@@ -101,12 +97,10 @@ trait AwardEmojiTrait
     public function delete($id, int $iid, int $awardId): int
     {
         return $this->httpClient
-            ->delete(
-                $this->encodeUrl(
-                    'projects/:id/:type/:iid/award_emoji/:award_id',
-                    [$id, $this->type, $iid, $awardId]
-                )
-            )
+            ->delete($this->encodeUrl(
+                'projects/:id/:type/:iid/award_emoji/:award_id',
+                [$id, $this->type, $iid, $awardId]
+            ))
             ->getStatusCode();
     }
 
@@ -131,13 +125,11 @@ trait AwardEmojiTrait
         array $query = []
     ): array {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    'projects/:id/:type/:iid/notes/:note_id/award_emoji',
-                    [$id, $this->type, $iid, $noteId]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                'projects/:id/:type/:iid/notes/:note_id/award_emoji',
+                [$id, $this->type, $iid, $noteId]
+            ))
             ->json();
     }
 
@@ -186,13 +178,11 @@ trait AwardEmojiTrait
         string $name
     ): array {
         return $this->httpClient
-            ->post(
-                $this->encodeUrl(
-                    'projects/:id/:type/:iid/notes/:note_id/award_emoji',
-                    [$id, $this->type, $iid, $noteId]
-                ),
-                ['query' => ['name' => $name]]
-            )
+            ->withJson(['name' => $name])
+            ->post($this->encodeUrl(
+                'projects/:id/:type/:iid/notes/:note_id/award_emoji',
+                [$id, $this->type, $iid, $noteId]
+            ))
             ->json();
     }
 

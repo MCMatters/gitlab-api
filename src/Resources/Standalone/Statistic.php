@@ -27,7 +27,8 @@ class Statistic extends StandaloneResource
     public function list(array $query = []): array
     {
         return $this->httpClient
-            ->get('application/statistics', ['query' => $query])
+            ->withQuery($query)
+            ->get('application/statistics')
             ->json();
     }
 }

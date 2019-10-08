@@ -26,7 +26,7 @@ class Todo extends StandaloneResource
      */
     public function list(array $query = []): array
     {
-        return $this->httpClient->get('todos', ['query' => $query])->json();
+        return $this->httpClient->withQuery($query)->get('todos')->json();
     }
 
     /**

@@ -28,13 +28,11 @@ trait AccessRequestTrait
     public function list($id, array $query = []): array
     {
         return $this->httpClient
-            ->get(
-                $this->encodeUrl(
-                    ':type/:id/access_requests',
-                    [$this->type, $id]
-                ),
-                ['query' => $query]
-            )
+            ->withQuery($query)
+            ->get($this->encodeUrl(
+                ':type/:id/access_requests',
+                [$this->type, $id]
+            ))
             ->json();
     }
 
@@ -78,13 +76,11 @@ trait AccessRequestTrait
         int $accessLevel = AccessLevel::DEVELOPER
     ): array {
         return $this->httpClient
-            ->put(
-                $this->encodeUrl(
-                    ':type/:id/access_requests/:user_id/approve',
-                    [$this->type, $id, $userId]
-                ),
-                ['query' => ['access_level' => $accessLevel]]
-            )
+            ->withJson(['access_level' => $accessLevel])
+            ->put($this->encodeUrl(
+                ':type/:id/access_requests/:user_id/approve',
+                [$this->type, $id, $userId]
+            ))
             ->json();
     }
 

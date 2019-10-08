@@ -32,16 +32,12 @@ class Application extends StandaloneResource
         string $scopes
     ): array {
         return $this->httpClient
-            ->post(
-                'applications',
-                [
-                    'json' => [
-                        'name' => $name,
-                        'redirect_uri' => $redirectUri,
-                        'scopes' => $scopes,
-                    ],
-                ]
-            )
+            ->withJson([
+                'name' => $name,
+                'redirect_uri' => $redirectUri,
+                'scopes' => $scopes,
+            ])
+            ->post('applications')
             ->json();
     }
 
@@ -59,7 +55,8 @@ class Application extends StandaloneResource
     public function list(array $query = []): array
     {
         return $this->httpClient
-            ->get('applications', ['query' => $query])
+            ->withQuery($query)
+            ->get('applications')
             ->json();
     }
 
