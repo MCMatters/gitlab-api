@@ -381,7 +381,7 @@ class MergeRequestApproval extends ProjectResource
      *
      * @see https://gitlab.com/help/api/merge_request_approvals.md#delete-merge-request-level-rule
      */
-    public function deleteMergeRequesLevelRule(
+    public function deleteMergeRequestLevelRule(
         $id,
         int $iid,
         int $approvalRuleId
