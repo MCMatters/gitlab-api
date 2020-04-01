@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace McMatters\GitlabApi\Resources;
+namespace McMatters\GitlabApi\Enumerators;
 
 /**
  * Interface EventTargetType
