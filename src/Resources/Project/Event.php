@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace McMatters\GitlabApi\Resources\Project;
 
 use McMatters\GitlabApi\Resources\ProjectResource;
+use McMatters\GitlabApi\Resources\Traits\HasAllTrait;
 
 /**
  * Class Event
@@ -13,6 +14,8 @@ use McMatters\GitlabApi\Resources\ProjectResource;
  */
 class Event extends ProjectResource
 {
+    use HasAllTrait;
+
     /**
      * @param int|string $id
      * @param array $query
@@ -31,5 +34,16 @@ class Event extends ProjectResource
             ->withQuery($query)
             ->get($this->encodeUrl('projects/:id/events', $id))
             ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param array $query
+     *
+     * @return array
+     */
+    public function all($id, array $query = []): array
+    {
+        return $this->fetchAllResources('list', [$id, $query]);
     }
 }

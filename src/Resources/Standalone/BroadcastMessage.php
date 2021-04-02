@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace McMatters\GitlabApi\Resources\Standalone;
 
 use McMatters\GitlabApi\Resources\StandaloneResource;
+use McMatters\GitlabApi\Resources\Traits\HasAllTrait;
 
 /**
  * Class BroadcastMessage
@@ -13,6 +14,8 @@ use McMatters\GitlabApi\Resources\StandaloneResource;
  */
 class BroadcastMessage extends StandaloneResource
 {
+    use HasAllTrait;
+
     /**
      * @param array $query
      *
@@ -30,6 +33,16 @@ class BroadcastMessage extends StandaloneResource
             ->withQuery($query)
             ->get('broadcast_messages')
             ->json();
+    }
+
+    /**
+     * @param array $query
+     *
+     * @return array
+     */
+    public function all(array $query = []): array
+    {
+        return $this->fetchAllResources('list', [$query]);
     }
 
     /**

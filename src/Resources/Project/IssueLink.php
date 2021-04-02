@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace McMatters\GitlabApi\Resources\Project;
 
 use McMatters\GitlabApi\Resources\ProjectResource;
+use McMatters\GitlabApi\Resources\Traits\HasAllTrait;
 
 /**
  * Class IssueLink
@@ -13,6 +14,8 @@ use McMatters\GitlabApi\Resources\ProjectResource;
  */
 class IssueLink extends ProjectResource
 {
+    use HasAllTrait;
+
     /**
      * @param int|string $id
      * @param int $iid
@@ -35,6 +38,18 @@ class IssueLink extends ProjectResource
                 [$id, $iid]
             ))
             ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param int $iid
+     * @param array $query
+     *
+     * @return array
+     */
+    public function all($id, int $iid, array $query = []): array
+    {
+        return $this->fetchAllResources('list', [$id, $iid, $query]);
     }
 
     /**

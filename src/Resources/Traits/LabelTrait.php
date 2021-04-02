@@ -13,6 +13,8 @@ use function is_numeric;
  */
 trait LabelTrait
 {
+    use HasAllTrait;
+
     /**
      * @param int|string $id
      * @param array $query
@@ -32,6 +34,17 @@ trait LabelTrait
             ->withQuery($query)
             ->get($this->encodeUrl(':type/:id/labels', [$this->type, $id]))
             ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param array $query
+     *
+     * @return array
+     */
+    public function all($id, array $query = []): array
+    {
+        return $this->fetchAllResources('list', [$id, $query]);
     }
 
     /**

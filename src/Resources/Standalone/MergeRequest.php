@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace McMatters\GitlabApi\Resources\Standalone;
 
 use McMatters\GitlabApi\Resources\StandaloneResource;
+use McMatters\GitlabApi\Resources\Traits\HasAllTrait;
 
 /**
  * Class MergeRequest
@@ -13,6 +14,8 @@ use McMatters\GitlabApi\Resources\StandaloneResource;
  */
 class MergeRequest extends StandaloneResource
 {
+    use HasAllTrait;
+
     /**
      * @param array $query
      *
@@ -30,5 +33,15 @@ class MergeRequest extends StandaloneResource
             ->withQuery($query)
             ->get('merge_requests')
             ->json();
+    }
+
+    /**
+     * @param array $query
+     *
+     * @return array
+     */
+    public function all(array $query = []): array
+    {
+        return $this->fetchAllResources('list', [$query]);
     }
 }

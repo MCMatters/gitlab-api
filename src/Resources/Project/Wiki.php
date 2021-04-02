@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace McMatters\GitlabApi\Resources\Project;
 
 use McMatters\GitlabApi\Resources\ProjectResource;
+use McMatters\GitlabApi\Resources\Traits\HasAllTrait;
 
 /**
  * Class Wiki
@@ -13,6 +14,8 @@ use McMatters\GitlabApi\Resources\ProjectResource;
  */
 class Wiki extends ProjectResource
 {
+    use HasAllTrait;
+
     /**
      * @param int|string $id
      * @param array $query
@@ -31,6 +34,17 @@ class Wiki extends ProjectResource
             ->withQuery($query)
             ->get($this->encodeUrl('projects/:id/wikis', $id))
             ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param array $query
+     *
+     * @return array
+     */
+    public function all($id, array $query = []): array
+    {
+        return $this->fetchAllResources('list', [$id, $query]);
     }
 
     /**

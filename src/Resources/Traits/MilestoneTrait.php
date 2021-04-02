@@ -11,6 +11,8 @@ namespace McMatters\GitlabApi\Resources\Traits;
  */
 trait MilestoneTrait
 {
+    use HasAllTrait;
+
     /**
      * @param int|string $id
      * @param array $query
@@ -30,6 +32,17 @@ trait MilestoneTrait
             ->withQuery($query)
             ->get($this->encodeUrl(':type/:id/milestones', [$this->type, $id]))
             ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param array $query
+     *
+     * @return array
+     */
+    public function all($id, array $query = []): array
+    {
+        return $this->fetchAllResources('list', [$id, $query]);
     }
 
     /**

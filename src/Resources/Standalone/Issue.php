@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace McMatters\GitlabApi\Resources\Standalone;
 
 use McMatters\GitlabApi\Resources\StandaloneResource;
+use McMatters\GitlabApi\Resources\Traits\HasAllTrait;
 
 /**
  * Class Issue
@@ -13,6 +14,8 @@ use McMatters\GitlabApi\Resources\StandaloneResource;
  */
 class Issue extends StandaloneResource
 {
+    use HasAllTrait;
+
     /**
      * @param array $query
      *
@@ -27,5 +30,15 @@ class Issue extends StandaloneResource
     public function list(array $query = []): array
     {
         return $this->httpClient->withQuery($query)->get('issues')->json();
+    }
+
+    /**
+     * @param array $query
+     *
+     * @return array
+     */
+    public function all(array $query = []): array
+    {
+        return $this->fetchAllResources('list', [$query]);
     }
 }

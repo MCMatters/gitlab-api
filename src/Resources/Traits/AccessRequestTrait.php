@@ -13,6 +13,8 @@ use McMatters\GitlabApi\Enumerators\AccessLevel;
  */
 trait AccessRequestTrait
 {
+    use HasAllTrait;
+
     /**
      * @param int|string $id
      * @param array $query
@@ -34,6 +36,17 @@ trait AccessRequestTrait
                 [$this->type, $id]
             ))
             ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param array $query
+     *
+     * @return array
+     */
+    public function all($id, array $query = []): array
+    {
+        return $this->fetchAllResources('list', [$id, $query]);
     }
 
     /**

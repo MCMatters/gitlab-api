@@ -6,6 +6,7 @@ namespace McMatters\GitlabApi\Resources\Project;
 
 use McMatters\GitlabApi\Resources\ProjectResource;
 use McMatters\GitlabApi\Resources\Resource;
+use McMatters\GitlabApi\Resources\Traits\HasAllTrait;
 
 /**
  * Class Project
@@ -14,6 +15,8 @@ use McMatters\GitlabApi\Resources\Resource;
  */
 class Project extends ProjectResource
 {
+    use HasAllTrait;
+
     /**
      * @param array $query
      *
@@ -28,6 +31,16 @@ class Project extends ProjectResource
     public function list(array $query = []): array
     {
         return $this->httpClient->withQuery($query)->get('projects')->json();
+    }
+
+    /**
+     * @param array $query
+     *
+     * @return array
+     */
+    public function all(array $query = []): array
+    {
+        return $this->fetchAllResources('list', [$query]);
     }
 
     /**

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace McMatters\GitlabApi\Resources\Standalone;
 
 use McMatters\GitlabApi\Resources\StandaloneResource;
+use McMatters\GitlabApi\Resources\Traits\HasAllTrait;
 
 /**
  * Class FeatureFlag
@@ -13,6 +14,8 @@ use McMatters\GitlabApi\Resources\StandaloneResource;
  */
 class FeatureFlag extends StandaloneResource
 {
+    use HasAllTrait;
+
     /**
      * @param array $query
      *
@@ -27,6 +30,16 @@ class FeatureFlag extends StandaloneResource
     public function list(array $query = []): array
     {
         return $this->httpClient->withQuery($query)->get('features')->json();
+    }
+
+    /**
+     * @param array $query
+     *
+     * @return array
+     */
+    public function all(array $query = []): array
+    {
+        return $this->fetchAllResources('list', [$query]);
     }
 
     /**

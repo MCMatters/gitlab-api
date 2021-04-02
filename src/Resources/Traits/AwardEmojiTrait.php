@@ -11,6 +11,8 @@ namespace McMatters\GitlabApi\Resources\Traits;
  */
 trait AwardEmojiTrait
 {
+    use HasAllTrait;
+
     /**
      * @param int|string $id
      * @param int $iid
@@ -33,6 +35,17 @@ trait AwardEmojiTrait
                 [$id, $this->type, $iid]
             ))
             ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param array $query
+     *
+     * @return array
+     */
+    public function all($id, array $query = []): array
+    {
+        return $this->fetchAllResources('list', [$id, $query]);
     }
 
     /**

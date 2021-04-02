@@ -6,6 +6,7 @@ namespace McMatters\GitlabApi\Resources\Project;
 
 use McMatters\GitlabApi\Resources\ProjectResource;
 
+use McMatters\GitlabApi\Resources\Traits\HasAllTrait;
 use function implode, is_array;
 
 /**
@@ -15,6 +16,8 @@ use function implode, is_array;
  */
 class Dependency extends ProjectResource
 {
+    use HasAllTrait;
+
     /**
      * @param int|string $id
      * @param array|string $manager
@@ -31,5 +34,16 @@ class Dependency extends ProjectResource
             ->withQuery(['package_manager' => $manager])
             ->get($this->encodeUrl('projects/:id/dependencies', $id))
             ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param array|string $manager
+     *
+     * @return array
+     */
+    public function all($id, $manager): array
+    {
+        return $this->fetchAllResources('list', [$id, $manager]);
     }
 }

@@ -11,6 +11,8 @@ namespace McMatters\GitlabApi\Resources\Traits;
  */
 trait ResourceLabelEventTrait
 {
+    use HasAllTrait;
+
     /**
      * @param int|string $id
      * @param int $iid
@@ -35,6 +37,18 @@ trait ResourceLabelEventTrait
                 [$this->baseType, $id, $this->type, $iid]
             ))
             ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param int $iid
+     * @param array $query
+     *
+     * @return array
+     */
+    public function all($id, int $iid, array $query = []): array
+    {
+        return $this->fetchAllResources('list', [$id, $iid, $query]);
     }
 
     /**

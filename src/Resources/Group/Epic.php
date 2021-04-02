@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace McMatters\GitlabApi\Resources\Group;
 
 use McMatters\GitlabApi\Resources\GroupResource;
+use McMatters\GitlabApi\Resources\Traits\HasAllTrait;
 
 /**
  * Class Epic
@@ -13,6 +14,8 @@ use McMatters\GitlabApi\Resources\GroupResource;
  */
 class Epic extends GroupResource
 {
+    use HasAllTrait;
+
     /**
      * @param int|string $id
      * @param array $query
@@ -31,6 +34,17 @@ class Epic extends GroupResource
             ->withQuery($query)
             ->get($this->encodeUrl('groups/:id/epics', $id))
             ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param array $query
+     *
+     * @return array
+     */
+    public function all($id, array $query = []): array
+    {
+        return $this->fetchAllResources('list', [$id, $query]);
     }
 
     /**

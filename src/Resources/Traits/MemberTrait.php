@@ -11,6 +11,8 @@ namespace McMatters\GitlabApi\Resources\Traits;
  */
 trait MemberTrait
 {
+    use HasAllTrait;
+
     /**
      * @param int|string $id
      * @param array $query

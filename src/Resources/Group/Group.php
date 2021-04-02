@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace McMatters\GitlabApi\Resources\Group;
 
 use McMatters\GitlabApi\Resources\GroupResource;
+use McMatters\GitlabApi\Resources\Traits\HasAllTrait;
 
 use const null;
 
@@ -15,6 +16,8 @@ use const null;
  */
 class Group extends GroupResource
 {
+    use HasAllTrait;
+
     /**
      * @param array $query
      *
@@ -29,6 +32,16 @@ class Group extends GroupResource
     public function list(array $query = []): array
     {
         return $this->httpClient->withQuery($query)->get('groups')->json();
+    }
+
+    /**
+     * @param array $query
+     *
+     * @return array
+     */
+    public function all(array $query = []): array
+    {
+        return $this->fetchAllResources('list', [$query]);
     }
 
     /**

@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace McMatters\GitlabApi\Resources\User;
 
+use McMatters\GitlabApi\Resources\Traits\HasAllTrait;
 use McMatters\GitlabApi\Resources\UserResource;
 
 /**
@@ -13,6 +14,8 @@ use McMatters\GitlabApi\Resources\UserResource;
  */
 class Event extends UserResource
 {
+    use HasAllTrait;
+
     /**
      * @param int|string $id
      * @param array $query
@@ -31,5 +34,16 @@ class Event extends UserResource
             ->withQuery($query)
             ->get($this->encodeUrl('users/:id/events', $id))
             ->json();
+    }
+
+    /**
+     * @param int|string $id
+     * @param array $query
+     *
+     * @return array
+     */
+    public function all($id, array $query = []): array
+    {
+        return $this->fetchAllResources('list', [$id, $query]);
     }
 }
