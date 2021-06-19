@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\GitlabApi;
 
@@ -10,7 +10,7 @@ use McMatters\GitlabApi\Helpers\StringHelper;
 use McMatters\GitlabApi\Webhooks\Webhook;
 use stdClass;
 
-use function class_exists, gettype, is_a, is_array, is_string, json_encode;
+use function class_exists, gettype, is_a, is_array, is_string, json_decode;
 
 use const true;
 
@@ -50,7 +50,7 @@ class GitlabWebhook
     protected static function transformPayload($payload): array
     {
         if (is_string($payload)) {
-            $payload = json_encode($payload, true);
+            $payload = json_decode($payload, true);
         } elseif (is_a($payload, stdClass::class)) {
             $payload = (array) $payload;
         }
