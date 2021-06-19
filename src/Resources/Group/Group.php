@@ -89,6 +89,48 @@ class Group extends GroupResource
      * @param array $query
      *
      * @return array
+     */
+    public function allInheritedSubgroups($id, array $query = []): array
+    {
+        $subGroups = [];
+
+        foreach ($this->fetchAllResources('subGroups', [$id, $query]) as $subGroup) {
+            $subGroups[] = [$subGroup];
+            $subGroups[] = $this->allInheritedSubgroups($subGroup['id'], $query);
+        }
+
+        return array_merge([], ...$subGroups);
+    }
+
+    /**
+     * @param int|string $id
+     * @param array $groupQuery
+     * @param array $projectQuery
+     *
+     * @return array
+     */
+    public function allInheritedProjects(
+        $id,
+        array $groupQuery = [],
+        array $projectQuery = []
+    ): array {
+        $projects[] = $this->fetchAllResources('projects', [$id, $projectQuery]);
+
+        foreach ($this->fetchAllResources('subGroups', [$id, $groupQuery]) as $subGroup) {
+            $projects[] = $this->allInheritedProjects(
+                $subGroup['id'],
+                $projectQuery
+            );
+        }
+
+        return array_merge([], ...$projects);
+    }
+
+    /**
+     * @param int|string $id
+     * @param array $query
+     *
+     * @return array
      *
      * @throws \InvalidArgumentException
      * @throws \McMatters\Ticl\Exceptions\RequestException

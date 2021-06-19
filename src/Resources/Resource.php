@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace McMatters\GitlabApi\Resources;
 
+use McMatters\GitlabApi\ResourceContexts\Context;
 use McMatters\Ticl\Client;
 
 use function preg_replace, rawurlencode;
@@ -21,13 +22,28 @@ abstract class Resource
     protected $httpClient;
 
     /**
+     * @var \McMatters\GitlabApi\ResourceContexts\Context
+     */
+    protected $context;
+
+    /**
      * Resource constructor.
      *
      * @param \McMatters\Ticl\Client $httpClient
+     * @param \McMatters\GitlabApi\ResourceContexts\Context $context
      */
-    public function __construct(Client $httpClient)
+    public function __construct(Client $httpClient, Context $context)
     {
         $this->httpClient = $httpClient;
+        $this->context = $context;
+    }
+
+    /**
+     * @return \McMatters\GitlabApi\ResourceContexts\Context
+     */
+    public function getContext(): Context
+    {
+        return $this->context;
     }
 
     /**

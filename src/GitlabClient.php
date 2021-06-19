@@ -94,7 +94,7 @@ class GitlabClient
     protected function resourceContext(string $class)
     {
         if (!isset($this->resourceContexts[$class])) {
-            $this->resourceContexts[$class] = new $class($this->httpClient);
+            $this->resourceContexts[$class] = new $class($this->httpClient, $this);
         }
 
         return $this->resourceContexts[$class];

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace McMatters\GitlabApi\ResourceContexts;
 
+use McMatters\GitlabApi\GitlabClient;
 use McMatters\Ticl\Client;
 
 /**
@@ -24,13 +25,20 @@ class Context
     protected $httpClient;
 
     /**
+     * @var \McMatters\GitlabApi\GitlabClient
+     */
+    protected $client;
+
+    /**
      * Context constructor.
      *
      * @param \McMatters\Ticl\Client $httpClient
+     * @param \McMatters\GitlabApi\GitlabClient $client
      */
-    public function __construct(Client $httpClient)
+    public function __construct(Client $httpClient, GitlabClient $client)
     {
         $this->httpClient = $httpClient;
+        $this->client = $client;
     }
 
     /**
@@ -38,12 +46,20 @@ class Context
      *
      * @return mixed
      */
-    protected function resource(string $class)
+    public function resource(string $class)
     {
         if (!isset($this->resources[$class])) {
-            $this->resources[$class] = new $class($this->httpClient);
+            $this->resources[$class] = new $class($this->httpClient, $this);
         }
 
         return $this->resources[$class];
+    }
+
+    /**
+     * @return \McMatters\GitlabApi\GitlabClient
+     */
+    public function getClient(): GitlabClient
+    {
+        return $this->client;
     }
 }

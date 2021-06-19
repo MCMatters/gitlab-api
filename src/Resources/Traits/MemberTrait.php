@@ -55,6 +55,17 @@ trait MemberTrait
 
     /**
      * @param int|string $id
+     * @param array $query
+     *
+     * @return array
+     */
+    public function fetchAll($id, array $query = []): array
+    {
+        return $this->fetchAllResources('list', [$id, $query]);
+    }
+
+    /**
+     * @param int|string $id
      * @param int $userId
      *
      * @return array
